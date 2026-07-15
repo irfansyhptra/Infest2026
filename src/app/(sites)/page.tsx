@@ -597,6 +597,17 @@ const InfestWebsite = () => {
           }}
         />
 
+        {/* Decorative Flower Graphic at the Right End */}
+        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] md:w-[650px] lg:w-[800px] h-[85%] pointer-events-none z-0 opacity-25 md:opacity-35 mix-blend-screen select-none">
+          <Image
+            src="/assets/svg/bunga.svg"
+            alt="Flower Decoration"
+            fill
+            className="object-contain object-right"
+            priority
+          />
+        </div>
+
         {/* Decorative Background Diagonal Marquees (refined opacity) */}
         <div className="hero-marquees absolute inset-0 pointer-events-none select-none overflow-hidden z-0 opacity-10">
           {/* Left Ribbon: Bottom-Left to Top-Right (angled at -45deg) */}
