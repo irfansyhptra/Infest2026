@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Outer Border -->
+  <rect width="32" height="32" fill="#000000" />
+  
+  <!-- Base Brick Color (Medium Blue) -->
+  <rect x="2" y="2" width="28" height="28" fill="#1E3A8A" />
+  
+  <!-- Highlight Borders (Top & Left - Light Blue) -->
+  <path d="M2 2h28v2H2v26H4V4h26V2H2z" fill="#3B82F6" />
+  
+  <!-- Shadow Borders (Bottom & Right - Dark Blue) -->
+  <path d="M28 4h2v26H2v-2h26V4z" fill="#1E293B" />
+  
+  <!-- Tech Circuit Nodes Inside Block -->
+  <rect x="8" y="8" width="4" height="4" fill="#049CD8" />
+  <rect x="20" y="8" width="4" height="4" fill="#049CD8" />
+  <rect x="8" y="20" width="4" height="4" fill="#FDD026" />
+  <rect x="20" y="20" width="4" height="4" fill="#10B981" />
+  
+  <!-- Connective Lines -->
+  <path d="M12 10h8v2h-8zm-2 2h2v6h-2zm10 2h2v4h-2zm-6 4h4v2h-4z" fill="#049CD8" opacity="0.4" />
+</svg>

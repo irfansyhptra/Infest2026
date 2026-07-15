@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 96" width="256" height="96" shape-rendering="crispEdges">
+  <!-- Neon Base Grid background -->
+  <path d="M0 80h256v16H0z" fill="#020617"/>
+  
+  <!-- Base neon line (Gold/Yellow) -->
+  <rect y="78" width="256" height="2" fill="#FDD026"/>
+  <rect y="94" width="256" height="2" fill="#049CD8"/>
+
+  <!-- Left Podium (3rd Place) -->
+  <path d="M16 48h64v30H16z" fill="#1E293B"/>
+  <rect x="18" y="50" width="60" height="2" fill="#334155"/>
+  <rect x="16" y="46" width="64" height="2" fill="#049CD8"/>
+
+  <!-- Right Podium (2nd Place) -->
+  <path d="M176 40h64v38H176z" fill="#1E293B"/>
+  <rect x="178" y="42" width="60" height="2" fill="#334155"/>
+  <rect x="176" y="38" width="64" height="2" fill="#049CD8"/>
+
+  <!-- Center Podium (1st Place) -->
+  <path d="M96 24h64v54H96z" fill="#0F172A"/>
+  <rect x="98" y="26" width="60" height="2" fill="#FDD026"/>
+  <rect x="96" y="22" width="64" height="2" fill="#FDD026"/>
+  
+  <!-- Neon vertical status line bars on Center Podium -->
+  <rect x="126" y="36" width="4" height="30" fill="#FDD026" opacity="0.8"/>
+  <rect x="114" y="44" width="4" height="20" fill="#049CD8" opacity="0.6"/>
+  <rect x="138" y="44" width="4" height="20" fill="#049CD8" opacity="0.6"/>
+</svg>

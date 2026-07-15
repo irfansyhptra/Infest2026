@@ -1,0 +1,17 @@
+/* Base styling for Shuffle component layout */
+.shuffle-parent {
+  display: inline-block;
+  line-height: 1;
+  letter-spacing: 0.05em;
+}
+
+.shuffle-char {
+  line-height: 1;
+  display: inline-block;
+  text-align: center;
+}
+
+/* Apply the custom gold gradient and thin white outline to the animated characters */
+.shuffle-parent.infest-hero-title .shuffle-char {
+  color: #FFFFFF;
+}

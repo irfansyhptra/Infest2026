@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 40" width="80" height="40" shape-rendering="crispEdges">
+  <!-- Outer transparent glow -->
+  <path d="M20 6h40v6h8v6h8v12H4v-12h8v-6h8V6z" fill="#049CD8" opacity="0.15"/>
+  <!-- Cloud Main Body -->
+  <path d="M24 8h32v8h8v8h8v8H8v-8h8v-8h8V8z" fill="#FFFFFF"/>
+  <!-- Cloud Shadow -->
+  <path d="M32 16h24v8h8v8H16v-8h16v-8z" fill="#E2E8F0"/>
+  <!-- Tech lines inside cloud -->
+  <rect x="24" y="24" width="32" height="2" fill="#93C5FD" opacity="0.5"/>
+</svg>

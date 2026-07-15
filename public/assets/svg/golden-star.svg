@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" shape-rendering="crispEdges">
+  <!-- Outer Glow Shadow -->
+  <path d="M14 0h4v2h-4zm-4 4h12v2H10zm-4 4h20v2H6zm-2 4h24v2H4zm0 4h24v2H4zm2 4h20v2H6zm4 4h12v2H10zm4 4h4v2h-4z" fill="#FDD026" opacity="0.25"/>
+
+  <!-- Black Border Outline -->
+  <path d="M14 2h4v2h-4zm-2 2h2v2h-2zm4 0h2v2h-2zm-4 2h2v2h-2zm6 0h2v2h-2zm-8 2h2v2H8zm10 0h2v2h-2zm-12 2h2v2H6zm14 0h2v2h-2zm-14 2h2v2H6zm14 0h2v2h-2zm0 2h2v2h-2zm-14 0h2v2H6zm0 2h2v2H6zm14 0h2v2h-2zm-10 2h2v2h-2zm6 0h2v2h-2zm-10 2h2v2H8zm10 0h2v2h-2zm-10 2h2v2H8zm10 0h2v2h-2zm-8 2h2v2h-2zm6 0h2v2h-2zm-4 2h4v2h-4z" fill="#000000"/>
+
+  <!-- Star Gold Fill -->
+  <path d="M14 4h4v2h-4zm-2 2h6v2h-6zm-4 2h14v2H8zm-2 2h18v2H6zm-2 10h6v2H4zm18 0h6v2h-6zm-16 2h4v2H6zm12 0h4v2h-4zm-10 2h2v2h-2zm6 0h2v2h-2zm-4 2h4v2h-4z" fill="#FDD026"/>
+  <!-- Highlight / Inner Light (lighter yellow) -->
+  <path d="M14 6h2v4h-2zm-4 4h4v2h-4zm-2 2h2v4H8zm0 4h2v2H8zm2 2h2v2h-2z" fill="#FFFBEB"/>
+  <!-- Shadow (darker gold) -->
+  <path d="M16 8h2v2h-2zm2 2h2v4h-2zm2 4h2v6h-2zm2 4h4v2h-4zm-2 2h2v2h-2zm-4 2h2v2h-2z" fill="#D97706"/>
+</svg>
