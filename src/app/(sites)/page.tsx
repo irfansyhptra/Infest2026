@@ -376,10 +376,14 @@ const InfestWebsite = () => {
         { scale: 1, opacity: 1, filter: "blur(0px)", y: 0, duration: 1.0, ease: "power2.out" }
       );
 
-      // Frame 2: Logo & Tagline exit (scale down, fade out, blur on)
-      sectionTl.to(".history-intro",
-        { scale: 0.5, opacity: 0, filter: "blur(20px)", y: -80, duration: 1.0, ease: "power2.in" },
+      // Frame 2: Tagline fades out, while Logo shrinks and shifts up above the cards
+      sectionTl.to(".marquee-tagline",
+        { opacity: 0, y: -30, filter: "blur(8px)", duration: 0.8, ease: "power2.in" },
         "+=0.4"
+      );
+      sectionTl.to(".marquee-logo",
+        { scale: 0.45, y: "-22vh", duration: 1.0, ease: "power2.inOut" },
+        "<"
       );
 
       // Frame 3: The cards container fades/scales in from the background (fully centered)
