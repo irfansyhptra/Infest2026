@@ -597,13 +597,13 @@ const InfestWebsite = () => {
           }}
         />
 
-        {/* Decorative Flower Graphic at the Right End */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[350px] sm:w-[500px] md:w-[650px] lg:w-[800px] h-[85%] pointer-events-none z-0 opacity-25 md:opacity-35 mix-blend-screen select-none">
+        {/* Decorative Flower Graphic at the Bottom Right Corner */}
+        <div className="absolute right-0 bottom-0 w-[180px] sm:w-[250px] md:w-[320px] lg:w-[380px] h-[180px] sm:h-[250px] md:h-[320px] lg:h-[380px] pointer-events-none z-30 opacity-80 md:opacity-90 mix-blend-screen select-none">
           <Image
             src="/assets/svg/bunga.svg"
             alt="Flower Decoration"
             fill
-            className="object-contain object-right"
+            className="object-contain object-right-bottom"
             priority
           />
         </div>
