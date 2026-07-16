@@ -601,17 +601,6 @@ const InfestWebsite = () => {
           }}
         />
 
-        {/* Decorative Flower Graphic at the Bottom Right Corner */}
-        <div className="absolute right-0 bottom-0 w-[240px] sm:w-[320px] md:w-[420px] lg:w-[500px] h-[240px] sm:h-[320px] md:h-[420px] lg:h-[500px] pointer-events-none z-50 opacity-100 mix-blend-screen select-none">
-          <Image
-            src="/assets/svg/bunga.svg"
-            alt="Flower Decoration"
-            fill
-            className="object-contain object-right-bottom"
-            priority
-          />
-        </div>
-
         {/* Decorative Background Diagonal Marquees (refined opacity) */}
         <div className="hero-marquees absolute inset-0 pointer-events-none select-none overflow-hidden z-0 opacity-10">
           {/* Left Ribbon: Bottom-Left to Top-Right (angled at -45deg) */}
@@ -645,26 +634,26 @@ const InfestWebsite = () => {
           </div>
         </div>
 
-        <div className="hero-content w-full z-20 mt-2 lg:-mt-12 px-2 md:px-8 lg:px-16 flex flex-col items-center justify-center text-center will-change-transform">
+        <div className="hero-content w-full z-[99] mt-2 lg:-mt-12 px-2 md:px-8 lg:px-16 flex flex-col items-center justify-center text-center will-change-transform">
           {/* Centered Hero Content */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.0, ease: "easeOut" }}
-            className="flex flex-col gap-4 md:gap-6 items-center text-center w-full max-w-5xl"
+            className="flex flex-col gap-4 md:gap-6 items-center text-center w-full px-4 md:px-12 lg:px-24"
           >
             <h1 className="tracking-tighter leading-none font-astralaga mb-4 flex flex-col items-center select-none w-full font-normal">
-              <span className="flex flex-row items-center justify-center flex-nowrap whitespace-nowrap gap-x-2 md:gap-x-4 text-5xl sm:text-6xl md:text-[6.5vw] lg:text-[7.5vw]">
+              <span className="flex flex-row items-center justify-center flex-nowrap whitespace-nowrap gap-x-2 md:gap-x-4 text-6xl sm:text-7xl md:text-[7.5vw] lg:text-[8.5vw]">
                 <span className="flex items-center">
-                  <span className="font-imperial-script text-white text-6xl sm:text-7xl md:text-[8vw] lg:text-[9.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-2">I</span>
+                  <span className="font-imperial-script text-white text-7xl sm:text-8xl md:text-[9vw] lg:text-[10.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-2">I</span>
                   <span className="text-white font-normal tracking-tighter">nformatics</span>
                 </span>
                 <span className="flex items-center">
-                  <span className="font-imperial-script text-white text-6xl sm:text-7xl md:text-[8vw] lg:text-[9.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-1.5">F</span>
+                  <span className="font-imperial-script text-white text-7xl sm:text-8xl md:text-[9vw] lg:text-[10.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-1.5">F</span>
                   <span className="text-white font-normal tracking-tighter">estival</span>
                 </span>
               </span>
-              <span className="text-3xl md:text-6xl lg:text-7xl -mt-1 md:-mt-4 font-serif font-bold drop-shadow-[0_0_15px_rgba(253,208,38,0.7)] select-all inline-flex items-center justify-center gap-x-[1px] md:gap-x-[2px]">
+              <span className="text-4xl md:text-7xl lg:text-8xl -mt-1 md:-mt-4 font-serif font-bold drop-shadow-[0_0_15px_rgba(253,208,38,0.7)] select-all inline-flex items-center justify-center gap-x-[1px] md:gap-x-[2px]">
                 {["X", "I", "I", " ", "2", "0", "2", "6"].map((char, index) => (
                   char === " " ? (
                     <span key={index} className="w-1.5 md:w-2.5" />
@@ -686,7 +675,7 @@ const InfestWebsite = () => {
               </span>
             </h1>
 
-            <p className="text-sm md:text-lg lg:text-xl max-w-3xl leading-relaxed mx-auto text-center font-medium drop-shadow-md text-pretty font-serif italic mt-4 md:mt-8 px-1" style={{ color: '#F5F0E1' }}>
+            <p className="text-base md:text-xl lg:text-2xl leading-relaxed mx-auto text-center font-medium drop-shadow-md text-pretty font-serif italic mt-6 md:mt-10 px-4 md:px-16 lg:px-32" style={{ color: '#F5F0E1' }}>
               Infest (Informatics Festival) XI 2025 is the biggest tech event in Aceh, bringing together students, professionals, and digital creators in one vibrant arena. Carrying the theme <span className="font-bold not-italic" style={{ backgroundImage: 'linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(255, 235, 150) 30%, rgb(253, 208, 38) 70%, rgb(255, 220, 80) 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>&quot;Synthera: Creating a Harmonized, Intelligent, and Innovative Digital Ecosystem&quot;</span>, INFEST is more than a competition, it&apos;s a movement to shape the future through innovation, collaboration, and real-world impact.
             </p>
           </motion.div>
@@ -696,16 +685,22 @@ const InfestWebsite = () => {
 
       {/* 3D Marquee Section */}
       <section
-        className="second-section py-8 md:py-20 relative overflow-hidden z-10 lg:min-h-screen lg:flex lg:items-center lg:justify-center"
+        className="second-section py-8 md:py-20 relative overflow-x-clip overflow-y-visible z-10 lg:min-h-screen lg:flex lg:items-center lg:justify-center"
         style={{
           background: "radial-gradient(circle at 50% 50%, #2652c8 0%, #050d24 100%)"
         }}
       >
-        {/* Curved transition shape at the top of the second section */}
-        <div className="section-curve absolute top-0 left-0 w-full z-20 pointer-events-none -translate-y-full" style={{ height: "140px" }}>
-          <svg viewBox="0 0 1440 140" preserveAspectRatio="none" className="w-full h-full">
-            <path d="M0,0 C480,140 960,140 1440,0 L1440,140 L0,140 Z" fill="#050d24" />
-          </svg>
+
+        {/* Decorative Doll Graphic at the Bottom Right Corner of Hero (highest z-index, 100% opacity, shifted down by 15.4% to remove transparent bottom padding) */}
+        <div className="hidden md:block absolute right-0 top-0 w-[240px] sm:w-[320px] md:w-[420px] lg:w-[500px] h-[240px] sm:h-[320px] md:h-[420px] lg:h-[500px] pointer-events-none z-[99] opacity-100 select-none"
+             style={{ transform: 'translateY(-84.6%)' }}>
+          <Image
+            src="/assets/images/boneka.webp"
+            alt="Doll Decoration"
+            fill
+            className="object-contain object-right-bottom"
+            priority
+          />
         </div>
 
         {/* GLOBAL BACKGROUND LAYER SYSTEM: Section A */}
