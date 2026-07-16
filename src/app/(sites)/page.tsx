@@ -31,7 +31,7 @@ const TwinklingStar = ({ top, left, delay, size = 2 }: { top: string; left: stri
       left,
       width: `${size}px`,
       height: `${size}px`,
-      boxShadow: "0 0 8px #ffffff",
+      boxShadow: "0 0 6px rgba(219,234,254,0.95), 0 0 18px rgba(147,197,253,0.55)",
       animationDelay: `${delay}s`,
     }}
   />
@@ -73,12 +73,12 @@ const CompetitionCard = ({
   if (!comp) return null;
 
   const btnStyle = isFeatured
-    ? "flex-1 py-2.5 bg-gradient-to-r from-[#FDD026] to-[#FFE885] hover:bg-[#B89926] text-[#0d1a5c] shadow-[0_0_15px_rgba(253,208,38,0.3)] hover:shadow-[0_0_25px_rgba(253,208,38,0.5)] rounded-full text-xs font-extrabold text-center transition-all duration-300 uppercase tracking-wider"
-    : "flex-1 py-2.5 bg-gradient-to-r from-[#2596BE] to-[#6EC6E8] hover:bg-[#1a6e8e] text-white shadow-[0_0_15px_rgba(37,150,190,0.3)] hover:shadow-[0_0_25px_rgba(37,150,190,0.5)] rounded-full text-xs font-extrabold text-center transition-all duration-300 uppercase tracking-wider";
+    ? "flex-1 py-2.5 bg-gradient-to-b from-[#FFE14D] via-[#FDD026] to-[#D4A017] text-[#0f172a] shadow-[0_4px_20px_rgba(253,208,38,0.38),inset_0_1px_0_rgba(255,255,255,0.55)] hover:brightness-110 hover:shadow-[0_6px_28px_rgba(253,208,38,0.58),inset_0_1px_0_rgba(255,255,255,0.65)] rounded-full text-xs font-extrabold text-center transition-all duration-300 uppercase tracking-widest"
+    : "flex-1 py-2.5 bg-gradient-to-b from-[#60A5FA] via-[#3B82F6] to-[#2563EB] text-white shadow-[0_4px_20px_rgba(59,130,246,0.42),inset_0_1px_0_rgba(255,255,255,0.32)] hover:brightness-110 hover:shadow-[0_6px_28px_rgba(59,130,246,0.62),inset_0_1px_0_rgba(255,255,255,0.42)] rounded-full text-xs font-extrabold text-center transition-all duration-300 uppercase tracking-widest";
 
   const secondaryBtnStyle = isFeatured
-    ? "px-4 py-2.5 border border-[#FDD026]/40 hover:bg-[#FDD026]/10 text-[#FDD026] hover:shadow-[0_0_12px_rgba(253,208,38,0.2)] rounded-full text-xs font-bold text-center transition-all duration-300"
-    : "px-4 py-2.5 border border-[#2596BE]/40 hover:bg-[#2596BE]/10 text-[#2596BE] hover:shadow-[0_0_12px_rgba(37,150,190,0.2)] rounded-full text-xs font-bold text-center transition-all duration-300";
+    ? "px-4 py-2.5 border border-[#FDD026]/50 hover:bg-[#FDD026]/10 text-[#FDD026] hover:border-[#FDD026]/75 hover:shadow-[0_4px_16px_rgba(253,208,38,0.22)] rounded-full text-xs font-bold text-center transition-all duration-300 backdrop-blur-sm"
+    : "px-4 py-2.5 border border-[#60A5FA]/40 hover:bg-[#3B82F6]/10 text-[#93C5FD] hover:border-[#60A5FA]/65 hover:shadow-[0_4px_16px_rgba(59,130,246,0.22)] rounded-full text-xs font-bold text-center transition-all duration-300 backdrop-blur-sm";
 
   return (
     <div className={cn("w-full flex flex-col transition-all duration-500 h-full min-h-[280px] sm:min-h-[340px] md:min-h-[420px]")}>
@@ -86,8 +86,8 @@ const CompetitionCard = ({
         className={cn(
           "relative flex flex-col justify-between rounded-[24px] backdrop-blur-md border p-6 md:p-8 h-full transition-all duration-500 overflow-hidden group",
           isFeatured
-            ? "bg-[#0d1a5c]/55 border-[#FDD026]/35 shadow-[0_10px_35px_rgba(255,255,255,0.06),0_0_20px_rgba(255,255,255,0.12)] hover:border-[#FDD026]/50 hover:shadow-[0_15px_45px_rgba(255,255,255,0.12),0_0_30px_rgba(255,255,255,0.22)]"
-            : "bg-[#0d1a5c]/40 border-white/10 opacity-95 shadow-[0_8px_25px_rgba(255,255,255,0.04),0_0_15px_rgba(255,255,255,0.08)] hover:border-[#2596BE]/40 hover:shadow-[0_12px_35px_rgba(255,255,255,0.15),0_0_25px_rgba(255,255,255,0.18)] hover:opacity-100"
+            ? "bg-gradient-to-b from-[#1e3a8a]/50 to-[#0d1a5c]/68 border-[#FDD026]/42 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.45),0_0_0_1px_rgba(253,208,38,0.12),inset_0_1px_0_rgba(255,255,255,0.12)] hover:border-[#FDD026]/65 hover:shadow-[0_28px_80px_-10px_rgba(253,208,38,0.22),0_0_0_1px_rgba(253,208,38,0.28),inset_0_1px_0_rgba(255,255,255,0.18)]"
+            : "bg-gradient-to-b from-[#1a3670]/40 to-[#0d1a5c]/58 border-[#FDD026]/22 opacity-95 shadow-[0_16px_50px_-10px_rgba(0,0,0,0.38),0_0_0_1px_rgba(253,208,38,0.08),inset_0_1px_0_rgba(255,255,255,0.08)] hover:border-[#FDD026]/48 hover:shadow-[0_22px_65px_-10px_rgba(253,208,38,0.18),0_0_0_1px_rgba(253,208,38,0.20),inset_0_1px_0_rgba(255,255,255,0.12)] hover:opacity-100"
         )}
       >
         {/* Noise texture overlay */}
@@ -96,14 +96,14 @@ const CompetitionCard = ({
         {/* Ambient internal radial glow */}
         <div className={cn(
           "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full blur-[60px] pointer-events-none opacity-40 group-hover:opacity-75 transition-opacity duration-500",
-          isFeatured ? "bg-[#FDD026]/10" : "bg-[#2596BE]/10"
+          isFeatured ? "bg-[#FDD026]/18" : "bg-[#3B82F6]/14"
         )} />
 
         {/* Corner Accents */}
-        <div className={cn("absolute top-3 left-3 w-3 h-3 border-t border-l rounded-tl-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/40" : "border-[#2596BE]/40")} />
-        <div className={cn("absolute top-3 right-3 w-3 h-3 border-t border-r rounded-tr-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/40" : "border-[#2596BE]/40")} />
-        <div className={cn("absolute bottom-3 left-3 w-3 h-3 border-b border-l rounded-bl-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/40" : "border-[#2596BE]/40")} />
-        <div className={cn("absolute bottom-3 right-3 w-3 h-3 border-b border-r rounded-br-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/40" : "border-[#2596BE]/40")} />
+        <div className={cn("absolute top-3 left-3 w-3.5 h-3.5 border-t-[1.5px] border-l-[1.5px] rounded-tl-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/55" : "border-[#60A5FA]/45")} />
+        <div className={cn("absolute top-3 right-3 w-3.5 h-3.5 border-t-[1.5px] border-r-[1.5px] rounded-tr-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/55" : "border-[#60A5FA]/45")} />
+        <div className={cn("absolute bottom-3 left-3 w-3.5 h-3.5 border-b-[1.5px] border-l-[1.5px] rounded-bl-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/55" : "border-[#60A5FA]/45")} />
+        <div className={cn("absolute bottom-3 right-3 w-3.5 h-3.5 border-b-[1.5px] border-r-[1.5px] rounded-br-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/55" : "border-[#60A5FA]/45")} />
 
         {/* Shimmer sheen */}
         <div
@@ -130,8 +130,8 @@ const CompetitionCard = ({
               <div className={cn(
                 "inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[9px] font-extrabold uppercase tracking-widest mt-1",
                 isFeatured
-                  ? "bg-[#FDD026]/10 border-[#FDD026]/30 text-[#FDD026] shadow-[0_0_8px_rgba(253,208,38,0.15)]"
-                  : "bg-[#2596BE]/10 border-[#2596BE]/30 text-[#2596BE] shadow-[0_0_8px_rgba(37,150,190,0.15)]"
+                  ? "bg-[#FDD026]/12 border-[#FDD026]/38 text-[#FDD026] shadow-[0_0_10px_rgba(253,208,38,0.18),inset_0_1px_0_rgba(255,255,255,0.1)]"
+                  : "bg-[#3B82F6]/12 border-[#60A5FA]/35 text-[#93C5FD] shadow-[0_0_10px_rgba(59,130,246,0.18),inset_0_1px_0_rgba(255,255,255,0.08)]"
               )}>
                 <span className={cn("w-1 h-1 rounded-full animate-pulse", isFeatured ? "bg-[#FDD026]" : "bg-[#2596BE]")} />
                 {isFeatured ? "FEATURED LOMBA" : "KOMPETISI"}
@@ -150,8 +150,8 @@ const CompetitionCard = ({
                 className={cn(
                   "px-2.5 py-1 rounded-full text-[10px] font-semibold border transition-all duration-300",
                   isFeatured
-                    ? "bg-[#FDD026]/10 border-[#FDD026]/20 text-[#FDD026] shadow-[0_0_6px_rgba(253,208,38,0.05)]"
-                    : "bg-[#2596BE]/10 border-[#2596BE]/20 text-[#2596BE] shadow-[0_0_6px_rgba(37,150,190,0.05)]"
+                    ? "bg-[#FDD026]/10 border-[#FDD026]/25 text-[#FDD026] shadow-[0_0_8px_rgba(253,208,38,0.08)]"
+                    : "bg-[#3B82F6]/10 border-[#60A5FA]/22 text-[#93C5FD] shadow-[0_0_8px_rgba(59,130,246,0.08)]"
                 )}
               >
                 {k}
@@ -226,15 +226,15 @@ const MEMORY_CARDS = [
     num: "Memory #1",
     title: "Empowering Innovation",
     img: GALLERY_IMAGES[0],
-    accent: "#2596BE",
-    glow: "rgba(37,150,190,0.1)",
-    border: "border-[#2596BE]/20",
-    hoverBorder: "hover:border-[#2596BE]/50",
-    buttonBorder: "border-[#2596BE]/40",
-    buttonShadow: "shadow-[0_0_12px_rgba(37,150,190,0.4)]",
-    bg: "bg-[#0b1650]/65",
+    accent: "#60A5FA",
+    glow: "rgba(59,130,246,0.14)",
+    border: "border-[#FDD026]/28",
+    hoverBorder: "hover:border-[#FDD026]/60",
+    buttonBorder: "border-[#FDD026]/42",
+    buttonShadow: "shadow-[0_0_14px_rgba(253,208,38,0.42),inset_0_1px_0_rgba(255,255,255,0.12)]",
+    bg: "bg-gradient-to-b from-[#152d6a]/55 to-[#0b1650]/78",
     zIndex: "z-[1]",
-    shadow: "shadow-[0_10px_30px_rgba(0,0,0,0.4)]",
+    shadow: "shadow-[0_16px_50px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]",
   },
   {
     id: "card-2",
@@ -242,29 +242,29 @@ const MEMORY_CARDS = [
     title: "Designing Digitopia",
     img: GALLERY_IMAGES[1],
     accent: "#FDD026",
-    glow: "rgba(37,150,190,0.2)",
-    border: "border-[#FDD026]/30",
-    hoverBorder: "hover:border-[#FDD026]/60",
-    buttonBorder: "border-[#FDD026]/40",
-    buttonShadow: "shadow-[0_0_12px_rgba(253,208,38,0.5)]",
-    bg: "bg-[#0b1650]/75",
+    glow: "rgba(253,208,38,0.18)",
+    border: "border-[#FDD026]/40",
+    hoverBorder: "hover:border-[#FDD026]/70",
+    buttonBorder: "border-[#FDD026]/50",
+    buttonShadow: "shadow-[0_0_16px_rgba(253,208,38,0.5),inset_0_1px_0_rgba(255,255,255,0.12)]",
+    bg: "bg-gradient-to-b from-[#1e3a8a]/60 to-[#0b1650]/82",
     zIndex: "z-[2]",
-    shadow: "shadow-[0_15px_40px_rgba(0,0,0,0.5)]",
+    shadow: "shadow-[0_20px_60px_-10px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.10)]",
   },
   {
     id: "card-3",
     num: "Memory #3",
     title: "Connecting Communities",
     img: GALLERY_IMAGES[2],
-    accent: "#2596BE",
-    glow: "rgba(37,150,190,0.1)",
-    border: "border-[#2596BE]/20",
-    hoverBorder: "hover:border-[#2596BE]/50",
-    buttonBorder: "border-[#2596BE]/40",
-    buttonShadow: "shadow-[0_0_12px_rgba(37,150,190,0.4)]",
-    bg: "bg-[#0b1650]/65",
+    accent: "#60A5FA",
+    glow: "rgba(59,130,246,0.14)",
+    border: "border-[#FDD026]/28",
+    hoverBorder: "hover:border-[#FDD026]/60",
+    buttonBorder: "border-[#FDD026]/42",
+    buttonShadow: "shadow-[0_0_14px_rgba(253,208,38,0.42),inset_0_1px_0_rgba(255,255,255,0.12)]",
+    bg: "bg-gradient-to-b from-[#152d6a]/55 to-[#0b1650]/78",
     zIndex: "z-[3]",
-    shadow: "shadow-[0_10px_30px_rgba(0,0,0,0.4)]",
+    shadow: "shadow-[0_16px_50px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]",
   },
   {
     id: "card-4",
@@ -272,29 +272,29 @@ const MEMORY_CARDS = [
     title: "Digital Evolution",
     img: GALLERY_IMAGES[3],
     accent: "#FDD026",
-    glow: "rgba(253,208,38,0.1)",
-    border: "border-[#FDD026]/20",
-    hoverBorder: "hover:border-[#FDD026]/50",
+    glow: "rgba(253,208,38,0.12)",
+    border: "border-[#FDD026]/30",
+    hoverBorder: "hover:border-[#FDD026]/62",
     buttonBorder: "border-[#FDD026]/40",
-    buttonShadow: "shadow-[0_0_12px_rgba(253,208,38,0.4)]",
-    bg: "bg-[#0b1650]/65",
+    buttonShadow: "shadow-[0_0_14px_rgba(253,208,38,0.45),inset_0_1px_0_rgba(255,255,255,0.10)]",
+    bg: "bg-gradient-to-b from-[#152d6a]/55 to-[#0b1650]/78",
     zIndex: "z-[4]",
-    shadow: "shadow-[0_10px_30px_rgba(0,0,0,0.4)]",
+    shadow: "shadow-[0_16px_50px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]",
   },
   {
     id: "card-5",
     num: "Memory #5",
     title: "Inspiring Champions",
     img: GALLERY_IMAGES[4],
-    accent: "#2596BE",
-    glow: "rgba(37,150,190,0.1)",
-    border: "border-[#2596BE]/20",
-    hoverBorder: "hover:border-[#2596BE]/50",
-    buttonBorder: "border-[#2596BE]/40",
-    buttonShadow: "shadow-[0_0_12px_rgba(37,150,190,0.4)]",
-    bg: "bg-[#0b1650]/65",
+    accent: "#60A5FA",
+    glow: "rgba(59,130,246,0.14)",
+    border: "border-[#FDD026]/28",
+    hoverBorder: "hover:border-[#FDD026]/60",
+    buttonBorder: "border-[#FDD026]/42",
+    buttonShadow: "shadow-[0_0_14px_rgba(253,208,38,0.42),inset_0_1px_0_rgba(255,255,255,0.12)]",
+    bg: "bg-gradient-to-b from-[#152d6a]/55 to-[#0b1650]/78",
     zIndex: "z-[5]",
-    shadow: "shadow-[0_10px_30px_rgba(0,0,0,0.4)]",
+    shadow: "shadow-[0_16px_50px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]",
   },
 ];
 
@@ -303,28 +303,28 @@ const MEMORY_CARDS = [
 const MemoryCardItem = ({ card, desktop = false }: { card: typeof MEMORY_CARDS[0]; desktop?: boolean }) => (
   <div
     className={cn(
-      "group swiper-slide-card marquee-card-item shrink-0 flex flex-col relative border backdrop-blur-md transition-all duration-500 overflow-visible ml-0",
+      "group swiper-slide-card marquee-card-item shrink-0 flex flex-col relative border backdrop-blur-xl transition-all duration-500 overflow-visible ml-0",
       "w-[180px] rounded-t-[60px] rounded-b-[16px]",
       desktop && "lg:w-[17%] lg:max-w-[245px] xl:max-w-[265px] lg:shrink lg:rounded-t-[80px] lg:rounded-b-[24px]",
       card.border, card.bg, card.shadow, card.zIndex,
-      "hover:z-[50] active:z-[50] hover:-translate-y-6 active:-translate-y-6",
+      "hover:z-[50] active:z-[50] hover:-translate-y-8 active:-translate-y-6",
       card.hoverBorder,
-      "hover:shadow-[0_15px_40px_rgba(0,0,0,0.5)]"
+      "hover:shadow-[0_24px_60px_-8px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.15)]"
     )}
     style={{
-      boxShadow: `inset 0 2px 8px rgba(255,255,255,0.05), inset 0 -2px 8px rgba(0,0,0,0.4), 0 0 15px ${card.glow}`,
-      WebkitBoxReflect: "below 8px linear-gradient(transparent 75%, rgba(255,255,255,0.04))"
+      boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.25), 0 0 22px ${card.glow}`,
+      WebkitBoxReflect: "below 10px linear-gradient(transparent 68%, rgba(255,255,255,0.07))"
     } as React.CSSProperties}
   >
     <div className="absolute inset-0 noise-texture opacity-[0.015] pointer-events-none mix-blend-overlay rounded-t-[60px] rounded-b-[16px]" />
-    <div className="relative w-full aspect-[3/4] rounded-t-[60px] rounded-b-[12px] overflow-hidden border-b border-white/5">
+    <div className="relative w-full aspect-[3/4] rounded-t-[60px] rounded-b-[12px] overflow-hidden border-b border-[#FDD026]/20">
       <Image src={card.img} alt={card.title} fill loading="lazy" className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#0b1650] via-transparent to-transparent" />
     </div>
-    <div className="relative bg-white/[0.04] backdrop-blur-sm border-t border-white/10 p-4 rounded-b-[16px] flex flex-col gap-1 pb-8">
+    <div className="relative bg-white/[0.04] backdrop-blur-sm border-t border-[#FDD026]/18 p-4 rounded-b-[16px] flex flex-col gap-1 pb-8">
       <span className="text-[9px] font-extrabold uppercase tracking-widest" style={{ color: card.accent }}>{card.num}</span>
       <h4 className="text-xs md:text-sm font-bold text-white font-sans leading-tight">{card.title}</h4>
-      <button className={`absolute -bottom-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full flex items-center justify-center bg-[#0b1650] ${card.buttonBorder} ${card.buttonShadow} text-white hover:scale-110 active:scale-95 transition-all duration-300`}>
+      <button className={`absolute -bottom-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-b from-[#1e3a8a] to-[#0b1650] backdrop-blur-sm border ${card.buttonBorder} ${card.buttonShadow} text-white hover:scale-110 hover:brightness-110 active:scale-95 transition-all duration-300`}>
         <svg className="w-4 h-4" style={{ color: card.accent }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
       </button>
     </div>
@@ -625,9 +625,9 @@ const InfestWebsite = () => {
         <TwinklingStar top="75%" left="85%" delay={1.5} size={3} />
         <TwinklingStar top="85%" left="50%" delay={0.8} size={2} />
 
-        <FloatingCloud top="12%" speed={45} delay={0} opacity={0.3} />
-        <FloatingCloud top="35%" speed={60} delay={10} opacity={0.2} />
-        <FloatingCloud top="70%" speed={50} delay={5} opacity={0.25} />
+        <FloatingCloud top="12%" speed={45} delay={0} opacity={0.48} />
+        <FloatingCloud top="35%" speed={60} delay={10} opacity={0.32} />
+        <FloatingCloud top="70%" speed={50} delay={5} opacity={0.40} />
       </div>
 
       {/* Hero Section */}
@@ -647,14 +647,14 @@ const InfestWebsite = () => {
           >
             <source src="/assets/vidio/background_vidio.webm" type="video/webm" />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#2652C8]/40 via-[#142f8a]/60 to-[#0a1848] -z-10" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1e40af]/32 via-[#1e3a8a]/58 to-[#0f172a]/96 -z-10" />
         </div>
 
         {/* Vignette Overlay */}
         <div
           className="absolute inset-0 -z-10 pointer-events-none select-none opacity-8"
           style={{
-            backgroundImage: `radial-gradient(circle at 50% 50%, transparent 40%, rgba(10, 24, 72, 0.6) 100%)`,
+            backgroundImage: `radial-gradient(ellipse 120% 100% at 50% 50%, transparent 38%, rgba(15, 23, 42, 0.58) 100%)`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "100% 100%"
           }}
@@ -708,7 +708,7 @@ const InfestWebsite = () => {
                       key={index}
                       className="inline-block"
                       style={{
-                        backgroundImage: "linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(255, 235, 150) 30%, rgb(253, 208, 38) 70%, rgb(255, 220, 80) 100%)",
+                        backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)",
                         WebkitBackgroundClip: "text",
                         backgroundClip: "text",
                         color: "transparent"
@@ -722,16 +722,18 @@ const InfestWebsite = () => {
             </h1>
 
             <p className="text-sm md:text-xl lg:text-2xl leading-relaxed mx-auto text-center font-medium drop-shadow-md text-pretty font-serif italic mt-3 md:mt-10 px-2 md:px-16 lg:px-32" style={{ color: "#F5F0E1" }}>
-              Infest (Informatics Festival) XI 2025 is the biggest tech event in Aceh, bringing together students, professionals, and digital creators in one vibrant arena. Carrying the theme <span className="font-bold not-italic" style={{ backgroundImage: "linear-gradient(to bottom, rgb(255, 255, 255) 0%, rgb(255, 235, 150) 30%, rgb(253, 208, 38) 70%, rgb(255, 220, 80) 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>&quot;Synthera: Creating a Harmonized, Intelligent, and Innovative Digital Ecosystem&quot;</span>, INFEST is more than a competition, it&apos;s a movement to shape the future through innovation, collaboration, and real-world impact.
+              Infest (Informatics Festival) XI 2025 is the biggest tech event in Aceh, bringing together students, professionals, and digital creators in one vibrant arena. Carrying the theme <span className="font-bold not-italic" style={{ backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>&quot;Synthera: Creating a Harmonized, Intelligent, and Innovative Digital Ecosystem&quot;</span>, INFEST is more than a competition, it&apos;s a movement to shape the future through innovation, collaboration, and real-world impact.
             </p>
           </div>
         </div>
       </section>
 
+      {/* Non-Hero Sections — shared background */}
+      <div style={{ background: "radial-gradient(ellipse at 50% 18%, #2563eb 0%, #1d4ed8 28%, #1e3a8a 58%, #020a1c 100%)" }}>
+
       {/* 3D Marquee Section */}
       <section
         className="second-section py-8 md:py-20 relative overflow-x-clip overflow-y-visible z-10 lg:min-h-screen lg:flex lg:items-center lg:justify-center"
-        style={{ background: "radial-gradient(circle at 50% 50%, #2652c8 0%, #050d24 100%)" }}
       >
         {/* Decorative Doll Graphic */}
         <div className="hidden md:block absolute right-0 top-0 w-[240px] sm:w-[320px] md:w-[420px] lg:w-[500px] h-[240px] sm:h-[320px] md:h-[420px] lg:h-[500px] pointer-events-none z-[99] opacity-100 select-none"
@@ -747,8 +749,9 @@ const InfestWebsite = () => {
 
         {/* Background Layer */}
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-          <div className="absolute top-[10%] left-[20%] w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px]" />
-          <div className="absolute bottom-[10%] right-[20%] w-[450px] h-[450px] bg-purple-700/10 rounded-full blur-[120px]" />
+          <div className="absolute top-[5%] left-[12%] w-[520px] h-[520px] bg-[#3b82f6]/18 rounded-full blur-[110px]" />
+          <div className="absolute bottom-[5%] right-[12%] w-[520px] h-[520px] bg-[#2563eb]/14 rounded-full blur-[120px]" />
+          <div className="absolute top-[40%] left-[45%] w-[300px] h-[300px] bg-[#60A5FA]/8 rounded-full blur-[80px]" />
 
           <svg className="absolute inset-0 w-full h-full opacity-[0.08] stroke-white" fill="none" viewBox="0 0 1440 800" xmlns="http://www.w3.org/2000/svg">
             <path d="M0,200 C300,100 600,400 900,150 C1200,-100 1300,300 1440,250" strokeWidth="2" strokeDasharray="5 5" />
@@ -774,15 +777,15 @@ const InfestWebsite = () => {
              }}>
           <div className="flex flex-col gap-12 w-[2800px] shrink-0 transform-3d items-start"
                style={{ transform: "rotateY(65deg)", transformOrigin: "left center" }}>
-            <div className="animate-marquee-3d-left flex gap-12 text-[64px] md:text-[88px] lg:text-[110px] xl:text-[128px] font-black font-clash-display tracking-widest text-white/30 uppercase whitespace-nowrap"
-                 style={{ textShadow: "0 0 25px rgba(255, 255, 255, 0.45), 0 0 50px rgba(255, 255, 255, 0.2)" }}>
-              <span>INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA •</span>
-              <span>INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA •</span>
+            <div className="animate-marquee-3d-left flex text-[64px] md:text-[88px] lg:text-[110px] xl:text-[128px] font-black font-clash-display tracking-widest text-white/28 uppercase whitespace-nowrap"
+                 style={{ textShadow: "0 0 22px rgba(147,197,253,0.52), 0 0 45px rgba(96,165,250,0.28)" }}>
+              <span>INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • </span>
+              <span>INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • </span>
             </div>
-            <div className="animate-marquee-3d-left-slow flex gap-12 text-[44px] md:text-[60px] lg:text-[76px] xl:text-[88px] font-black font-clash-display tracking-widest text-white/18 uppercase whitespace-nowrap"
-                 style={{ textShadow: "0 0 15px rgba(255, 255, 255, 0.25), 0 0 35px rgba(255, 255, 255, 0.1)" }}>
-              <span>CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT •</span>
-              <span>CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT •</span>
+            <div className="animate-marquee-3d-left-slow flex text-[44px] md:text-[60px] lg:text-[76px] xl:text-[88px] font-black font-clash-display tracking-widest text-white/16 uppercase whitespace-nowrap"
+                 style={{ textShadow: "0 0 14px rgba(147,197,253,0.30), 0 0 30px rgba(96,165,250,0.15)" }}>
+              <span>CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • </span>
+              <span>CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • </span>
             </div>
           </div>
         </div>
@@ -797,15 +800,15 @@ const InfestWebsite = () => {
              }}>
           <div className="flex flex-col gap-12 w-[2800px] shrink-0 transform-3d ml-auto items-start"
                style={{ transform: "rotateY(-48deg)", transformOrigin: "right center" }}>
-            <div className="animate-marquee-3d-right flex gap-12 text-[72px] md:text-[96px] lg:text-[120px] xl:text-[144px] font-black font-clash-display tracking-widest text-white/30 uppercase whitespace-nowrap"
-                 style={{ textShadow: "0 0 25px rgba(255, 255, 255, 0.45), 0 0 50px rgba(255, 255, 255, 0.2)" }}>
-              <span>JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION •</span>
-              <span>JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION •</span>
+            <div className="animate-marquee-3d-right flex text-[64px] md:text-[88px] lg:text-[110px] xl:text-[128px] font-black font-clash-display tracking-widest text-white/28 uppercase whitespace-nowrap"
+                 style={{ textShadow: "0 0 22px rgba(147,197,253,0.52), 0 0 45px rgba(96,165,250,0.28)" }}>
+              <span>JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • </span>
+              <span>JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • </span>
             </div>
-            <div className="animate-marquee-3d-right-slow flex gap-12 text-[48px] md:text-[68px] lg:text-[84px] xl:text-[98px] font-black font-clash-display tracking-widest text-white/18 uppercase whitespace-nowrap"
-                 style={{ textShadow: "0 0 15px rgba(255, 255, 255, 0.25), 0 0 35px rgba(255, 255, 255, 0.1)" }}>
-              <span>DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN •</span>
-              <span>DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN •</span>
+            <div className="animate-marquee-3d-right-slow flex text-[44px] md:text-[60px] lg:text-[76px] xl:text-[88px] font-black font-clash-display tracking-widest text-white/16 uppercase whitespace-nowrap"
+                 style={{ textShadow: "0 0 14px rgba(147,197,253,0.30), 0 0 30px rgba(96,165,250,0.15)" }}>
+              <span>DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • </span>
+              <span>DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • </span>
             </div>
           </div>
         </div>
@@ -865,11 +868,10 @@ const InfestWebsite = () => {
         <section
           id="timeline"
           className="w-full relative overflow-visible pt-16 pb-12 z-10"
-          style={{ background: "radial-gradient(circle at 50% 50%, #2652c8 0%, #04081c 100%)" }}
         >
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-            <div className="absolute top-[30%] left-[10%] w-[350px] h-[350px] bg-purple-600/8 rounded-full blur-[100px]" />
-            <div className="absolute bottom-[20%] right-[15%] w-[400px] h-[400px] bg-indigo-500/8 rounded-full blur-[110px]" />
+            <div className="absolute top-[25%] left-[8%] w-[400px] h-[400px] bg-[#2563eb]/14 rounded-full blur-[105px]" />
+            <div className="absolute bottom-[15%] right-[12%] w-[450px] h-[450px] bg-[#3b82f6]/10 rounded-full blur-[115px]" />
 
             <svg className="absolute inset-0 w-full h-full opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
               <defs>
@@ -903,11 +905,10 @@ const InfestWebsite = () => {
         <section
           id="competition"
           className="w-full pt-10 md:pt-16 pb-10 md:pb-20 px-3 md:px-6 lg:px-8 relative overflow-visible z-10"
-          style={{ background: "radial-gradient(circle at 50% 50%, #2652c8 0%, #020a1c 100%)" }}
         >
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-            <div className="absolute top-[10%] right-[10%] w-[450px] h-[450px] bg-cyan-600/10 rounded-full blur-[120px]" />
-            <div className="absolute bottom-[10%] left-[10%] w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[100px]" />
+            <div className="absolute top-[8%] right-[8%] w-[500px] h-[500px] bg-[#3b82f6]/16 rounded-full blur-[120px]" />
+            <div className="absolute bottom-[8%] left-[8%] w-[460px] h-[460px] bg-[#2563eb]/13 rounded-full blur-[105px]" />
 
             <svg className="absolute inset-0 w-full h-full opacity-[0.07]" xmlns="http://www.w3.org/2000/svg">
               <circle cx="200" cy="300" r="150" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1" strokeDasharray="4 8" />
@@ -955,10 +956,10 @@ const InfestWebsite = () => {
             {/* Prize Pool Card */}
             <div className="prize-pool-card w-full text-center">
               <div
-                className="border border-[#FDD026]/20 p-5 md:p-12 rounded-[20px] md:rounded-[28px] backdrop-blur-md shadow-[0_8px_32px_rgba(255,255,255,0.08),0_0_15px_rgba(255,255,255,0.12)] hover:border-[#FDD026]/40 hover:shadow-[0_12px_48px_rgba(255,255,255,0.15),0_0_25px_rgba(255,255,255,0.22)] transition-all duration-500 relative overflow-hidden group"
+                className="border border-[#FDD026]/28 p-5 md:p-12 rounded-[20px] md:rounded-[28px] backdrop-blur-xl shadow-[0_20px_60px_-12px_rgba(0,0,0,0.4),0_0_0_1px_rgba(253,208,38,0.10),inset_0_1px_0_rgba(255,255,255,0.12)] hover:border-[#FDD026]/46 hover:shadow-[0_28px_80px_-12px_rgba(253,208,38,0.18),0_0_0_1px_rgba(253,208,38,0.22),inset_0_1px_0_rgba(255,255,255,0.18)] transition-all duration-500 relative overflow-hidden group"
                 style={{
-                  background: "linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01)), rgba(255, 255, 255, 0.03)",
-                  WebkitBackdropFilter: "blur(32px)"
+                  background: "linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04)), rgba(30,58,138,0.14)",
+                  WebkitBackdropFilter: "blur(40px)"
                 }}
               >
                 <div className="absolute inset-0 noise-texture opacity-[0.015] pointer-events-none mix-blend-overlay" />
@@ -1003,7 +1004,7 @@ const InfestWebsite = () => {
                     <span
                       className="relative z-10 inline-block font-mono font-serif"
                       style={{
-                        backgroundImage: "linear-gradient(to bottom, #B58A00 0%, #FFFFFF 50%, #FACC15 100%)",
+                        backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)",
                         WebkitBackgroundClip: "text",
                         backgroundClip: "text",
                         color: "transparent",
@@ -1101,11 +1102,10 @@ const InfestWebsite = () => {
         <section
           id="seminar"
           className="w-full py-16 md:py-28 px-3 md:px-6 lg:px-8 relative overflow-hidden flex flex-col items-center justify-center min-h-[80vh] md:min-h-screen"
-          style={{ background: "radial-gradient(circle at 50% 50%, #2652c8 0%, #030714 100%)" }}
         >
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-            <div className="absolute top-[20%] left-[20%] w-[380px] h-[380px] bg-[#00d4ff]/8 rounded-full blur-[110px]" />
-            <div className="absolute bottom-[20%] right-[20%] w-[420px] h-[420px] bg-[#ffc82c]/4 rounded-full blur-[140px]" />
+            <div className="absolute top-[18%] left-[18%] w-[420px] h-[420px] bg-[#3b82f6]/14 rounded-full blur-[115px]" />
+            <div className="absolute bottom-[18%] right-[18%] w-[460px] h-[460px] bg-[#FDD026]/5 rounded-full blur-[145px]" />
 
             <svg className="absolute inset-0 w-full h-full opacity-[0.08]" xmlns="http://www.w3.org/2000/svg">
               <path d="M100,100 Q150,50 250,150 T400,200 T600,100 T900,300" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
@@ -1132,9 +1132,9 @@ const InfestWebsite = () => {
 
           {/* HUD rings */}
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-            <div className="w-[240px] h-[240px] md:w-[420px] md:h-[420px] rounded-full border border-[#00d4ff]/10 border-dashed animate-spin" style={{ animationDuration: "60s" }} />
-            <div className="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full border border-[#00d4ff]/5 animate-spin" style={{ animationDuration: "120s", animationDirection: "reverse" }} />
-            <div className="absolute w-[360px] h-[360px] md:w-[580px] md:h-[580px] rounded-full border border-[#ffc82c]/5 border-dotted animate-pulse" />
+            <div className="w-[240px] h-[240px] md:w-[420px] md:h-[420px] rounded-full border border-[#60A5FA]/14 border-dashed animate-spin" style={{ animationDuration: "60s" }} />
+            <div className="absolute w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full border border-[#60A5FA]/8 animate-spin" style={{ animationDuration: "120s", animationDirection: "reverse" }} />
+            <div className="absolute w-[360px] h-[360px] md:w-[580px] md:h-[580px] rounded-full border border-[#FDD026]/6 border-dotted animate-pulse" />
           </div>
 
           <div className="w-full flex flex-col items-center justify-center gap-5 md:gap-8 relative z-10">
@@ -1146,12 +1146,12 @@ const InfestWebsite = () => {
               data-aos-duration="1000"
               style={{ animation: "float 6s ease-in-out infinite" }}
             >
-              <div className="absolute -inset-1.5 bg-gradient-to-r from-[#00d4ff] via-transparent to-[#ffc82c] rounded-[30px] blur-[20px] opacity-20 group-hover:opacity-40 transition-all duration-700 z-0" />
-              <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-1 bg-[#00d4ff]/30 blur-[10px] rounded-full pointer-events-none" />
+              <div className="absolute -inset-2 bg-gradient-to-r from-[#3B82F6] via-transparent to-[#FDD026] rounded-[32px] blur-[24px] opacity-18 group-hover:opacity-35 transition-all duration-700 z-0" />
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-52 h-1.5 bg-[#60A5FA]/35 blur-[12px] rounded-full pointer-events-none" />
 
               <div
-                className="relative w-48 h-48 md:w-72 md:h-72 rounded-[22px] md:rounded-[28px] overflow-hidden border border-[#00d4ff]/20 bg-[#030712]/50 backdrop-blur-md shadow-[0_24px_50px_rgba(0,0,0,0.6),inset_0_1px_2px_rgba(255,255,255,0.1)] transition-all duration-500 flex items-center justify-center p-2.5 md:p-3"
-                style={{ boxShadow: "0 24px 50px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.1), 0 0 30px rgba(0,212,255,0.1)" }}
+                className="relative w-48 h-48 md:w-72 md:h-72 rounded-[22px] md:rounded-[28px] overflow-hidden border border-[#FDD026]/32 bg-[#0f172a]/55 backdrop-blur-xl transition-all duration-500 flex items-center justify-center p-2.5 md:p-3"
+                style={{ boxShadow: "0 28px 60px rgba(0,0,0,0.62), 0 0 0 1px rgba(253,208,38,0.12), inset 0 1px 0 rgba(255,255,255,0.12), 0 0 35px rgba(253,208,38,0.10)" }}
               >
                 <div className="relative w-full h-full rounded-[20px] overflow-hidden bg-black/40">
                   <Image
@@ -1161,7 +1161,7 @@ const InfestWebsite = () => {
                     loading="lazy"
                     className="object-cover object-center transition-all duration-700 ease-out grayscale brightness-[0.2] contrast-[1.2] group-hover:scale-105 group-hover:brightness-[0.4]"
                   />
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,#030712_95%)] z-10" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_38%,#0f172a_95%)] z-10" />
 
                   <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
                     <span
@@ -1172,22 +1172,22 @@ const InfestWebsite = () => {
                     </span>
                   </div>
 
-                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#00d4ff10_1px,transparent_1px),linear-gradient(to_bottom,#00d4ff10_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none z-10" />
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(96,165,250,0.07)_1px,transparent_1px),linear-gradient(to_bottom,rgba(96,165,250,0.07)_1px,transparent_1px)] bg-[size:18px_18px] pointer-events-none z-10" />
                 </div>
 
-                <div className="absolute bottom-0 inset-x-8 h-[2px] bg-gradient-to-r from-transparent via-[#00d4ff] to-transparent opacity-60 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute bottom-0 inset-x-8 h-[2px] bg-gradient-to-r from-transparent via-[#FDD026] to-transparent opacity-65 group-hover:opacity-100 transition-opacity" />
               </div>
 
               {/* Orbiting particles */}
               <div className="absolute inset-0 pointer-events-none z-20">
-                <div className="absolute w-2 h-2 rounded-full bg-[#00d4ff] blur-[1px] shadow-[0_0_8px_#00d4ff]" style={{ animation: "orbit-cw 12s linear infinite" }} />
-                <div className="absolute w-1.5 h-1.5 rounded-full bg-[#ffc82c] blur-[1px] shadow-[0_0_8px_#ffc82c]" style={{ animation: "orbit-ccw 16s linear infinite" }} />
+                <div className="absolute w-2 h-2 rounded-full bg-[#60A5FA] blur-[1px] shadow-[0_0_10px_rgba(96,165,250,0.9)]" style={{ animation: "orbit-cw 12s linear infinite" }} />
+                <div className="absolute w-1.5 h-1.5 rounded-full bg-[#FDD026] blur-[1px] shadow-[0_0_10px_rgba(253,208,38,0.85)]" style={{ animation: "orbit-ccw 16s linear infinite" }} />
               </div>
             </div>
 
             {/* Text Section */}
             <div
-              className="max-w-2xl text-center p-4 md:p-8 rounded-xl md:rounded-2xl bg-white/[0.01] border border-white/[0.03] backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.02)] z-10 flex flex-col items-center gap-3 md:gap-4"
+              className="max-w-2xl text-center p-4 md:p-8 rounded-xl md:rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.03] border border-[#FDD026]/22 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.45),0_0_0_1px_rgba(253,208,38,0.08),inset_0_1px_0_rgba(255,255,255,0.12)] z-10 flex flex-col items-center gap-3 md:gap-4"
               data-aos="fade-up"
               data-aos-delay="300"
             >
@@ -1195,12 +1195,12 @@ const InfestWebsite = () => {
                 <span className="flex items-baseline justify-center">
                   <span className="font-imperial-script text-[#FDD026] text-4xl md:text-8xl lg:text-[9rem] leading-none select-none font-normal translate-y-[0.05em] mr-0.5 md:mr-1">N</span>
                   <span className="font-clash-display tracking-widest text-white leading-none text-xl md:text-5xl lg:text-6xl font-extrabold uppercase mr-2 md:mr-4">ational</span>
-                  <span className="font-imperial-script text-[#00d4ff] text-4xl md:text-8xl lg:text-[9rem] leading-none select-none font-normal translate-y-[0.05em] mr-0.5 md:mr-1">S</span>
+                  <span className="font-imperial-script text-[#93C5FD] text-4xl md:text-8xl lg:text-[9rem] leading-none select-none font-normal translate-y-[0.05em] mr-0.5 md:mr-1">S</span>
                   <span className="font-clash-display tracking-widest text-white leading-none text-xl md:text-5xl lg:text-6xl font-extrabold uppercase">eminar</span>
                 </span>
                 <span className="flex items-baseline justify-center -mt-3 lg:-mt-6">
                   <span className="font-clash-display tracking-widest text-[#f5f7fa] leading-none text-lg md:text-4xl lg:text-5xl font-bold uppercase mr-1.5 md:mr-3">on</span>
-                  <span className="font-imperial-script text-[#ffc82c] text-3xl md:text-7xl lg:text-[7.5rem] leading-none select-none font-normal translate-y-[0.05em] mr-0.5 md:mr-1">C</span>
+                  <span className="font-imperial-script text-[#FDD026] text-3xl md:text-7xl lg:text-[7.5rem] leading-none select-none font-normal translate-y-[0.05em] mr-0.5 md:mr-1">C</span>
                   <span className="font-clash-display tracking-widest text-[#f5f7fa] leading-none text-lg md:text-4xl lg:text-5xl font-bold uppercase">oming</span>
                 </span>
               </h2>
@@ -1208,14 +1208,16 @@ const InfestWebsite = () => {
                 Join us for an inspiring seminar featuring industry experts sharing insights on the latest trends and developments in AI and technology.
               </p>
 
-              <div className="w-48 h-[2px] bg-gradient-to-r from-transparent via-[#00d4ff] to-transparent mx-auto mt-2 relative overflow-hidden">
-                <div className="absolute inset-0 bg-[#00d4ff] blur-[3px]" />
+              <div className="w-48 h-[2px] bg-gradient-to-r from-transparent via-[#60A5FA] to-transparent mx-auto mt-2 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[#93C5FD] blur-[3px]" />
               </div>
             </div>
 
           </div>
         </section>
       </div>
+
+      </div>{/* end shared background wrapper */}
 
     </main>
   );

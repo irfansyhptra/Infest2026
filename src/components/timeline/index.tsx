@@ -22,7 +22,7 @@ export const TimelineCard = ({ children, index, image }: TimelineCardProps) => {
     <motion.article 
       animate={{ y: [0, -12, 0] }}
       transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      className="timeline-card-content bg-white/5 text-white rounded-[28px] md:rounded-[36px] border border-white/10 backdrop-blur-[12px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_0_30px_rgba(255,255,255,0.15),0_0_20px_rgba(167,139,250,0.15)] hover:bg-white/8 hover:border-[#A78BFA]/40 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_0_45px_rgba(255,255,255,0.25),0_0_25px_rgba(167,139,250,0.5)] hover:scale-[1.01] transition-all duration-300 w-full h-[480px] md:h-[530px] flex flex-col justify-between animate-fade-in relative overflow-hidden [&_h3]:text-2xl [&_h3]:md:text-3xl [&_h3]:font-extrabold [&_p]:text-base [&_p]:md:text-lg [&_p]:leading-relaxed"
+      className="timeline-card-content bg-white/5 text-white rounded-[28px] md:rounded-[36px] border border-[#FDD026]/25 backdrop-blur-[12px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_0_30px_rgba(253,208,38,0.08),0_0_0_1px_rgba(253,208,38,0.06)] hover:bg-white/8 hover:border-[#FDD026]/50 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.10),0_0_45px_rgba(253,208,38,0.15),0_0_0_1px_rgba(253,208,38,0.18)] hover:scale-[1.01] transition-all duration-300 w-full h-[480px] md:h-[530px] flex flex-col justify-between animate-fade-in relative overflow-hidden [&_h3]:text-2xl [&_h3]:md:text-3xl [&_h3]:font-extrabold [&_p]:text-base [&_p]:md:text-lg [&_p]:leading-relaxed"
     >
       {/* Decorative soft glowing spot inside the card */}
       <div className="absolute -top-12 -right-12 w-28 h-28 bg-[#A78BFA]/10 rounded-full blur-2xl pointer-events-none" />
@@ -34,7 +34,7 @@ export const TimelineCard = ({ children, index, image }: TimelineCardProps) => {
 
       {/* Card Image Node - Bottom Half with Padding */}
       <div className="w-full px-6 pb-6 pt-2 shrink-0">
-        <div className="w-full h-[150px] md:h-[190px] relative overflow-hidden rounded-[20px] md:rounded-[24px] bg-white/5 border border-white/5 shadow-inner">
+        <div className="w-full h-[150px] md:h-[190px] relative overflow-hidden rounded-[20px] md:rounded-[24px] bg-white/5 border border-[#FDD026]/20 shadow-inner">
           <AnimatePresence mode="wait">
             {image ? (
               <motion.div
@@ -206,15 +206,15 @@ export const Timeline = ({ data }: { data: { title: string; content: React.React
       >
         
         {/* Futuristic Glassmorphism Master Background Container */}
-        <div className="absolute inset-0 bg-white/5 z-0 pointer-events-none overflow-hidden rounded-3xl border border-white/10 backdrop-blur-[12px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_10px_30px_rgba(0,0,0,0.3)]">
-          {/* Subtle neon glow leaks at the top-left and bottom-right */}
-          <div className="absolute -top-24 left-[15%] w-[40vw] h-[30vh] bg-[#22D3EE]/10 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute -bottom-24 right-[25%] w-[35vw] h-[25vh] bg-[#F472B6]/10 rounded-full blur-[80px] pointer-events-none" />
-          
+        <div className="absolute inset-0 bg-white/5 z-0 pointer-events-none overflow-hidden rounded-3xl border border-[#FDD026]/22 backdrop-blur-[12px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_10px_30px_rgba(0,0,0,0.3),0_0_0_1px_rgba(253,208,38,0.06)]">
+          {/* Subtle glow leaks */}
+          <div className="absolute -top-24 left-[15%] w-[40vw] h-[30vh] bg-[#FDD026]/8 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute -bottom-24 right-[25%] w-[35vw] h-[25vh] bg-[#FDD026]/6 rounded-full blur-[80px] pointer-events-none" />
+
           {/* Top edge glowing gradient border highlight */}
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#22D3EE]/30 to-transparent" />
+          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#FDD026]/35 to-transparent" />
           {/* Bottom edge glowing gradient border highlight */}
-          <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#A78BFA]/20 to-transparent" />
+          <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#FDD026]/20 to-transparent" />
         </div>
 
         {/* 1. Header (Title + Subtitle + Mascot - Glowing white text) */}
