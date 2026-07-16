@@ -37,14 +37,17 @@ const TwinklingStar = ({ top, left, delay, size = 2 }: { top: string; left: stri
   />
 );
 
-const FloatingCloud = ({ top, speed = 25, delay = 0, opacity = 0.4 }: { top: string; speed?: number; delay?: number; opacity?: number }) => (
-  <div
-    className="absolute pointer-events-none z-10 cloud-float"
-    style={{ top, opacity, animationDuration: `${speed}s`, animationDelay: `${delay}s` }}
-  >
-    <img src="/assets/svg/pixel-cloud.svg" alt="" aria-hidden="true" className="w-24 md:w-36 h-auto" loading="lazy" />
-  </div>
-);
+const FloatingCloud = ({ top, left, speed = 8, delay = 0, opacity = 0.35, size = "md", flip = false }: { top: string; left: string; speed?: number; delay?: number; opacity?: number; size?: "sm" | "md" | "lg" | "xl"; flip?: boolean }) => {
+  const sizeClass = { sm: "w-28 md:w-40", md: "w-40 md:w-60", lg: "w-56 md:w-80", xl: "w-72 md:w-[28rem]" }[size];
+  return (
+    <div
+      className="absolute pointer-events-none z-0"
+      style={{ top, left, opacity, animation: `cloud-drift ${speed}s ease-in-out ${delay}s infinite` }}
+    >
+      <img src="/assets/svg/awan.webp" alt="" aria-hidden="true" className={`${sizeClass} h-auto`} style={{ transform: flip ? "scaleX(-1)" : undefined }} loading="lazy" />
+    </div>
+  );
+};
 
 // ── Competition Card ──
 
@@ -616,7 +619,7 @@ const InfestWebsite = () => {
   return (
     <main ref={containerRef} id="home" aria-label="Halaman Utama InFest XII 2026" className="w-full min-h-screen text-white relative overflow-x-clip bg-transparent">
 
-      {/* Background twinkles & clouds */}
+      {/* Background twinkles (scroll with page) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <TwinklingStar top="15%" left="10%" delay={0.2} size={3} />
         <TwinklingStar top="25%" left="80%" delay={1.2} size={2} />
@@ -624,10 +627,24 @@ const InfestWebsite = () => {
         <TwinklingStar top="65%" left="15%" delay={2.1} size={2} />
         <TwinklingStar top="75%" left="85%" delay={1.5} size={3} />
         <TwinklingStar top="85%" left="50%" delay={0.8} size={2} />
+      </div>
 
-        <FloatingCloud top="12%" speed={45} delay={0} opacity={0.48} />
-        <FloatingCloud top="35%" speed={60} delay={10} opacity={0.32} />
-        <FloatingCloud top="70%" speed={50} delay={5} opacity={0.40} />
+      {/* Floating clouds — full page height (scrolls with sections), above background, below content */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+        <FloatingCloud top="3%"  left="2%"   speed={4.5} delay={0}   opacity={0.38} size="lg" />
+        <FloatingCloud top="7%"  left="58%"  speed={5.5} delay={1.4} opacity={0.24} size="md" flip />
+        <FloatingCloud top="12%" left="84%"  speed={5}   delay={0.6} opacity={0.30} size="sm" />
+        <FloatingCloud top="19%" left="30%"  speed={6}   delay={2.1} opacity={0.20} size="xl" flip />
+        <FloatingCloud top="27%" left="70%"  speed={4.8} delay={0.9} opacity={0.32} size="md" />
+        <FloatingCloud top="35%" left="6%"   speed={5.8} delay={1.7} opacity={0.26} size="lg" flip />
+        <FloatingCloud top="43%" left="48%"  speed={5.2} delay={0.3} opacity={0.18} size="sm" />
+        <FloatingCloud top="51%" left="80%"  speed={4.5} delay={2.4} opacity={0.34} size="md" flip />
+        <FloatingCloud top="59%" left="22%"  speed={6}   delay={1.1} opacity={0.22} size="xl" />
+        <FloatingCloud top="67%" left="62%"  speed={5}   delay={0.7} opacity={0.28} size="lg" flip />
+        <FloatingCloud top="75%" left="4%"   speed={5.5} delay={1.9} opacity={0.30} size="sm" />
+        <FloatingCloud top="83%" left="44%"  speed={4.8} delay={0.4} opacity={0.20} size="md" flip />
+        <FloatingCloud top="91%" left="78%"  speed={5.2} delay={2.2} opacity={0.32} size="lg" />
+        <FloatingCloud top="97%" left="34%"  speed={5}   delay={1.3} opacity={0.24} size="md" flip />
       </div>
 
       {/* Hero Section */}
@@ -683,23 +700,23 @@ const InfestWebsite = () => {
           </div>
         </div>
 
-        <div className="hero-content w-full z-[99] mt-2 lg:-mt-12 px-2 md:px-8 lg:px-16 flex flex-col items-center justify-center text-center will-change-transform">
+        <div className="hero-content w-full z-[99] -mt-16 md:mt-2 lg:-mt-12 px-2 md:px-8 lg:px-16 flex flex-col items-center justify-center text-center will-change-transform">
           <div
-            className="flex flex-col gap-4 md:gap-6 items-center text-center w-full px-4 md:px-12 lg:px-24"
+            className="flex flex-col gap-4 md:gap-6 items-center text-center w-full px-2 md:px-12 lg:px-24"
             style={{ animation: "hero-fade-in 1s ease-out both" }}
           >
             <h1 className="tracking-tighter leading-none font-astralaga mb-4 flex flex-col items-center select-none w-full font-normal">
-              <span className="flex flex-col sm:flex-row items-center justify-center sm:flex-nowrap sm:whitespace-nowrap gap-y-0.5 sm:gap-y-0 sm:gap-x-2 md:gap-x-4 text-5xl sm:text-6xl md:text-[7.5vw] lg:text-[8.5vw]">
+              <span className="flex flex-col sm:flex-row items-center justify-center sm:flex-nowrap sm:whitespace-nowrap gap-y-0.5 sm:gap-y-0 sm:gap-x-2 md:gap-x-4 text-6xl sm:text-6xl md:text-[7.5vw] lg:text-[8.5vw]">
                 <span className="flex items-center">
-                  <span className="font-imperial-script text-white text-6xl sm:text-7xl md:text-[9vw] lg:text-[10.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-2">I</span>
+                  <span className="font-imperial-script text-white text-7xl sm:text-7xl md:text-[9vw] lg:text-[10.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-2">I</span>
                   <span className="text-white font-normal tracking-tighter">nformatics</span>
                 </span>
                 <span className="flex items-center">
-                  <span className="font-imperial-script text-white text-6xl sm:text-7xl md:text-[9vw] lg:text-[10.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-1.5">F</span>
+                  <span className="font-imperial-script text-white text-7xl sm:text-7xl md:text-[9vw] lg:text-[10.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-1.5">F</span>
                   <span className="text-white font-normal tracking-tighter">estival</span>
                 </span>
               </span>
-              <span className="text-4xl md:text-7xl lg:text-8xl mt-1 md:-mt-4 font-serif font-bold drop-shadow-[0_0_15px_rgba(253,208,38,0.7)] select-all inline-flex items-center justify-center gap-x-[1px] md:gap-x-[2px]">
+              <span className="text-5xl md:text-7xl lg:text-8xl mt-1 md:-mt-4 font-serif font-bold drop-shadow-[0_0_15px_rgba(253,208,38,0.7)] select-all inline-flex items-center justify-center gap-x-[1px] md:gap-x-[2px]">
                 {["X", "I", "I", " ", "2", "0", "2", "6"].map((char, index) => (
                   char === " " ? (
                     <span key={index} className="w-1.5 md:w-2.5" />
@@ -745,6 +762,19 @@ const InfestWebsite = () => {
             className="object-contain object-right-bottom"
             priority
           />
+        </div>
+
+        {/* Decorative Flower Graphic (background element, left side) */}
+        <div className="hidden md:block absolute left-0 top-0 w-[240px] sm:w-[320px] md:w-[420px] lg:w-[500px] h-[240px] sm:h-[320px] md:h-[420px] lg:h-[500px] pointer-events-none z-0 opacity-100 select-none"
+             style={{ transform: "translateY(-100%)" }}>
+          <div className="relative w-full h-full" style={{ animation: "hero-fade-in 1s ease-out both" }}>
+            <img
+              src="/assets/svg/bunga.webp"
+              alt=""
+              aria-hidden="true"
+              className="w-full h-full object-contain object-left-bottom"
+            />
+          </div>
         </div>
 
         {/* Background Layer */}
