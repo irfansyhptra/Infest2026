@@ -2,8 +2,15 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    optimizeCss: true, 
-    optimizePackageImports: ['motion'],
+    optimizeCss: true,
+    optimizePackageImports: [
+      'motion',
+      'gsap',
+      'lucide-react',
+      '@tabler/icons-react',
+      '@mui/material',
+      '@mui/icons-material',
+    ],
   },
   images: {
     remotePatterns: [

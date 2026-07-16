@@ -2,27 +2,49 @@ import type { Metadata } from "next";
 import Head from "next/head";
 import "aos/dist/aos.css";
 import "../app/css/globals.css";
-import { montserrat } from "@/app/fonts/fonts";
+import { montserrat, imperialScript } from "@/app/fonts/fonts";
 import { Header } from "@/components/header";
 import FooterDekstop from "@/components/footer/footerDekstop";
 import FooterMobile from "@/components/footer/footerMobile";
 import NextTopLoader from "nextjs-toploader";
 import LenisProvider from "@/libs/providers/LenisProvider";
 
+const BASE_DESCRIPTION =
+  "InFest XII 2026 adalah acara teknologi terbesar di Aceh, menghadirkan kompetisi UI/UX, Hackathon, dan Data Science berskala nasional, seminar industri, serta pameran inovasi digital mahasiswa Universitas Syiah Kuala.";
+
 export const metadata: Metadata = {
-  title: "Informatics Festival",
-  description:
-    "Informatics Festival (InFest) adalah acara tahunan yang diselenggarakan oleh Jurusan Informatika, Fakultas Matematika dan Ilmu Pengetahuan Alam, Universitas Syiah Kuala (USK). Acara ini bertujuan untuk merayakan dan mempromosikan inovasi dan prestasi di bidang teknologi informasi dan komputer. InFest mencakup berbagai kegiatan menarik seperti kompetisi pemrograman, seminar teknologi, workshop, pameran proyek mahasiswa, serta diskusi panel dengan pakar industri.",
+  title: {
+    default: "Informatics Festival XII 2026 | InFest USK",
+    template: "%s | InFest",
+  },
+  description: BASE_DESCRIPTION,
   verification: {
     google: "U0T6cUdqBUUi0M9Wyr_4nWwR4X5ymHTS5GsUSL8ForI",
   },
   keywords: ["Informatics", "Festival", "Technology", "Innovation", "Infest", "Infest USK", "Infest Unsyiah", "UI/UX", "Hackathon", "Data Science", "Data Sains", "Informatics Festival", "Kompetisi", "Competitions", "National"],
+  openGraph: {
+    title: "Informatics Festival XII 2026 | InFest USK",
+    description: BASE_DESCRIPTION,
+    type: "website",
+    locale: "id_ID",
+    siteName: "InFest USK",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Informatics Festival XII 2026 | InFest USK",
+    description: BASE_DESCRIPTION,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true },
+  },
   icons: {
     icon: ["/favicon.ico?v=4"],
     apple: ["/apple-touch-icon.png?v=4"],
     shortcut: ["apple-touch-icon.png"],
   },
-} as const;
+};
 
 export default function RootLayout({
   children,
@@ -38,9 +60,11 @@ export default function RootLayout({
           name="google-site-verification"
           content={String(metadata.verification?.google) ?? ""}
         />
+        <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://api.fontshare.com" />
       </Head>
       <body
-        className={`${montserrat.className} w-full min-h-screen textured-bg`}
+        className={`${montserrat.className} ${imperialScript.variable} w-full min-h-screen textured-bg`}
       >
         <LenisProvider>
           <NextTopLoader

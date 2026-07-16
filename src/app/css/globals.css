@@ -1,6 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Imbue:opsz,wght@10..100,100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Imperial+Script&display=swap");
 @import url('https://api.fontshare.com/css?f[]=clash-display@200,300,400,500,600,700&display=swap');
 
 @tailwind base;
@@ -34,38 +31,142 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   /* Touch-friendly target for mobile devices */
   .touch-target {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Responsive scrollbar styles */
   .scrollbar-thin {
     scrollbar-width: thin;
   }
-  
+
   .scrollbar-track-transparent {
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   }
-  
+
   /* Custom scrollbar for webkit browsers */
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 3px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Hide scrollbar utility */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Noise texture overlay — shared across sections */
+  .noise-texture {
+    background-image: url('/assets/images/grain.png');
+    background-size: 200px 200px;
+  }
+}
+
+/* ── Page-level entrance animation ── */
+
+@keyframes hero-fade-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Decorative element animations (CSS-only, no JS overhead) ── */
+
+@keyframes star-twinkle {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+@keyframes cloud-float {
+  0% { transform: translateX(-10%); }
+  100% { transform: translateX(110%); }
+}
+
+.star-twinkle {
+  animation: star-twinkle 3s ease-in-out infinite;
+}
+
+.cloud-float {
+  animation: cloud-float linear infinite;
+}
+
+/* ── Keyframes previously in dangerouslySetInnerHTML blocks ── */
+
+@keyframes mobile-marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes nebula-pulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.15); }
+}
+
+@keyframes card-sheen {
+  0% { transform: skewX(-25deg) translateX(-200%); }
+  100% { transform: skewX(-25deg) translateX(200%); }
+}
+
+@keyframes aurora-flow {
+  0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.15; }
+  50% { transform: translateY(-15px) scaleY(1.08); opacity: 0.25; }
+}
+
+@keyframes galaxy-drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(25px, -15px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes orbit-cw {
+  0% { transform: rotate(0deg) translateX(150px) rotate(0deg); }
+  100% { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
+}
+
+@keyframes orbit-ccw {
+  0% { transform: rotate(360deg) translateX(180px) rotate(-360deg); }
+  100% { transform: rotate(0deg) translateX(180px) rotate(0deg); }
+}
+
+@keyframes shimmer-line {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes drift {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(30px, -40px) rotate(180deg); }
+  100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+@media (max-width: 1023px) {
+  .mobile-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: mobile-marquee-scroll 25s infinite linear;
+  }
+  .mobile-marquee-track:hover,
+  .mobile-marquee-track:active {
+    animation-play-state: paused;
   }
 }
 

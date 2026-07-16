@@ -37,7 +37,7 @@ const config: Config = {
         "pixel-game": ["'Clash Display'", "sans-serif"],
         "clash-display": ["'Clash Display'", "sans-serif"],
         "astralaga": ["'Astralaga'", "serif"],
-        "imperial-script": ["'Imperial Script'", "cursive"]
+        "imperial-script": ["var(--font-imperial-script)", "cursive"]
       },
       colors: {  
         "primary": "#001540",      
