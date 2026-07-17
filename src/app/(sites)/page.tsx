@@ -551,7 +551,7 @@ const InfestWebsite = () => {
                WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)"
              }}>
           <div className="flex flex-col gap-12 w-[2800px] shrink-0 transform-3d ml-auto items-start"
-               style={{ transform: "rotateY(-48deg)", transformOrigin: "right center" }}>
+               style={{ transform: "rotateY(-65deg)", transformOrigin: "right center" }}>
             <div className="animate-marquee-3d-right flex text-[64px] md:text-[88px] lg:text-[110px] xl:text-[128px] font-black font-clash-display tracking-widest text-white/28 uppercase whitespace-nowrap"
                  style={{ textShadow: "0 0 22px rgba(147,197,253,0.52), 0 0 45px rgba(96,165,250,0.28)" }}>
               <span>JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • </span>
