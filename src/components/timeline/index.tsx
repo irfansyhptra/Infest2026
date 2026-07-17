@@ -15,10 +15,10 @@ export interface TimelineNode {
 
 type Point = { x: number; y: number };
 
-// ponytail: blends true date-gap spacing with uniform spacing so events that
-// land days apart don't visually collide next to events months apart. Raise
-// toward 1 for pure chronological spacing if nodes ever get more breathing room.
-const TIME_WEIGHT = 0.45;
+// ponytail: uniform spacing so events that
+// land days apart don't visually collide next to events months apart. Set to 0
+// for perfectly uniform spacing so labels never collide and curves are precise.
+const TIME_WEIGHT = 0.0;
 
 /** Normalized [0,1] position per node — `data` must already be date-sorted. */
 const computeTimeFractions = (data: TimelineNode[]): number[] => {
@@ -103,48 +103,108 @@ const Label = ({ node, align }: { node: TimelineNode; align: "left" | "center" }
   </div>
 );
 
-// ── Desktop: horizontal winding road, nodes alternating above / below ──
+// ── Desktop: horizontal serpentine (S-curve) winding road, nodes alternating above / below ──
 
-const DESKTOP_VB = { w: 1200, h: 240 };
+const DESKTOP_VB = { w: 1200, h: 680 };
+
+const computePoints = (data: TimelineNode[], width: number, leftMargin: number, rightMargin: number): Point[] => {
+  const rowSizes = [5, 4, 4];
+  const rowYs = [170, 380, 590];
+  const pts: Point[] = [];
+
+  let currentIndex = 0;
+  rowSizes.forEach((size, rowIndex) => {
+    const isLeftToRight = rowIndex % 2 === 0;
+    const y = rowYs[rowIndex];
+    for (let i = 0; i < size; i++) {
+      if (currentIndex >= data.length) break;
+      const t = size > 1 ? i / (size - 1) : 0.5;
+      const xFraction = isLeftToRight ? t : 1 - t;
+      const x = leftMargin + xFraction * (width - leftMargin - rightMargin);
+      pts.push({ x, y });
+      currentIndex++;
+    }
+  });
+
+  return pts;
+};
+
+const serpentinePath = (pts: Point[], width: number, leftMargin: number, rightMargin: number): string => {
+  if (pts.length === 0) return "";
+  let d = `M ${pts[0].x},${pts[0].y}`;
+  const rowSizes = [5, 4, 4];
+  const bulge = 75; // turnaround radius fits 100px margins perfectly without clipping
+
+  // Row 0: index 0 to 4
+  for (let i = 1; i < rowSizes[0]; i++) {
+    d += ` L ${pts[i].x},${pts[i].y}`;
+  }
+  // Turnaround 1: Node 4 to Node 5
+  if (pts.length > 5) {
+    const p4 = pts[4];
+    const p5 = pts[5];
+    d += ` C ${p4.x + bulge},${p4.y} ${p5.x + bulge},${p5.y} ${p5.x},${p5.y}`;
+  }
+
+  // Row 1: index 5 to 8
+  const row1End = Math.min(pts.length - 1, 8);
+  for (let i = 6; i <= row1End; i++) {
+    d += ` L ${pts[i].x},${pts[i].y}`;
+  }
+  // Turnaround 2: Node 8 to Node 9
+  if (pts.length > 9) {
+    const p8 = pts[8];
+    const p9 = pts[9];
+    d += ` C ${p8.x - bulge},${p8.y} ${p9.x - bulge},${p9.y} ${p9.x},${p9.y}`;
+  }
+
+  // Row 2: index 9 to 12
+  const row2End = Math.min(pts.length - 1, 12);
+  for (let i = 10; i <= row2End; i++) {
+    d += ` L ${pts[i].x},${pts[i].y}`;
+  }
+
+  return d;
+};
 
 const DesktopTimeline = ({ data }: { data: TimelineNode[] }) => {
-  const t = computeTimeFractions(data);
-  const midY = DESKTOP_VB.h / 2;
-  const amp = 62;
-  // Even nodes ride the crest, odd nodes the trough.
-  const nodeY = (i: number) => midY + (i % 2 === 0 ? -amp : amp);
-  const margin = DESKTOP_VB.w * 0.06;
-  const nodeX = (i: number) => margin + t[i] * (DESKTOP_VB.w - margin * 2);
-  const pts: Point[] = data.map((_, i) => ({ x: nodeX(i), y: nodeY(i) }));
-  const path = windingPath(
-    [
-      { x: -margin / 2, y: nodeY(data.length) },
-      ...pts,
-      { x: DESKTOP_VB.w + margin / 2, y: nodeY(data.length + 1) },
-    ],
-    "x"
-  );
+  const leftMargin = 100; // Left turnaround margin
+  const rightMargin = 100; // Right turnaround margin
+  const pathPts = computePoints(data, DESKTOP_VB.w, leftMargin, rightMargin);
+  const path = serpentinePath(pathPts, DESKTOP_VB.w, leftMargin, rightMargin);
+
+  // Position points: Shift the 6th mark (index 5) left and the 10th mark (index 9) right along the road path
+  const nodePts = pathPts.map((pt, i) => {
+    if (i === 5) {
+      const xFraction = 0.90;
+      const x = leftMargin + xFraction * (DESKTOP_VB.w - leftMargin - rightMargin);
+      return { ...pt, x };
+    }
+    if (i === 9) {
+      const xFraction = 0.10;
+      const x = leftMargin + xFraction * (DESKTOP_VB.w - leftMargin - rightMargin);
+      return { ...pt, x };
+    }
+    return pt;
+  });
 
   return (
-    <div className="relative hidden h-[460px] w-full md:block">
-      <div className="absolute inset-x-0 top-1/2 h-[240px] -translate-y-1/2">
+    <div className="relative hidden h-[740px] w-full md:block select-none">
+      <div className="absolute left-0 top-1/2 h-[680px] -translate-y-1/2 w-full">
         <Road d={path} viewBox={`0 0 ${DESKTOP_VB.w} ${DESKTOP_VB.h}`} gradientId="timeline-road-desktop" />
 
         {data.map((node, i) => {
-          const above = i % 2 === 0;
           return (
             <div
               key={node.title}
               className="group absolute h-0 w-0"
-              style={{ left: `${(pts[i].x / DESKTOP_VB.w) * 100}%`, top: `${(pts[i].y / DESKTOP_VB.h) * 100}%` }}
+              style={{ left: `${(nodePts[i].x / DESKTOP_VB.w) * 100}%`, top: `${(nodePts[i].y / DESKTOP_VB.h) * 100}%` }}
             >
               <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2">
                 <Pin node={node} />
               </div>
               <div
-                className={`absolute left-0 w-44 -translate-x-1/2 lg:w-52 ${
-                  above ? "bottom-[52px]" : "top-[52px]"
-                }`}
+                className="absolute left-0 w-44 -translate-x-1/2 lg:w-52 bottom-[36px]"
               >
                 <Label node={node} align="center" />
               </div>
@@ -170,8 +230,9 @@ const MobileTimeline = ({ data }: { data: TimelineNode[] }) => {
   // Path hugs the left so the label column stays wide enough to stay compact.
   const nodeX = (i: number) => (i % 2 === 0 ? 10 : 24);
   const pts: Point[] = data.map((_, i) => ({ x: nodeX(i), y: nodeY(i) }));
+  // Centered start and end coordinates at x: 17 for clean vertical alignment
   const path = windingPath(
-    [{ x: nodeX(data.length + 1), y: 0 }, ...pts, { x: nodeX(data.length), y: vbH }],
+    [{ x: 17, y: 0 }, ...pts, { x: 17, y: vbH }],
     "y"
   );
 
@@ -202,7 +263,7 @@ const MobileTimeline = ({ data }: { data: TimelineNode[] }) => {
 };
 
 export const Timeline = ({ data }: { data: TimelineNode[] }) => (
-  <section className="w-full px-4 py-10 sm:px-8 md:px-16 md:py-16 lg:px-24 xl:px-32">
+  <section className="w-full px-4 pt-6 pb-10 sm:px-8 md:px-16 md:pt-10 md:pb-16 lg:px-24 xl:px-32">
     <div className="mb-8 text-center md:mb-12">
       <h2 className="flex items-baseline justify-center select-none text-balance">
         <span className="font-imperial-script translate-y-[0.05em] text-5xl font-normal leading-none text-white md:text-8xl">

@@ -60,16 +60,16 @@ export const FAQSection = () => {
 
   const faqs = [
     {
-      question: "Apa itu Informatics Festival (InFest) XI 2025?",
-      answer: "Informatics Festival (InFest) XI 2025 adalah festival teknologi tahunan terbesar di Aceh yang diselenggarakan oleh Himpunan Mahasiswa Informatika (HMIF) Universitas Syiah Kuala. Acara ini mewadahi pelajar, mahasiswa, dan profesional untuk berinovasi dan berkompetisi di bidang teknologi informasi.",
+      question: "Apa itu Informatics Festival (InFest) XII 2026?",
+      answer: "Informatics Festival (InFest) XII 2026 adalah festival teknologi tahunan terbesar di Aceh yang diselenggarakan oleh Himpunan Mahasiswa Informatika (HMIF) Universitas Syiah Kuala. Acara ini mewadahi pelajar, mahasiswa, dan profesional untuk berinovasi dan berkompetisi di bidang teknologi informasi.",
     },
     {
-      question: "Kompetisi apa saja yang diselenggarakan pada InFest XI?",
+      question: "Kompetisi apa saja yang diselenggarakan pada InFest XII?",
       answer: "Ada tiga kompetisi utama pada tahun ini: UI/UX Design (tingkat universitas, individu/tim 1-3 orang), Hackathon (intensif coding 20+ jam untuk membuat solusi teknologi, tim 2-3 orang), dan Data Science (analisis data dan machine learning, tim 2-3 orang).",
     },
     {
       question: "Apakah kompetisi ini berskala nasional?",
-      answer: "Ya, seluruh kompetisi yang diselenggarakan di InFest XI bersifat Nasional dan dapat diikuti oleh mahasiswa aktif dari seluruh perguruan tinggi di Indonesia.",
+      answer: "Ya, seluruh kompetisi yang diselenggarakan di InFest XII bersifat Nasional dan dapat diikuti oleh mahasiswa aktif dari seluruh perguruan tinggi di Indonesia.",
     },
     {
       question: "Bagaimana cara melakukan pendaftaran kompetisi?",
@@ -81,7 +81,7 @@ export const FAQSection = () => {
     },
     {
       question: "Di mana Seminar Nasional diselenggarakan dan siapa saja pembicaranya?",
-      answer: "Seminar Nasional diselenggarakan secara offline di Auditorium FMIPA Universitas Syiah Kuala (USK) pada hari Minggu, 19 Oktober 2025. Pembicara yang dihadirkan merupakan pakar di bidang teknologi dan AI dari industri terkemuka.",
+      answer: "Seminar Nasional diselenggarakan secara offline di Auditorium FMIPA Universitas Syiah Kuala (USK) pada hari Minggu, 25 Oktober 2026. Pembicara yang dihadirkan merupakan pakar di bidang teknologi dan AI dari industri terkemuka.",
     },
   ];
 
@@ -98,7 +98,7 @@ export const FAQSection = () => {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#2596BE] via-[#FDD026] to-[#2596BE] mx-auto rounded-full"></div>
           <p className="text-white/60 text-xs md:text-sm mt-4">
-            Temukan jawaban atas pertanyaan umum seputar pelaksanaan event, kompetisi, dan registrasi InFest XI 2025.
+            Temukan jawaban atas pertanyaan umum seputar pelaksanaan event, kompetisi, dan registrasi InFest XII 2026.
           </p>
         </div>
         

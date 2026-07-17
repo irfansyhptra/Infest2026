@@ -6,6 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { authService } from "@/libs/services/authService";
 import { scrollIntoSection } from "@/libs/helpers/scrollIntoSection";
 import { motion, AnimatePresence } from "framer-motion";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 import { montserrat, dm_serif_display } from "@/app/fonts/fonts";
 import dynamic from "next/dynamic";
 
@@ -66,6 +68,29 @@ export const Navbar = () => {
   const isManualScrollRef = useRef(false);
   const dockRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const headerRef = useRef<HTMLElement>(null);
+
+  // Fase 3 of the page's load sequence: desktop navbar slides in only after
+  // the hero entrance (page.tsx) reports it has finished, so they never
+  // visually compete. Falls back to a timed reveal if that event never
+  // arrives (e.g. hero timeline errors out) — nav must not stay hidden.
+  useGSAP(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    gsap.set(el, { y: "-100%", opacity: 0 });
+    let revealed = false;
+    const reveal = () => {
+      if (revealed) return;
+      revealed = true;
+      gsap.to(el, { y: "0%", opacity: 1, duration: 0.9, ease: "power3.out" });
+    };
+    window.addEventListener("infest:hero-ready", reveal, { once: true });
+    const fallback = window.setTimeout(reveal, 2500);
+    return () => {
+      window.removeEventListener("infest:hero-ready", reveal);
+      window.clearTimeout(fallback);
+    };
+  }, []);
 
   const navMenuItems = [
     { id: "home", name: "Home", icon: <HomeIcon />, destinationSection: "home" },
@@ -151,10 +176,8 @@ export const Navbar = () => {
   // ─── DESKTOP: Top Bar ───────────────────────────────────────
   if (isDesktop) {
     return (
-      <motion.header
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 90, damping: 15 }}
+      <header
+        ref={headerRef}
         className="fixed top-5 left-0 right-0 mx-auto w-[94%] max-w-7xl z-[100] pointer-events-none"
       >
         <div className="w-full h-20 rounded-full border border-white/10 px-6 md:px-8 flex items-center justify-between backdrop-blur-xl relative overflow-hidden bg-slate-950/40 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.65),inset_0_1px_0px_rgba(255,255,255,0.15)]">
@@ -222,7 +245,7 @@ export const Navbar = () => {
             </button>
           </div>
         </div>
-      </motion.header>
+      </header>
     );
   }
 

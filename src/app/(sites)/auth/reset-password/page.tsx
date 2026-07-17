@@ -329,7 +329,7 @@ function ResetPasswordContent() {
           <div className="mb-8 relative">
             <div className="w-20 h-20 mx-auto mb-4 relative">
               <Image
-                src="/assets/images/Infest 2025 1st Logo Outline.png"
+                src="/assets/images/logo_hero.PNG?v=2"
                 alt="InFest USK Logo"
                 fill
                 className="object-contain filter drop-shadow-[0_0_20px_rgba(242,233,197,0.6)]"
@@ -423,7 +423,7 @@ function ResetPasswordContent() {
       {/* Bottom Info */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center block lg:hidden">
         <p className="text-neutral_01/60 text-sm">
-          Informatics Festival XI 2025
+          Informatics Festival XII 2026
         </p>
         <p className="text-neutral_01/40 text-xs mt-1">Powered by HMIF USK</p>
       </div>

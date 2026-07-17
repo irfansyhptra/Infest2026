@@ -486,7 +486,7 @@ function LoginPageContent() {
             <div className="flex-1 text-center lg:text-left">
               <div className="w-16 h-16 md:w-32 md:h-32 lg:w-40 lg:h-40 mx-auto lg:mx-0 mb-3 md:mb-6 relative">
                 <Image
-                  src="/assets/images/Infest 2025 1st Logo Outline.png"
+                  src="/assets/images/logo_hero.PNG?v=2"
                   alt="Infest USK Logo"
                   fill
                   className="object-contain filter drop-shadow-[0_0_20px_rgba(242,233,197,0.6)] md:drop-shadow-[0_0_30px_rgba(242,233,197,0.8)]"
@@ -506,7 +506,7 @@ function LoginPageContent() {
               {/* Bottom Info - Hidden on mobile to reduce clutter */}
               <div className="text-center lg:text-left hidden md:block">
                 <p className="text-neutral_01/60 text-xs md:text-sm">
-                  Informatics Festival XI 2025
+                  Informatics Festival XII 2026
                 </p>
                 <p className="text-neutral_01/40 text-xs mt-1">
                   Powered by HMIF USK
@@ -728,7 +728,7 @@ function LoginPageContent() {
             </div>
           </div>
         </GlassContainer>
-        a{/* Decorative Elements - Hidden on mobile for cleaner look */}
+        {/* Decorative Elements - Hidden on mobile for cleaner look */}
         <div className="absolute -top-4 -left-4 w-8 h-8 border-l-2 border-t-2 border-neutral_01/30 rounded-tl-xl hidden md:block"></div>
         <div className="absolute -top-4 -right-4 w-8 h-8 border-r-2 border-t-2 border-neutral_01/30 rounded-tr-xl hidden md:block"></div>
         <div className="absolute -bottom-4 -left-4 w-8 h-8 border-l-2 border-b-2 border-neutral_01/30 rounded-bl-xl hidden md:block"></div>
@@ -738,7 +738,7 @@ function LoginPageContent() {
       {/* Bottom Info */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center block lg:hidden">
         <p className="text-neutral_01/60 text-sm">
-          Informatics Festival XI 2025
+          Informatics Festival XII 2026
         </p>
         <p className="text-neutral_01/40 text-xs mt-1">Powered by HMIF USK</p>
       </div>

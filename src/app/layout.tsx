@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Head from "next/head";
-import "aos/dist/aos.css";
 import "../app/css/globals.css";
 import { montserrat, imperialScript } from "@/app/fonts/fonts";
 import { Header } from "@/components/header";
@@ -52,16 +50,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <Head>
-        <title>{String(metadata.title) || ""}</title>
-        <meta name="description" content={metadata.description ?? ""} />
-        <meta
-          name="google-site-verification"
-          content={String(metadata.verification?.google) ?? ""}
-        />
+      <head>
         <link rel="preconnect" href="https://api.fontshare.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://api.fontshare.com" />
-      </Head>
+      </head>
       <body
         className={`${montserrat.className} ${imperialScript.variable} w-full min-h-screen textured-bg`}
       >

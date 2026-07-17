@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import AOS from "aos";
 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -13,8 +12,19 @@ import { useGSAP } from "@gsap/react";
 import { timelineData } from "@/data/timeline";
 import { competitionData } from "@/data/competitions";
 import { cn } from "@/libs/helpers/cn";
+import { LandingLoader } from "@/components/loadingAnimation/LandingLoader";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+// Global, one-time GSAP perf config (module scope — must not re-run per render/mount).
+// lagSmoothing(0): a backgrounded tab / long task no longer makes GSAP "catch up" with
+// a jarring jump on the next tick; every pinned/scrubbed tween just resumes from where
+// it visually is.
+gsap.ticker.lagSmoothing(0);
+// ignoreMobileResize: mobile browsers fire a resize on address-bar show/hide during
+// scroll; without this, ScrollTrigger.refresh() was re-running on every one of those,
+// re-measuring every trigger mid-scroll.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 const Timeline = dynamic(
   () => import("@/components/timeline").then((mod) => ({ default: mod.Timeline })),
@@ -23,9 +33,11 @@ const Timeline = dynamic(
 
 // ── Pure-CSS decorative components (no Framer Motion overhead) ──
 
+// content-visibility:auto pauses each dot's animation while it's off-screen —
+// these 25 instances otherwise animate continuously for the whole scroll session.
 const TwinklingStar = ({ top, left, delay, size = 2 }: { top: string; left: string; delay: number; size?: number }) => (
   <div
-    className="absolute rounded-full bg-white star-twinkle"
+    className="absolute rounded-full bg-white star-twinkle [content-visibility:auto] [contain-intrinsic-size:6px_6px]"
     style={{
       top,
       left,
@@ -41,7 +53,7 @@ const FloatingCloud = ({ top, left, speed = 8, delay = 0, opacity = 0.35, size =
   const sizeClass = { sm: "w-28 md:w-40", md: "w-40 md:w-60", lg: "w-56 md:w-80", xl: "w-72 md:w-[28rem]" }[size];
   return (
     <div
-      className="absolute pointer-events-none z-0"
+      className="absolute pointer-events-none z-0 [content-visibility:auto] [contain-intrinsic-size:300px_200px]"
       style={{ top, left, opacity, animation: `cloud-drift ${speed}s ease-in-out ${delay}s infinite` }}
     >
       <img src="/assets/svg/awan.webp" alt="" aria-hidden="true" className={`${sizeClass} h-auto`} style={{ transform: flip ? "scaleX(-1)" : undefined }} loading="lazy" />
@@ -108,9 +120,10 @@ const CompetitionCard = ({
         <div className={cn("absolute bottom-3 left-3 w-3.5 h-3.5 border-b-[1.5px] border-l-[1.5px] rounded-bl-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/55" : "border-[#60A5FA]/45")} />
         <div className={cn("absolute bottom-3 right-3 w-3.5 h-3.5 border-b-[1.5px] border-r-[1.5px] rounded-br-[3px] pointer-events-none", isFeatured ? "border-[#FDD026]/55" : "border-[#60A5FA]/45")} />
 
-        {/* Shimmer sheen */}
+        {/* Shimmer sheen — animation-play-state stays paused until hovered, so it
+            doesn't tick in the background on every card that's merely on screen. */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-700 [animation-play-state:paused] group-hover:[animation-play-state:running]"
           style={{
             background: "linear-gradient(120deg, transparent, rgba(255,255,255,0.03), transparent)",
             animation: "card-sheen 6s infinite linear"
@@ -202,13 +215,13 @@ const CompetitionCard = ({
 // ── Card data — single source of truth for both desktop & mobile marquee ──
 
 const GALLERY_IMAGES = [
-  "/assets/images/infest-24.webp",
-  "/assets/images/infest-1.webp",
-  "/assets/images/infest-2.webp",
-  "/assets/images/infest-5.webp",
-  "/assets/images/infest-19.webp",
-  "/assets/images/infest-25.webp",
-  "/assets/images/infest-3.webp",
+  "/assets/images/IMG_0877.webp",
+  "/assets/images/IMG_0428.webp",
+  "/assets/images/IMG_2655.webp",
+  "/assets/images/IMG_2781.webp",
+  "/assets/images/IMG_3053.webp",
+  "/assets/images/IMG_3100.webp",
+  "/assets/images/IMG_3169.webp",
 ];
 
 // ── Bento Grid — clean photo tiles, dense flow keeps mobile compact ──
@@ -228,7 +241,7 @@ const BENTO_TILES = [
 const BentoTile = ({ src, span }: { src: string; span: string }) => (
   <div
     className={cn(
-      "bento-item group relative overflow-hidden rounded-xl md:rounded-2xl",
+      "bento-item transform-gpu group relative overflow-hidden rounded-xl md:rounded-2xl",
       "border-2 border-[#FDD026]/60 bg-black/20 shadow-[0_0_12px_rgba(0,0,0,0.5),0_0_16px_rgba(253,208,38,0.35)]",
       "transition-[transform,box-shadow,border-color] duration-500 ease-out hover:z-10 hover:scale-[1.03] hover:border-[#FDD026] hover:shadow-[0_0_12px_rgba(0,0,0,0.5),0_0_28px_rgba(253,208,38,0.65)]",
       span
@@ -247,16 +260,29 @@ const BentoTile = ({ src, span }: { src: string; span: string }) => (
   </div>
 );
 
+// Ease-out cubic: fast start, gentle settle — reads as a deliberate "count up
+// and land" instead of a mechanical linear tick.
+const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
 function usePrizeCounter(target: number, animDuration = 1500) {
-  const [count, setCount] = useState(target);
+  // Starts at 0 (not `target`) — the old initial value of `target` painted the
+  // full number for one frame before the effect reset it to 0, a visible
+  // flash-then-restart glitch on every mount.
+  const [count, setCount] = useState(0);
   useEffect(() => {
-    setCount(0);
     let raf: number;
     let startTs: number | null = null;
+    let lastValue = -1;
     const step = (ts: number) => {
-      if (!startTs) startTs = ts;
+      if (startTs === null) startTs = ts;
       const progress = Math.min((ts - startTs) / animDuration, 1);
-      setCount(Math.floor(progress * target));
+      const next = Math.floor(easeOutCubic(progress) * target);
+      // Skip the setState (and re-render) entirely when the displayed value
+      // hasn't actually changed since the last frame — fewer redundant paints.
+      if (next !== lastValue) {
+        lastValue = next;
+        setCount(next);
+      }
       if (progress < 1) raf = window.requestAnimationFrame(step);
     };
     const observer = new IntersectionObserver(
@@ -274,162 +300,250 @@ function usePrizeCounter(target: number, animDuration = 1500) {
 
 const InfestWebsite = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const prizeCount = usePrizeCounter(22_500_000);
-  const [activeCompCard, setActiveCompCard] = useState(0);
-  const compCarouselRef = useRef<HTMLDivElement>(null);
+  const [isLoaderFinished, setIsLoaderFinished] = useState(false);
+  const prizeCount = usePrizeCounter(20_000_000, 5000);
+  const seminarCardRef = useRef<HTMLDivElement>(null);
+  const seminarTextRef = useRef<HTMLDivElement>(null);
 
   const formatNumber = (num: number) =>
     "IDR " + new Intl.NumberFormat("id-ID").format(num) + "+";
 
+  // Reset scroll to top on mount to avoid ScrollTrigger alignment errors
   useEffect(() => {
-    AOS.init({ duration: 800, once: true });
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      window.scrollTo(0, 0);
+    }
   }, []);
 
-  // Dot tracker for mobile competition carousel
+  // Scroll-into-view reveal for the seminar section — one shared
+  // IntersectionObserver + a CSS transition (.reveal-up), no library.
   useEffect(() => {
-    const container = compCarouselRef.current;
-    if (!container) return;
+    const targets = [seminarCardRef.current, seminarTextRef.current].filter(
+      (el): el is HTMLDivElement => el !== null
+    );
+    if (!targets.length) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { threshold: 0.15 }
+    );
+    targets.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  // While the page is scrolling, skip hover/hit-test paint work on every interactive
+  // element (cards, buttons, links all have hover transitions) by disabling pointer
+  // events on <body> — CSS pointer-events inherits, so this is one class, not N.
+  // Restored 150ms after scrolling actually stops.
+  useEffect(() => {
+    let scrollEndTimer: number;
     const onScroll = () => {
-      const slides = container.querySelectorAll<HTMLElement>(".mobile-comp-slide");
-      const containerLeft = container.getBoundingClientRect().left;
-      let closest = 0;
-      let minDist = Infinity;
-      slides.forEach((slide, i) => {
-        const dist = Math.abs(slide.getBoundingClientRect().left - containerLeft);
-        if (dist < minDist) { minDist = dist; closest = i; }
-      });
-      setActiveCompCard(closest);
+      document.body.classList.add("is-scrolling");
+      window.clearTimeout(scrollEndTimer);
+      scrollEndTimer = window.setTimeout(() => {
+        document.body.classList.remove("is-scrolling");
+      }, 150);
     };
-    container.addEventListener("scroll", onScroll, { passive: true });
-    return () => container.removeEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(scrollEndTimer);
+      document.body.classList.remove("is-scrolling");
+    };
   }, []);
 
   useGSAP(() => {
-    // Prevents mobile momentum scroll from outrunning ScrollTrigger's RAF updates,
-    // which is what caused the pinned hero to feel "stuck" during fast scrolling.
-    ScrollTrigger.normalizeScroll(true);
+    if (!isLoaderFinished) return;
 
     const mm = gsap.matchMedia();
 
-    // Hero / Second Section — Pinned sequential reveal (blur removed from scrub for perf)
-    mm.add("(min-width: 1024px)", () => {
-      const sectionTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".second-section",
-          start: "top top",
-          end: "+=3400",
-          scrub: 0.5,
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
-          fastScrollEnd: true,
-        }
+    // Master timeline — Fase 2: hero entrance. Background (pure CSS on <body>,
+    // .textured-bg) is already painted with zero FOUC before any JS runs, so
+    // there's nothing to sequence for Fase 1. Runs once, autoplay (not
+    // scroll-linked), so it plays immediately on load regardless of scroll.
+    const heroEntrance = gsap.timeline({
+      onComplete: () => {
+        // Fase 3: Navbar. Dispatched only after hero has visually settled, so
+        // the pinned ScrollTrigger below (which force-renders its start state
+        // the instant it's created) never fights the entrance tween for
+        // control of the same opacity/y properties.
+        window.dispatchEvent(new Event("infest:hero-ready"));
+        mountHeroScrollTriggers();
+      },
+    });
+    heroEntrance
+      .fromTo(".marquee-logo",
+        { opacity: 0, scale: 0.85, y: -24 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "power3.out" }
+      )
+      .fromTo(".marquee-tagline",
+        { opacity: 0, y: 28 },
+        { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" },
+        "-=0.35"
+      );
+
+    // Hero / Second Section — Pinned sequential reveal (blur removed from scrub for perf).
+    // Deferred until heroEntrance finishes so its forced initial ScrollTrigger
+    // render (opacity:1/y:0) matches reality instead of stomping mid-entrance.
+    function mountHeroScrollTriggers() {
+      // will-change is only worth its VRAM cost while this pinned sequence is
+      // actually the one being scrubbed — applied on enter, cleared on leave
+      // (both directions), instead of sitting on these elements permanently.
+      const pinnedHeroTargets = ".marquee-tagline, .marquee-logo, .history-cards-container, .memories-heading, .bento-item";
+      const promoteHeroLayer = () => gsap.set(pinnedHeroTargets, { willChange: "transform, opacity" });
+      const releaseHeroLayer = () => gsap.set(pinnedHeroTargets, { willChange: "auto" });
+
+      mm.add("(min-width: 1024px)", () => {
+        const sectionTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".second-section",
+            start: "top top",
+            // Pin duration reduced to +=1800 to eliminate dead scroll area
+            end: "+=1800",
+            scrub: 0.5,
+            pin: true,
+            pinSpacing: true,
+            anticipatePin: 1,
+            fastScrollEnd: true,
+            onEnter: promoteHeroLayer,
+            onEnterBack: promoteHeroLayer,
+            onLeave: releaseHeroLayer,
+            onLeaveBack: releaseHeroLayer,
+          }
+        });
+
+        // Logo + tagline are visible at rest — hold briefly, then fade out on scroll
+        sectionTl.to(".marquee-tagline",
+          { opacity: 0, y: -30, duration: 0.8, ease: "power2.in" },
+          "+=0.4"
+        );
+        sectionTl.to(".marquee-logo",
+          { opacity: 0, scale: 0.8, y: -40, duration: 0.8, ease: "power2.in" },
+          "<"
+        );
+
+        sectionTl.fromTo(".history-cards-container",
+          { scale: 0.95, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.8, ease: "power2.out" },
+          "+=0.1"
+        );
+
+        sectionTl.fromTo(".memories-heading",
+          { opacity: 0, y: 24, scale: 0.92 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: "power2.out" },
+          "<0.1"
+        );
+
+        sectionTl.fromTo(".bento-item",
+          { opacity: 0, y: 40 },
+          { opacity: 1, y: 0, duration: 0.8, stagger: 0.12, ease: "power2.out" },
+          "-=0.3"
+        );
+
+        // Brief hold on the finished grid before the pin releases
+        sectionTl.to({}, { duration: 0.2 });
       });
 
-      // Logo + tagline are visible at rest — hold briefly, then fade out on scroll.
-      // fromTo (not to) because AOS sets these to opacity:0 via stylesheet before
-      // GSAP's layout effect runs; a bare .to() would capture that 0 as its start
-      // value and freeze them invisible forever.
-      sectionTl.fromTo(".marquee-tagline",
-        { opacity: 1, y: 0 },
-        { opacity: 0, y: -30, duration: 1.0, ease: "power2.in" },
-        "+=0.8"
-      );
-      sectionTl.fromTo(".marquee-logo",
-        { opacity: 1, scale: 1, y: 0 },
-        { opacity: 0, scale: 0.8, y: -40, duration: 1.0, ease: "power2.in" },
-        "<"
-      );
+      mm.add("(max-width: 1023px)", () => {
+        const sectionTl = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".second-section",
+            start: "top 85%",
+            end: "bottom 15%",
+            scrub: 0.8,
+            onEnter: promoteHeroLayer,
+            onEnterBack: promoteHeroLayer,
+            onLeave: releaseHeroLayer,
+            onLeaveBack: releaseHeroLayer,
+          }
+        });
 
-      sectionTl.fromTo(".history-cards-container",
-        { scale: 0.95, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 1.0, ease: "power2.out" },
-        "+=0.2"
-      );
+        // Logo + tagline are visible at rest — hold briefly, then crossfade into
+        // the bento grid on scroll. .history-cards-container starts at opacity-0
+        // in the JSX (to avoid a FOUC flash before the loader/entrance timeline
+        // runs) — on mobile nothing else ever reveals it, so without this tween
+        // it stays invisible forever, leaving a dead blank scroll gap.
+        sectionTl.to(".history-intro",
+          { opacity: 0, y: -20, scale: 0.92, duration: 0.6, ease: "power2.in" },
+          "+=0.25"
+        );
 
-      sectionTl.fromTo(".memories-heading",
-        { opacity: 0, y: 24, scale: 0.92 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power2.out" },
-        "<0.15"
-      );
+        sectionTl.fromTo(".history-cards-container",
+          { opacity: 0 },
+          { opacity: 1, duration: 0.6, ease: "power2.out" },
+          "<"
+        );
 
-      sectionTl.fromTo(".bento-item",
-        { opacity: 0, y: 60, scale: 0.92 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.2, stagger: 0.3, ease: "power3.out" },
-        "-=0.4"
-      );
+        sectionTl.fromTo(".memories-heading",
+          { opacity: 0, y: 16, scale: 0.94 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power2.out" },
+          "<0.1"
+        );
 
-      // Hold on the finished grid for a beat before the pin releases,
-      // so the next section doesn't snap in immediately after the cards land.
-      sectionTl.to({}, { duration: 1.2 });
-    });
-
-    mm.add("(max-width: 1023px)", () => {
-      const sectionTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".second-section",
-          start: "top 85%",
-          end: "bottom 15%",
-          scrub: 0.8,
-        }
+        sectionTl.fromTo(".bento-item",
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, stagger: 0.08, duration: 0.7, ease: "power2.out" },
+          "-=0.1"
+        );
       });
 
-      // Logo + tagline are visible at rest — hold briefly, then fade out on scroll
-      sectionTl.to(".history-intro",
-        { opacity: 0, y: -20, scale: 0.92, duration: 0.6, ease: "power2.in" },
-        "+=0.25"
-      );
+      ScrollTrigger.refresh();
+    }
 
-      sectionTl.fromTo(".memories-heading",
-        { opacity: 0, y: 16, scale: 0.94 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power2.out" },
-        "<0.1"
-      );
+    // Competition Section — entrance reveals. Trigger at 95% viewport entry
+    // to ensure they fire reliably even on short scroll containers.
+    const belowHeroScrollOpts = {
+      toggleActions: "play none none reverse",
+    };
 
-      sectionTl.fromTo(".bento-item",
-        { opacity: 0, y: 40, scale: 0.95 },
-        { opacity: 1, y: 0, scale: 1, stagger: 0.12, duration: 0.9, ease: "power3.out" },
-        "-=0.1"
-      );
-    });
-
-    // 7. Competition Section — one-shot reveals (filter OK)
     gsap.fromTo("#competition .section-heading",
-      { opacity: 0, y: 40, filter: "blur(6px)" },
+      { opacity: 0, y: 30 },
       {
-        opacity: 1, y: 0, filter: "blur(0px)",
-        duration: 0.8, ease: "power3.out",
+        opacity: 1, y: 0,
+        duration: 0.7, ease: "power3.out", overwrite: "auto",
         scrollTrigger: {
           trigger: "#competition",
-          start: "top 80%",
-          toggleActions: "play none none none",
+          start: "top 95%",
+          end: "bottom top",
+          ...belowHeroScrollOpts,
         }
       }
     );
 
     gsap.fromTo("#competition .prize-pool-card",
-      { opacity: 0, y: 50, scale: 0.95 },
+      { opacity: 0, y: 40, scale: 0.96 },
       {
         opacity: 1, y: 0, scale: 1,
-        duration: 0.8, ease: "power3.out",
+        duration: 0.7, ease: "power3.out", overwrite: "auto",
         scrollTrigger: {
           trigger: "#competition .prize-pool-card",
-          start: "top 85%",
-          toggleActions: "play none none none",
+          start: "top 95%",
+          end: "bottom top",
+          ...belowHeroScrollOpts,
         }
       }
     );
 
     mm.add("(min-width: 1024px)", () => {
       gsap.fromTo("#competition .comp-card",
-        { opacity: 0, y: 60, filter: "blur(4px)" },
+        { opacity: 0, y: 40 },
         {
-          opacity: 1, y: 0, filter: "blur(0px)",
-          duration: 0.7, ease: "power3.out", stagger: 0.15,
+          opacity: 1, y: 0,
+          duration: 0.6, ease: "power3.out", stagger: 0.12, overwrite: "auto",
           scrollTrigger: {
             trigger: "#competition .comp-cards-desktop",
-            start: "top 80%",
-            toggleActions: "play none none none",
+            start: "top 95%",
+            end: "bottom top",
+            ...belowHeroScrollOpts,
           }
         }
       );
@@ -437,20 +551,29 @@ const InfestWebsite = () => {
 
     mm.add("(max-width: 1023px)", () => {
       gsap.fromTo("#competition .comp-card-mobile",
-        { opacity: 0, y: 50, filter: "blur(4px)" },
+        { opacity: 0, y: 40 },
         {
-          opacity: 1, y: 0, filter: "blur(0px)",
-          duration: 0.7, ease: "power3.out", stagger: 0.15,
+          opacity: 1, y: 0,
+          duration: 0.6, ease: "power3.out", stagger: 0.12, overwrite: "auto",
           scrollTrigger: {
             trigger: "#competition .comp-cards-mobile",
-            start: "top 85%",
-            toggleActions: "play none none none",
+            start: "top 95%",
+            end: "bottom top",
+            ...belowHeroScrollOpts,
           }
         }
       );
     });
 
-  }, { scope: containerRef });
+    // Custom @font-face fonts (Astralaga, Cattedrale, Pixel Game) swap in after
+    // the CSS cascade paints fallback metrics — recompute trigger positions once
+    // they've actually loaded, and again on any layout-affecting resize.
+    document.fonts?.ready?.then(() => ScrollTrigger.refresh());
+    const resizeObserver = new ResizeObserver(() => ScrollTrigger.refresh());
+    resizeObserver.observe(containerRef.current!);
+
+    return () => resizeObserver.disconnect();
+  }, { dependencies: [isLoaderFinished], scope: containerRef });
 
   const slugMap: Record<string, string> = {
     "UI/UX Design": "uiux",
@@ -473,6 +596,9 @@ const InfestWebsite = () => {
 
   return (
     <main ref={containerRef} id="home" aria-label="Halaman Utama InFest XII 2026" className="w-full min-h-screen text-white relative overflow-x-clip bg-transparent">
+      {!isLoaderFinished && (
+        <LandingLoader onComplete={() => setIsLoaderFinished(true)} />
+      )}
 
       {/* Background twinkles (scroll with page) */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
@@ -508,7 +634,7 @@ const InfestWebsite = () => {
       {/* Hero Section — 3D Marquee */}
       <section
         id="hero"
-        className="second-section py-8 md:py-20 relative overflow-x-clip overflow-y-visible z-10 lg:min-h-screen lg:flex lg:items-center lg:justify-center"
+        className="second-section py-6 md:py-12 relative overflow-x-clip overflow-y-visible z-10 lg:min-h-screen lg:flex lg:items-center lg:justify-center"
       >
         {/* Background Layer */}
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -530,43 +656,34 @@ const InfestWebsite = () => {
           <div className="absolute inset-0 noise-texture opacity-[0.025] mix-blend-overlay" />
         </div>
 
-        <div className="relative w-full z-10 flex flex-col items-center justify-center min-h-[420px] md:min-h-[600px] lg:min-h-[750px] px-3 lg:px-6 overflow-hidden">
+        <div className="relative w-full z-10 flex flex-col items-center justify-start lg:justify-center min-h-[420px] md:min-h-[600px] lg:min-h-[750px] px-3 lg:px-6 overflow-hidden">
 
           {/* Intro Block — logo left, hero text right, whole group anchored right */}
-          <div className="history-intro w-full flex flex-col lg:flex-row items-center justify-center lg:justify-end text-center lg:text-left gap-8 lg:gap-16 xl:gap-20 z-20 relative px-4 sm:px-8 md:px-14 lg:px-20 xl:px-28 lg:absolute lg:inset-0">
-            <div
-              className="marquee-logo shrink-0 relative hover:scale-105 transition-all duration-500 ease-out flex items-center justify-center"
-              data-aos="zoom-in"
-              data-aos-duration="900"
-            >
+          <div className="history-intro w-full flex flex-col lg:flex-row items-center justify-center lg:justify-end text-center lg:text-left gap-8 lg:gap-16 xl:gap-20 z-30 relative px-4 sm:px-8 md:px-14 lg:px-20 xl:px-28 lg:absolute lg:inset-0">
+            <div className="marquee-logo opacity-0 transform-gpu shrink-0 relative z-30 hover:scale-105 transition-all duration-500 ease-out flex items-center justify-center">
               <Image
                 src="/assets/images/logo_hero.PNG?v=2"
                 alt="INFEST Logo Large"
                 width={440}
                 height={440}
-                className="object-contain w-48 h-48 md:w-80 md:h-80 lg:w-[360px] lg:h-[360px] xl:w-[440px] xl:h-[440px] relative z-10"
+                className="object-contain w-56 h-56 md:w-96 md:h-96 lg:w-[400px] lg:h-[400px] xl:w-[440px] xl:h-[440px] relative z-10"
                 priority
               />
             </div>
 
-            <div
-              className="marquee-tagline flex flex-col gap-4 md:gap-6 items-center lg:items-start"
-              data-aos="fade-up"
-              data-aos-duration="900"
-              data-aos-delay="250"
-            >
+            <div className="marquee-tagline opacity-0 transform-gpu relative z-30 flex flex-col gap-4 md:gap-6 items-center lg:items-start">
               <h1 className="tracking-tighter leading-none font-astralaga flex flex-col items-center lg:items-start select-none w-full font-normal">
-                <span className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start sm:flex-nowrap sm:whitespace-nowrap gap-y-0.5 sm:gap-y-0 sm:gap-x-2 md:gap-x-4 text-6xl sm:text-6xl md:text-7xl lg:text-[6.2vw] xl:text-8xl">
+                <span className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start sm:flex-nowrap sm:whitespace-nowrap gap-y-0.5 sm:gap-y-0 sm:gap-x-2 md:gap-x-4 text-7xl sm:text-7xl md:text-8xl lg:text-[6.2vw] xl:text-8xl">
                   <span className="flex items-center">
-                    <span className="font-imperial-script text-white text-7xl sm:text-7xl md:text-8xl lg:text-[7.8vw] xl:text-9xl leading-none select-none font-normal translate-y-[0.08em] mr-2">I</span>
+                    <span className="font-imperial-script text-white text-8xl sm:text-8xl md:text-9xl lg:text-[7.8vw] xl:text-9xl leading-none select-none font-normal translate-y-[0.08em] mr-2">I</span>
                     <span className="text-white font-normal tracking-tighter">nformatics</span>
                   </span>
                   <span className="flex items-center">
-                    <span className="font-imperial-script text-white text-7xl sm:text-7xl md:text-8xl lg:text-[7.8vw] xl:text-9xl leading-none select-none font-normal translate-y-[0.08em] mr-1.5">F</span>
+                    <span className="font-imperial-script text-white text-8xl sm:text-8xl md:text-9xl lg:text-[7.8vw] xl:text-9xl leading-none select-none font-normal translate-y-[0.08em] mr-1.5">F</span>
                     <span className="text-white font-normal tracking-tighter">estival</span>
                   </span>
                 </span>
-                <span className="text-5xl md:text-7xl lg:text-8xl mt-1 font-serif font-bold drop-shadow-[0_0_15px_rgba(253,208,38,0.7)] select-all inline-flex items-center justify-center lg:justify-start gap-x-[1px] md:gap-x-[2px]">
+                <span className="text-6xl md:text-8xl lg:text-8xl mt-1 font-serif font-bold drop-shadow-[0_0_15px_rgba(253,208,38,0.7)] select-all inline-flex items-center justify-center lg:justify-start gap-x-[1px] md:gap-x-[2px]">
                   {["X", "I", "I", " ", "2", "0", "2", "6"].map((char, index) => (
                     char === " " ? (
                       <span key={index} className="w-1 md:w-2" />
@@ -588,8 +705,8 @@ const InfestWebsite = () => {
                 </span>
               </h1>
 
-              <p className="text-base md:text-xl lg:text-2xl leading-relaxed text-center lg:text-left font-medium drop-shadow-md text-pretty font-serif italic" style={{ color: "#F5F0E1" }}>
-                Infest (Informatics Festival) XI 2025 is the biggest tech event in Aceh, bringing together students, professionals, and digital creators in one vibrant arena. Carrying the theme <span className="font-bold not-italic" style={{ backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>&quot;Synthera: Creating a Harmonized, Intelligent, and Innovative Digital Ecosystem&quot;</span>, INFEST is more than a competition, it&apos;s a movement to shape the future through innovation, collaboration, and real-world impact.
+              <p className="text-base md:text-xl lg:text-2xl leading-relaxed text-center lg:text-left font-medium drop-shadow-md text-pretty font-serif italic mt-3 md:mt-4" style={{ color: "#F5F0E1" }}>
+                Infest (Informatics Festival) XII 2026 is the biggest tech event in Aceh, bringing together students, professionals, and digital creators in one vibrant arena. Carrying the theme <span className="font-bold not-italic" style={{ backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>&quot;Synthera: Creating a Harmonized, Intelligent, and Innovative Digital Ecosystem&quot;</span>, INFEST is more than a competition, it&apos;s a movement to shape the future through innovation, collaboration, and real-world impact.
               </p>
 
               <div className="marquee-divider w-24 h-[3px] bg-gradient-to-r from-[#2596BE] to-[#FDD026] rounded-full mx-auto lg:mx-0 shadow-sm" />
@@ -598,10 +715,10 @@ const InfestWebsite = () => {
 
           {/* Bento Grid — fills the viewport under the logo; spans tile exactly at
               2x6 (mobile) and 4x3 (desktop), so rows are fixed, not auto. */}
-          <div className="history-cards-container w-full h-screen relative z-10 p-2 md:p-3 lg:absolute lg:inset-0 lg:h-auto">
+          <div className="history-cards-container opacity-0 transform-gpu w-full h-[75vh] md:h-screen lg:h-auto relative z-10 p-2 md:p-3 lg:absolute lg:inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,150,190,0.1),transparent_70%)] pointer-events-none z-0" />
 
-            <div className="memories-heading absolute inset-0 z-20 flex items-center justify-center pointer-events-none select-none">
+            <div className="memories-heading transform-gpu absolute inset-0 z-20 flex items-center justify-center pointer-events-none select-none">
               <h3
                 className="flex items-baseline text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]"
                 style={{ WebkitTextStroke: "1px #FDD026", textStroke: "1px #FDD026" } as React.CSSProperties}
@@ -629,9 +746,12 @@ const InfestWebsite = () => {
         {/* Competitions Section */}
         <section
           id="competition"
-          className="w-full pt-10 md:pt-16 pb-10 md:pb-20 px-3 md:px-6 lg:px-8 relative overflow-visible z-10"
+          className="w-full pt-6 md:pt-10 pb-6 md:pb-12 px-3 md:px-6 lg:px-8 relative overflow-visible z-10"
         >
-          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+          {/* content-visibility:auto is safe here (not on the section itself) — this
+              layer is absolute inset-0 and contributes zero height to #competition,
+              which GSAP's ScrollTrigger uses as a pin/reveal trigger. */}
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden [content-visibility:auto]">
             <div className="absolute top-[8%] right-[8%] w-[500px] h-[500px] bg-[#3b82f6]/16 rounded-full blur-[120px]" />
             <div className="absolute bottom-[8%] left-[8%] w-[460px] h-[460px] bg-[#2563eb]/13 rounded-full blur-[105px]" />
 
@@ -681,7 +801,7 @@ const InfestWebsite = () => {
             {/* Prize Pool Card */}
             <div className="prize-pool-card w-full text-center">
               <div
-                className="border border-[#FDD026]/28 p-5 md:p-12 rounded-[20px] md:rounded-[28px] backdrop-blur-xl shadow-[0_20px_60px_-12px_rgba(0,0,0,0.4),0_0_0_1px_rgba(253,208,38,0.10),inset_0_1px_0_rgba(255,255,255,0.12)] hover:border-[#FDD026]/46 hover:shadow-[0_28px_80px_-12px_rgba(253,208,38,0.18),0_0_0_1px_rgba(253,208,38,0.22),inset_0_1px_0_rgba(255,255,255,0.18)] transition-all duration-500 relative overflow-hidden group"
+                className="border border-[#FDD026]/28 p-4 md:p-6 rounded-[20px] md:rounded-[28px] backdrop-blur-xl shadow-[0_20px_60px_-12px_rgba(0,0,0,0.4),0_0_0_1px_rgba(253,208,38,0.10),inset_0_1px_0_rgba(255,255,255,0.12)] hover:border-[#FDD026]/46 hover:shadow-[0_28px_80px_-12px_rgba(253,208,38,0.18),0_0_0_1px_rgba(253,208,38,0.22),inset_0_1px_0_rgba(255,255,255,0.18)] transition-all duration-500 relative overflow-hidden group"
                 style={{
                   background: "linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04)), rgba(30,58,138,0.14)",
                   WebkitBackdropFilter: "blur(40px)"
@@ -706,16 +826,16 @@ const InfestWebsite = () => {
 
                 <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-white/50 to-transparent" />
 
-                <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-[#FDD026]/30 bg-[#FDD026]/5 text-[#FDD026] text-[10px] md:text-xs font-bold uppercase tracking-widest mx-auto mb-6 shadow-[0_0_12px_rgba(255,255,255,0.2)] select-none font-serif">
+                <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full border border-[#FDD026]/30 bg-[#FDD026]/5 text-[#FDD026] text-[10px] md:text-xs font-bold uppercase tracking-widest mx-auto mb-3.5 shadow-[0_0_12px_rgba(255,255,255,0.2)] select-none font-serif">
                   <span className="w-1.5 h-1.5 bg-[#FDD026] rounded-full animate-ping" />
                   Exclusive Rewards
                 </div>
 
-                <span className="text-white/80 text-base md:text-lg font-semibold uppercase tracking-wider block mb-2 select-none font-serif">
+                <span className="text-white/80 text-sm md:text-base font-semibold uppercase tracking-wider block mb-1 select-none font-serif">
                   Total Prize Pool
                 </span>
 
-                <h3 id="prize-pool-counter" className="text-[1.7rem] sm:text-4xl md:text-8xl font-black font-mono tracking-widest mt-2 mb-3 md:mb-4 font-serif">
+                <h3 id="prize-pool-counter" className="text-[2.2rem] sm:text-[3.2rem] md:text-[6.8rem] lg:text-[7.2rem] font-black font-mono tracking-widest mt-0 mb-1 md:mb-1.5 font-serif">
                   <div className="relative inline-block select-all">
                     <span
                       className="absolute inset-0 font-mono font-serif select-none"
@@ -740,8 +860,8 @@ const InfestWebsite = () => {
                   </div>
                 </h3>
 
-                <div className="w-48 h-[1px] bg-white/10 mx-auto my-6" />
-                <p className="text-xs md:text-sm text-white/70 opacity-80 mt-4 max-w-2xl mx-auto font-medium font-serif">
+                <div className="w-48 h-[1px] bg-white/10 mx-auto my-3" />
+                <p className="text-[10px] md:text-xs text-white/70 opacity-80 mt-1 max-w-2xl mx-auto font-medium font-serif">
                   Sertifikat Resmi Tingkat Nasional + Trophy + Merchandise Menarik
                 </p>
               </div>
@@ -766,49 +886,17 @@ const InfestWebsite = () => {
                 ))}
               </div>
 
-              {/* ── Mobile Horizontal Carousel (< 768px) ── */}
-              <div className="md:hidden w-full mt-4">
-                <div
-                  ref={compCarouselRef}
-                  className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-none px-4"
-                  style={{ scrollPaddingLeft: "1rem" }}
-                >
-                  {[
-                    { comp: featuredComp, isFeatured: true, id: "comp-featured" },
-                    { comp: sideComps[0], isFeatured: false, id: "comp-side-0" },
-                    { comp: sideComps[1], isFeatured: false, id: "comp-side-1" },
-                  ].map((card, i) => (
-                    <div
-                      key={card.id}
-                      className={cn(
-                        "mobile-comp-slide snap-start shrink-0 w-[83vw] max-w-[320px]",
-                        i === 2 && "mr-4"
-                      )}
-                    >
-                      <CompetitionCard comp={card.comp} isFeatured={card.isFeatured} getSlug={getSlug} />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Swipe indicator dots */}
-                <div className="flex justify-center items-center gap-2 mt-3 pb-1">
-                  {[true, false, false].map((isFeatured, i) => (
-                    <button
-                      key={i}
-                      aria-label={`Lihat kompetisi ${i + 1}`}
-                      onClick={() => {
-                        const slides = compCarouselRef.current?.querySelectorAll<HTMLElement>(".mobile-comp-slide");
-                        slides?.[i]?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
-                      }}
-                      className={cn(
-                        "rounded-full transition-all duration-300 focus:outline-none cursor-pointer",
-                        activeCompCard === i
-                          ? cn("h-2 w-5", isFeatured ? "bg-[#FDD026]" : "bg-[#2596BE]")
-                          : "h-2 w-2 bg-white/25 hover:bg-white/45"
-                      )}
-                    />
-                  ))}
-                </div>
+              {/* ── Mobile: vertical stack, no side-scrolling (< 768px) ── */}
+              <div className="md:hidden w-full mt-4 flex flex-col gap-4 px-4">
+                {[
+                  { comp: featuredComp, isFeatured: true, id: "comp-featured" },
+                  { comp: sideComps[0], isFeatured: false, id: "comp-side-0" },
+                  { comp: sideComps[1], isFeatured: false, id: "comp-side-1" },
+                ].map((card) => (
+                  <div key={card.id} className="w-full">
+                    <CompetitionCard comp={card.comp} isFeatured={card.isFeatured} getSlug={getSlug} />
+                  </div>
+                ))}
               </div>
 
               {/* ── Tablet 3-col Grid (768px – 1024px) ── */}
@@ -831,7 +919,7 @@ const InfestWebsite = () => {
         {/* Seminar Section */}
         <section
           id="seminar"
-          className="w-full py-16 md:py-28 px-3 md:px-6 lg:px-8 relative overflow-hidden flex flex-col items-center justify-center min-h-[80vh] md:min-h-screen [content-visibility:auto] [contain-intrinsic-size:1px_900px]"
+          className="w-full py-10 md:py-16 px-3 md:px-6 lg:px-8 relative overflow-hidden flex flex-col items-center justify-center min-h-[80vh] md:min-h-screen [content-visibility:auto] [contain-intrinsic-size:1px_900px]"
         >
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
             <div className="absolute top-[18%] left-[18%] w-[420px] h-[420px] bg-[#3b82f6]/14 rounded-full blur-[115px]" />
@@ -871,9 +959,8 @@ const InfestWebsite = () => {
 
             {/* Mystery Speaker Card */}
             <div
-              className="relative group z-10 cursor-pointer flex flex-col items-center justify-center"
-              data-aos="fade-up"
-              data-aos-duration="1000"
+              ref={seminarCardRef}
+              className="reveal-up relative group z-10 cursor-pointer flex flex-col items-center justify-center"
               style={{ animation: "float 6s ease-in-out infinite" }}
             >
               <div className="absolute -inset-2 bg-gradient-to-r from-[#3B82F6] via-transparent to-[#FDD026] rounded-[32px] blur-[24px] opacity-18 group-hover:opacity-35 transition-all duration-700 z-0" />
@@ -917,9 +1004,8 @@ const InfestWebsite = () => {
 
             {/* Text Section */}
             <div
-              className="max-w-2xl text-center p-4 md:p-8 rounded-xl md:rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.03] border border-[#FDD026]/22 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.45),0_0_0_1px_rgba(253,208,38,0.08),inset_0_1px_0_rgba(255,255,255,0.12)] z-10 flex flex-col items-center gap-3 md:gap-4"
-              data-aos="fade-up"
-              data-aos-delay="300"
+              ref={seminarTextRef}
+              className="reveal-up reveal-delay-300 max-w-2xl text-center p-4 md:p-8 rounded-xl md:rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.03] border border-[#FDD026]/22 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.45),0_0_0_1px_rgba(253,208,38,0.08),inset_0_1px_0_rgba(255,255,255,0.12)] z-10 flex flex-col items-center gap-3 md:gap-4"
             >
               <h2 className="text-balance select-none flex flex-col items-center gap-1.5 leading-none">
                 <span className="flex items-baseline justify-center">

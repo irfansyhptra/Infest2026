@@ -50,6 +50,7 @@
   /* Custom scrollbar for webkit browsers */
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
+    height: 6px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
@@ -196,6 +197,34 @@
 
   50% {
     transform: translateY(-14px);
+  }
+}
+
+/* Disables hover/hit-test calculation site-wide while scrolling (pointer-events
+   inherits, so this one rule covers every descendant). Toggled from page.tsx. */
+body.is-scrolling {
+  pointer-events: none;
+}
+
+/* Scroll-into-view fade-up, toggled by a single IntersectionObserver
+   (replaces AOS — same effect, no library). */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.reveal-up.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-300 {
+  transition-delay: 0.3s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-up {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

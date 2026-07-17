@@ -105,11 +105,11 @@ export const Sidebar = () => {
           <div className="mb-6 sm:mb-8 pt-16 lg:pt-0">
             <Link href="/" className="flex items-center gap-3 mb-2">
               <Image
-                src={'/assets/images/Infest 2025 1st Logo Outline.png'}
+                src={'/assets/images/logo_hero.PNG?v=2'}
                 alt="Infest 2025 Logo"
                 width={100}
                 height={100}
-                className="w-10 h-10 sm:w-11 sm:h-11 filter drop-shadow-[0_0_10px_rgba(242,233,197,0.8)]"
+                className="w-10 h-10 sm:w-11 sm:h-11 object-contain filter drop-shadow-[0_0_10px_rgba(242,233,197,0.8)]"
               />
               <div>
                 <h2 className="text-lg sm:text-xl font-bold text-neutral_01">Dashboard</h2>
