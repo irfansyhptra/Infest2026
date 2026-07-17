@@ -1,338 +1,223 @@
 "use client";
 
-import { dm_serif_display } from "@/app/fonts/fonts";
-import React, { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent, useSpring } from "framer-motion";
-import Image from "next/image";
+import React from "react";
+import type { SvgIconComponent } from "@mui/icons-material";
 
-interface TimelineEntry {
+export interface TimelineNode {
+  date: string;
+  /** ISO date (YYYY-MM-DD) used only to space nodes proportionally to real elapsed time. */
+  start: string;
   title: string;
-  content: React.ReactNode;
+  description: string;
+  Icon: SvgIconComponent;
+  accent: string;
 }
 
-// 1. TIMELINE CARD COMPONENT (FUTURISTIC GLASSMORPHISM WITH NEON GLOW BORDER & HOVER STATE)
-interface TimelineCardProps {
-  children: React.ReactNode;
-  index: number;
-  image?: string;
-}
+type Point = { x: number; y: number };
 
-export const TimelineCard = ({ children, index, image }: TimelineCardProps) => {
-  return (
-    <motion.article 
-      animate={{ y: [0, -12, 0] }}
-      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-      className="timeline-card-content bg-white/5 text-white rounded-[28px] md:rounded-[36px] border border-[#FDD026]/25 backdrop-blur-[12px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_0_30px_rgba(253,208,38,0.08),0_0_0_1px_rgba(253,208,38,0.06)] hover:bg-white/8 hover:border-[#FDD026]/50 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.10),0_0_45px_rgba(253,208,38,0.15),0_0_0_1px_rgba(253,208,38,0.18)] hover:scale-[1.01] transition-all duration-300 w-full h-[480px] md:h-[530px] flex flex-col justify-between animate-fade-in relative overflow-hidden [&_h3]:text-2xl [&_h3]:md:text-3xl [&_h3]:font-extrabold [&_p]:text-base [&_p]:md:text-lg [&_p]:leading-relaxed"
-    >
-      {/* Decorative soft glowing spot inside the card */}
-      <div className="absolute -top-12 -right-12 w-28 h-28 bg-[#A78BFA]/10 rounded-full blur-2xl pointer-events-none" />
+// ponytail: blends true date-gap spacing with uniform spacing so events that
+// land days apart don't visually collide next to events months apart. Raise
+// toward 1 for pure chronological spacing if nodes ever get more breathing room.
+const TIME_WEIGHT = 0.45;
 
-      {/* Card Content Node - Top Half */}
-      <div className="w-full relative z-10 p-6 md:p-8 pb-2 flex-1 flex flex-col justify-center">
-        {children}
-      </div>
-
-      {/* Card Image Node - Bottom Half with Padding */}
-      <div className="w-full px-6 pb-6 pt-2 shrink-0">
-        <div className="w-full h-[150px] md:h-[190px] relative overflow-hidden rounded-[20px] md:rounded-[24px] bg-white/5 border border-[#FDD026]/20 shadow-inner">
-          <AnimatePresence mode="wait">
-            {image ? (
-              <motion.div
-                key={image}
-                initial={{ opacity: 0, scale: 1.05, filter: "blur(6px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                exit={{ opacity: 0, scale: 1.05, filter: "blur(6px)" }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="absolute inset-0 w-full h-full"
-              >
-                <Image
-                  src={image}
-                  alt="Timeline event photo"
-                  fill
-                  className="object-cover rounded-[20px] md:rounded-[24px]"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  priority
-                />
-              </motion.div>
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-white/20 text-sm">
-                No Image Available
-              </div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </motion.article>
-  );
+/** Normalized [0,1] position per node — `data` must already be date-sorted. */
+const computeTimeFractions = (data: TimelineNode[]): number[] => {
+  const n = data.length;
+  if (n <= 1) return data.map(() => 0);
+  const times = data.map((d) => new Date(d.start).getTime());
+  const span = times[n - 1] - times[0] || 1;
+  return times.map((t, i) => {
+    const raw = (t - times[0]) / span;
+    const uniform = i / (n - 1);
+    return TIME_WEIGHT * raw + (1 - TIME_WEIGHT) * uniform;
+  });
 };
 
-// 2. TIMELINE ITEM COMPONENT (GLOWING CYAN NODES & TEXT ACTIVE STATE)
-interface TimelineItemProps {
-  title: string;
-  content: React.ReactNode;
-  index: number;
-  activeCard: number;
-  image?: string;
-}
+/**
+ * Smooth winding path through `pts`. Each segment is a cubic whose control
+ * points sit halfway along `axis`, giving a tangent parallel to that axis at
+ * every node — so nodes land on the crests and troughs of the curve.
+ */
+const windingPath = (pts: Point[], axis: "x" | "y") =>
+  pts.slice(1).reduce((d, p, i) => {
+    const prev = pts[i];
+    const mid = axis === "x" ? (prev.x + p.x) / 2 : (prev.y + p.y) / 2;
+    const c1 = axis === "x" ? `${mid},${prev.y}` : `${prev.x},${mid}`;
+    const c2 = axis === "x" ? `${mid},${p.y}` : `${p.x},${mid}`;
+    return `${d} C ${c1} ${c2} ${p.x},${p.y}`;
+  }, `M ${pts[0].x},${pts[0].y}`);
 
-export const TimelineItem = ({ title, content, index, activeCard, image }: TimelineItemProps) => {
-  const isActive = activeCard === index;
+/** Road: gradient stroke + dashed centre line, both immune to viewBox stretch. */
+const Road = ({ d, viewBox, gradientId }: { d: string; viewBox: string; gradientId: string }) => (
+  <svg
+    className="absolute inset-0 h-full w-full"
+    viewBox={viewBox}
+    preserveAspectRatio="none"
+    fill="none"
+    aria-hidden="true"
+  >
+    <defs>
+      <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stopColor="#FDD026" />
+        <stop offset="50%" stopColor="#2596BE" />
+        <stop offset="100%" stopColor="#3B82F6" />
+      </linearGradient>
+    </defs>
+    <path
+      d={d}
+      stroke={`url(#${gradientId})`}
+      strokeWidth={22}
+      strokeLinecap="round"
+      vectorEffect="non-scaling-stroke"
+      opacity={0.9}
+    />
+    <path
+      d={d}
+      stroke="rgba(255,255,255,0.55)"
+      strokeWidth={1.5}
+      strokeDasharray="7 9"
+      strokeLinecap="round"
+      vectorEffect="non-scaling-stroke"
+    />
+  </svg>
+);
+
+const Pin = ({ node }: { node: TimelineNode }) => (
+  <div
+    className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/25 shadow-[0_6px_20px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 md:h-14 md:w-14"
+    style={{ backgroundColor: node.accent }}
+  >
+    <node.Icon className="h-5 w-5 text-[#0b1650] md:h-6 md:w-6" />
+  </div>
+);
+
+const Label = ({ node, align }: { node: TimelineNode; align: "left" | "center" }) => (
+  <div className={align === "center" ? "text-center" : "text-left"}>
+    <span className="text-[10px] font-bold uppercase tracking-widest" style={{ color: node.accent }}>
+      {node.date}
+    </span>
+    <h3 className="font-clash-display mt-1 text-sm font-bold leading-tight text-white md:text-base">
+      {node.title}
+    </h3>
+    <p className="mt-1 text-[11px] leading-snug text-white/60 md:text-xs">{node.description}</p>
+  </div>
+);
+
+// ── Desktop: horizontal winding road, nodes alternating above / below ──
+
+const DESKTOP_VB = { w: 1200, h: 240 };
+
+const DesktopTimeline = ({ data }: { data: TimelineNode[] }) => {
+  const t = computeTimeFractions(data);
+  const midY = DESKTOP_VB.h / 2;
+  const amp = 62;
+  // Even nodes ride the crest, odd nodes the trough.
+  const nodeY = (i: number) => midY + (i % 2 === 0 ? -amp : amp);
+  const margin = DESKTOP_VB.w * 0.06;
+  const nodeX = (i: number) => margin + t[i] * (DESKTOP_VB.w - margin * 2);
+  const pts: Point[] = data.map((_, i) => ({ x: nodeX(i), y: nodeY(i) }));
+  const path = windingPath(
+    [
+      { x: -margin / 2, y: nodeY(data.length) },
+      ...pts,
+      { x: DESKTOP_VB.w + margin / 2, y: nodeY(data.length + 1) },
+    ],
+    "x"
+  );
 
   return (
-    <div className="timeline-item relative z-10">
-      {/* Mobile Layout (Stacked Date + Card) */}
-      <div className="block md:hidden">
-        <div 
-          className="flex items-start gap-4 mb-4"
-          data-aos="fade-right"
-          data-aos-delay={`${index * 150}`}
-          data-aos-duration="800"
-        >
-          <div className="timeline-dot h-4 w-4 rounded-full bg-white/20 shadow-sm flex-shrink-0 mt-1"></div>
-          <div>
-            <h3 className={`text-lg font-bold text-white mb-2 ${dm_serif_display.className}`}>
-              {title}
-            </h3>
-            <div className="w-20 h-px bg-gradient-to-r from-white/40 to-transparent mb-4"></div>
-          </div>
-        </div>
-        <div 
-          className="ml-8"
-          data-aos="fade-up"
-          data-aos-delay={`${index * 150 + 100}`}
-          data-aos-duration="800"
-        >
-          <TimelineCard index={index} image={image}>{content}</TimelineCard>
-        </div>
-      </div>
+    <div className="relative hidden h-[460px] w-full md:block">
+      <div className="absolute inset-x-0 top-1/2 h-[240px] -translate-y-1/2">
+        <Road d={path} viewBox={`0 0 ${DESKTOP_VB.w} ${DESKTOP_VB.h}`} gradientId="timeline-road-desktop" />
 
-      {/* Desktop Layout (Sticky-Swapped Date) */}
-      <div className="hidden md:flex items-center gap-6 select-none pl-6 lg:pl-10 min-h-[140px]">
-        {/* Dot */}
-        <div className={`timeline-dot w-5 h-5 rounded-full flex-shrink-0 transition-all duration-300 ${
-          isActive 
-            ? "bg-[#22D3EE] scale-125 shadow-[0_0_12px_rgba(34,211,238,0.8)]" 
-            : "bg-white/20 scale-100"
-        }`} />
-        
-        {/* Title */}
-        <motion.h3
-          animate={{
-            opacity: isActive ? 1 : 0.4,
-            scale: isActive ? 1.05 : 1,
-            x: isActive ? 10 : 0,
-          }}
-          transition={{ type: "spring", stiffness: 120, damping: 15 }}
-          className={`text-2xl lg:text-3xl font-bold text-white ${dm_serif_display.className}`}
-        >
-          {title}
-        </motion.h3>
+        {data.map((node, i) => {
+          const above = i % 2 === 0;
+          return (
+            <div
+              key={node.title}
+              className="group absolute h-0 w-0"
+              style={{ left: `${(pts[i].x / DESKTOP_VB.w) * 100}%`, top: `${(pts[i].y / DESKTOP_VB.h) * 100}%` }}
+            >
+              <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2">
+                <Pin node={node} />
+              </div>
+              <div
+                className={`absolute left-0 w-44 -translate-x-1/2 lg:w-52 ${
+                  above ? "bottom-[52px]" : "top-[52px]"
+                }`}
+              >
+                <Label node={node} align="center" />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
 };
 
-// 3. TIMELINE SECTION COMPONENT (MAIN EXPORT - FUTURISTIC NEON GLASS CONTAINER)
-export const Timeline = ({ data }: { data: { title: string; content: React.ReactNode; image?: string }[] }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const viewportRef = useRef<HTMLDivElement>(null);
-  const columnsWrapperRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+// ── Mobile: vertical winding path, pins snake at left, text in a fixed column ──
 
-  const [activeCard, setActiveCard] = useState(0);
-  const [totalScroll, setTotalScroll] = useState(0);
-  const [trackH, setTrackH] = useState(0);
-  const cardLength = data.length;
+const MOBILE_ROW = 100; // viewBox units per node
+const MOBILE_VB_W = 100;
+const MOBILE_ROW_PX = 152; // must clear a 3–4 line label, or rows collide
 
-  // Track parent scroll progress natively using Framer Motion
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start 96px", "end end"], // Matches top-24 (96px) sticky offset
-  });
-
-  // Map progress to local layout translation coordinates
-  const yTransform = useTransform(scrollYProgress, [0, 1], [0, -totalScroll]);
-  const scaleYTransform = useTransform(scrollYProgress, [0, 1], [0, 1]);
-  const orbYTransform = useTransform(scrollYProgress, [0, 1], [0, trackH]);
-
-  // Apply spring physics for ultra-smooth fluid motion
-  const springConfig = { damping: 20, stiffness: 90, mass: 0.5 };
-  const y = useSpring(yTransform, springConfig);
-  const scaleY = useSpring(scaleYTransform, springConfig);
-  const orbY = useSpring(orbYTransform, springConfig);
-
-  // Listen to progress changes to trigger content swapping
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const index = Math.min(cardLength - 1, Math.floor(latest * cardLength));
-    setActiveCard((prev) => (prev !== index ? index : prev));
-  });
-
-  // Calculate and watch layout sizes dynamically
-  useEffect(() => {
-    const measure = () => {
-      if (scrollRef.current && viewportRef.current) {
-        const scrollH = scrollRef.current.scrollHeight;
-        const viewH = columnsWrapperRef.current ? columnsWrapperRef.current.clientHeight : viewportRef.current.clientHeight;
-        setTotalScroll(Math.max(10, scrollH - viewH));
-        // Desktop Line Track height is viewH minus padding-top (96px) and padding-bottom (112px)
-        setTrackH(Math.max(0, viewH - 96 - 112));
-      }
-    };
-
-    measure();
-    window.addEventListener("resize", measure);
-
-    let resizeObserver: ResizeObserver | null = null;
-    if (scrollRef.current) {
-      resizeObserver = new ResizeObserver(measure);
-      resizeObserver.observe(scrollRef.current);
-    }
-
-    return () => {
-      window.removeEventListener("resize", measure);
-      if (resizeObserver) {
-        resizeObserver.disconnect();
-      }
-    };
-  }, [data]);
+const MobileTimeline = ({ data }: { data: TimelineNode[] }) => {
+  const t = computeTimeFractions(data);
+  const vbH = MOBILE_ROW * data.length;
+  const margin = MOBILE_ROW * 0.55;
+  const nodeY = (i: number) => margin + t[i] * (vbH - margin * 2);
+  // Path hugs the left so the label column stays wide enough to stay compact.
+  const nodeX = (i: number) => (i % 2 === 0 ? 10 : 24);
+  const pts: Point[] = data.map((_, i) => ({ x: nodeX(i), y: nodeY(i) }));
+  const path = windingPath(
+    [{ x: nodeX(data.length + 1), y: 0 }, ...pts, { x: nodeX(data.length), y: vbH }],
+    "y"
+  );
 
   return (
-    <section className="w-full h-auto md:h-[300vh] relative pt-4 pb-8 md:pt-6 md:pb-10 px-6 md:px-16 lg:px-24 xl:px-36" ref={containerRef}>
-      
-      {/* Viewport container: Sits 16px below the 80px navbar, total 96px (top-24) */}
-      <div 
-        ref={viewportRef} 
-        className="sticky top-24 w-full h-auto md:h-[calc(100vh-120px)] overflow-visible z-10 flex flex-col pt-8 pb-12 md:pb-20 gap-8 md:gap-12 rounded-3xl"
-      >
-        
-        {/* Futuristic Glassmorphism Master Background Container */}
-        <div className="absolute inset-0 bg-white/5 z-0 pointer-events-none overflow-hidden rounded-3xl border border-[#FDD026]/22 backdrop-blur-[12px] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08),0_10px_30px_rgba(0,0,0,0.3),0_0_0_1px_rgba(253,208,38,0.06)]">
-          {/* Subtle glow leaks */}
-          <div className="absolute -top-24 left-[15%] w-[40vw] h-[30vh] bg-[#FDD026]/8 rounded-full blur-[100px] pointer-events-none" />
-          <div className="absolute -bottom-24 right-[25%] w-[35vw] h-[25vh] bg-[#FDD026]/6 rounded-full blur-[80px] pointer-events-none" />
+    <div className="relative w-full md:hidden" style={{ height: data.length * MOBILE_ROW_PX }}>
+      <Road d={path} viewBox={`0 0 ${MOBILE_VB_W} ${vbH}`} gradientId="timeline-road-mobile" />
 
-          {/* Top edge glowing gradient border highlight */}
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#FDD026]/35 to-transparent" />
-          {/* Bottom edge glowing gradient border highlight */}
-          <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#FDD026]/20 to-transparent" />
-        </div>
-
-        {/* 1. Header (Title + Subtitle + Mascot - Glowing white text) */}
-        <header className="w-full flex flex-col md:flex-row gap-4 items-center justify-between relative z-10 px-6 md:px-12">
-          <div className="flex items-center gap-4">
-            <h2 className={`text-4xl md:text-5xl lg:text-6xl font-extrabold text-white text-balance drop-shadow-[0_0_10px_rgba(34,211,238,0.3)] ${dm_serif_display.className}`}>
-              Timeline
-            </h2>
-            {/* Mascot Element */}
-            <div className="timeline-mascot relative w-16 h-16 md:w-24 md:h-24 lg:w-28 lg:h-28 shrink-0 select-none pointer-events-none flex items-center justify-center">
-              {/* Golden Glow Behind Mascot Logo */}
-              <div className="absolute w-[80%] h-[80%] bg-gradient-to-r from-[#FDD026] to-[#FFE885] rounded-full blur-[24px] opacity-70 animate-pulse z-0" style={{ animationDuration: "3s" }} />
-              {/* Inner golden glow dot */}
-              <div className="absolute w-[50%] h-[50%] bg-[#FDD026] rounded-full blur-[10px] opacity-55 z-0" />
-              <Image
-                src="/assets/images/logo_hero.PNG?v=2"
-                alt="Infest Mascot"
-                fill
-                className="object-contain filter drop-shadow-[0_0_15px_rgba(253,208,38,0.75)] drop-shadow-[0_0_30px_rgba(253,208,38,0.45)] relative z-10"
-              />
+      {data.map((node, i) => {
+        const top = `${(pts[i].y / vbH) * 100}%`;
+        return (
+          <React.Fragment key={node.title}>
+            <div
+              className="absolute h-0 w-0"
+              style={{ left: `${(pts[i].x / MOBILE_VB_W) * 100}%`, top }}
+            >
+              <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2">
+                <Pin node={node} />
+              </div>
             </div>
-          </div>
-          <div className="flex-1 max-w-md h-0.5 bg-gradient-to-r from-[#22D3EE]/30 via-[#A78BFA]/10 to-transparent hidden md:block"></div>
-          <p className="text-white/60 text-xs md:text-sm text-center md:text-right max-w-xs font-medium">
-            Alur timeline penting pelaksanaan rangkaian acara dan pendaftaran kompetisi <span className="text-[#22D3EE] font-semibold">InFest XII 2026</span>.
-          </p>
-        </header>
-
-        <div 
-          ref={columnsWrapperRef}
-          className="w-full flex-1 flex flex-col md:flex-row md:justify-between items-center md:items-start overflow-visible relative z-10 gap-8 lg:gap-16 px-6 md:px-12"
-        >
-          {/* Left Column: Scrollable Dates (Desktop) or stacked elements (Mobile) */}
-          <div className="w-full md:w-[38%] h-full relative overflow-visible md:overflow-hidden z-10">
-            <motion.div 
-              ref={scrollRef} 
-              style={{ y: typeof window !== "undefined" && window.innerWidth >= 768 ? y : 0 }}
-              className="relative md:absolute top-0 left-0 w-full flex flex-col gap-12 md:gap-36 pt-6 md:pt-24 pb-8 md:pb-28"
-            >
-              {/* Static Vertical Line - Mobile (Inside scrollable container, scrolls naturally) */}
-              <div 
-                className="block md:hidden absolute left-2 top-8 bottom-12 w-0.5 bg-gradient-to-b from-white/20 via-white/10 to-transparent z-20 pointer-events-none"
-              />
-
-              {data.map((item, index) => (
-                <TimelineItem 
-                  key={index}
-                  title={item.title}
-                  content={item.content}
-                  index={index}
-                  activeCard={activeCard}
-                  image={item.image}
-                />
-              ))}
-            </motion.div>
-          </div>
-
-          {/* Vertical Line - Mobile (Fixed inside viewport - Never spills) */}
-          <div 
-            className="block md:hidden absolute left-2 top-24 bottom-28 w-0.5 bg-gradient-to-b from-transparent via-white/15 to-transparent z-20 pointer-events-none"
-          >
-            {/* Glowing active progress line */}
-            <motion.div
-              style={{ scaleY, transformOrigin: "top" }}
-              className="absolute inset-x-0 top-0 w-full bg-gradient-to-b from-[#22D3EE] via-[#A78BFA] to-[#F472B6] rounded-full shadow-[0_0_8px_rgba(34,211,238,0.5)]"
-            />
-            {/* Glowing active progress orb tip */}
-            <motion.div 
-              style={{ y: orbY }}
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-white border-2 border-[#22D3EE] shadow-[0_0_8px_rgba(34,211,238,0.5)] z-30"
-            >
-              {/* Outer pulsing ring */}
-              <div className="absolute inset-[-4px] rounded-full border border-[#22D3EE] animate-ping opacity-75" />
-            </motion.div>
-          </div>
-          
-          {/* Vertical Line - Desktop (Fixed inside viewport - Never spills) */}
-          <div
-            className="hidden md:block absolute left-[34px] lg:left-[50px] top-24 bottom-28 w-1 bg-gradient-to-b from-transparent via-white/15 to-transparent z-20 pointer-events-none"
-          >
-            {/* Glowing active progress line */}
-            <motion.div
-              style={{ scaleY, transformOrigin: "top" }}
-              className="absolute inset-x-0 top-0 w-full bg-gradient-to-b from-[#22D3EE] via-[#A78BFA] to-[#F472B6] rounded-full shadow-[0_0_10px_rgba(34,211,238,0.6),0_0_20px_rgba(167,139,250,0.3)]"
-            />
-            {/* Glowing active progress orb tip */}
-            <motion.div 
-              style={{ y: orbY }}
-              className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-2 border-[#22D3EE] shadow-[0_0_12px_rgba(34,211,238,0.8),0_0_20px_rgba(167,139,250,0.5)] z-30"
-            >
-              {/* Outer pulsing ring */}
-              <div className="absolute inset-[-6px] rounded-full border border-[#22D3EE] animate-ping opacity-75" />
-            </motion.div>
-          </div>
-
-          {/* Right Column: Sticky Active Card Content (Desktop only) */}
-          <div className="hidden md:flex w-full md:w-[58%] h-full items-center justify-center pr-6 lg:pr-10 z-10">
-            <div className="w-full relative z-20">
-              <TimelineCard index={activeCard} image={data[activeCard].image}>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeCard}
-                    initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
-                    animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, y: -15, filter: "blur(4px)" }}
-                    transition={{ duration: 0.3 }}
-                    className="w-full"
-                  >
-                    {data[activeCard].content}
-                  </motion.div>
-                </AnimatePresence>
-              </TimelineCard>
+            <div className="absolute right-0 -translate-y-1/2 pr-1" style={{ left: "36%", top }}>
+              <Label node={node} align="left" />
             </div>
-          </div>
-
-        </div>
-
-      </div>
-    </section>
+          </React.Fragment>
+        );
+      })}
+    </div>
   );
 };
+
+export const Timeline = ({ data }: { data: TimelineNode[] }) => (
+  <section className="w-full px-4 py-10 sm:px-8 md:px-16 md:py-16 lg:px-24 xl:px-32">
+    <div className="mb-8 text-center md:mb-12">
+      <h2 className="flex items-baseline justify-center select-none text-balance">
+        <span className="font-imperial-script translate-y-[0.05em] text-5xl font-normal leading-none text-white md:text-8xl">
+          T
+        </span>
+        <span className="font-astralaga text-3xl font-normal lowercase leading-none tracking-widest text-white md:text-6xl">
+          imeline
+        </span>
+      </h2>
+      <p className="mx-auto mt-3 max-w-xl text-pretty px-1 font-serif text-xs leading-relaxed text-white/70 opacity-70 md:text-base">
+        Ikuti perjalanan INFEST XII 2026, dari pembukaan pendaftaran hingga malam penganugerahan.
+      </p>
+    </div>
+
+    <DesktopTimeline data={data} />
+    <MobileTimeline data={data} />
+  </section>
+);

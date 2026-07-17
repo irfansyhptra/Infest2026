@@ -209,128 +209,41 @@ const GALLERY_IMAGES = [
   "/assets/images/infest-19.webp",
   "/assets/images/infest-25.webp",
   "/assets/images/infest-3.webp",
-  "/assets/images/infest-4.webp",
-  "/assets/images/infest-6.webp",
-  "/assets/images/infest-22.webp",
-  "/assets/images/infest-7.webp",
-  "/assets/images/infest-26.webp",
-  "/assets/images/infest-18.webp",
-  "/assets/images/infest-9.webp",
-  "/assets/images/infest-8.webp",
-  "/assets/images/infest-11.webp",
-  "/assets/images/infest-10.webp",
-  "/assets/images/infest-12.webp",
-  "/assets/images/infest-13.webp",
 ];
 
-const MEMORY_CARDS = [
-  {
-    id: "card-1",
-    num: "Memory #1",
-    title: "Empowering Innovation",
-    img: GALLERY_IMAGES[0],
-    accent: "#60A5FA",
-    glow: "rgba(59,130,246,0.14)",
-    border: "border-[#FDD026]/28",
-    hoverBorder: "hover:border-[#FDD026]/60",
-    buttonBorder: "border-[#FDD026]/42",
-    buttonShadow: "shadow-[0_0_14px_rgba(253,208,38,0.42),inset_0_1px_0_rgba(255,255,255,0.12)]",
-    bg: "bg-gradient-to-b from-[#152d6a]/55 to-[#0b1650]/78",
-    zIndex: "z-[1]",
-    shadow: "shadow-[0_16px_50px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]",
-  },
-  {
-    id: "card-2",
-    num: "Featured Memory",
-    title: "Designing Digitopia",
-    img: GALLERY_IMAGES[1],
-    accent: "#FDD026",
-    glow: "rgba(253,208,38,0.18)",
-    border: "border-[#FDD026]/40",
-    hoverBorder: "hover:border-[#FDD026]/70",
-    buttonBorder: "border-[#FDD026]/50",
-    buttonShadow: "shadow-[0_0_16px_rgba(253,208,38,0.5),inset_0_1px_0_rgba(255,255,255,0.12)]",
-    bg: "bg-gradient-to-b from-[#1e3a8a]/60 to-[#0b1650]/82",
-    zIndex: "z-[2]",
-    shadow: "shadow-[0_20px_60px_-10px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.10)]",
-  },
-  {
-    id: "card-3",
-    num: "Memory #3",
-    title: "Connecting Communities",
-    img: GALLERY_IMAGES[2],
-    accent: "#60A5FA",
-    glow: "rgba(59,130,246,0.14)",
-    border: "border-[#FDD026]/28",
-    hoverBorder: "hover:border-[#FDD026]/60",
-    buttonBorder: "border-[#FDD026]/42",
-    buttonShadow: "shadow-[0_0_14px_rgba(253,208,38,0.42),inset_0_1px_0_rgba(255,255,255,0.12)]",
-    bg: "bg-gradient-to-b from-[#152d6a]/55 to-[#0b1650]/78",
-    zIndex: "z-[3]",
-    shadow: "shadow-[0_16px_50px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]",
-  },
-  {
-    id: "card-4",
-    num: "Memory #4",
-    title: "Digital Evolution",
-    img: GALLERY_IMAGES[3],
-    accent: "#FDD026",
-    glow: "rgba(253,208,38,0.12)",
-    border: "border-[#FDD026]/30",
-    hoverBorder: "hover:border-[#FDD026]/62",
-    buttonBorder: "border-[#FDD026]/40",
-    buttonShadow: "shadow-[0_0_14px_rgba(253,208,38,0.45),inset_0_1px_0_rgba(255,255,255,0.10)]",
-    bg: "bg-gradient-to-b from-[#152d6a]/55 to-[#0b1650]/78",
-    zIndex: "z-[4]",
-    shadow: "shadow-[0_16px_50px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]",
-  },
-  {
-    id: "card-5",
-    num: "Memory #5",
-    title: "Inspiring Champions",
-    img: GALLERY_IMAGES[4],
-    accent: "#60A5FA",
-    glow: "rgba(59,130,246,0.14)",
-    border: "border-[#FDD026]/28",
-    hoverBorder: "hover:border-[#FDD026]/60",
-    buttonBorder: "border-[#FDD026]/42",
-    buttonShadow: "shadow-[0_0_14px_rgba(253,208,38,0.42),inset_0_1px_0_rgba(255,255,255,0.12)]",
-    bg: "bg-gradient-to-b from-[#152d6a]/55 to-[#0b1650]/78",
-    zIndex: "z-[5]",
-    shadow: "shadow-[0_16px_50px_-10px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.06)]",
-  },
+// ── Bento Grid — clean photo tiles, dense flow keeps mobile compact ──
+
+// Spans total 12 cells and are ordered to tile exactly at both breakpoints:
+// 4x3 on desktop, 2x6 on mobile — any other mix leaves unfillable holes.
+const BENTO_TILES = [
+  { src: GALLERY_IMAGES[0], span: "col-span-2 row-span-2" },
+  { src: GALLERY_IMAGES[1], span: "col-span-1 row-span-2" },
+  { src: GALLERY_IMAGES[2], span: "col-span-1 row-span-1" },
+  { src: GALLERY_IMAGES[3], span: "col-span-1 row-span-1" },
+  { src: GALLERY_IMAGES[4], span: "col-span-1 row-span-1" },
+  { src: GALLERY_IMAGES[5], span: "col-span-1 row-span-1" },
+  { src: GALLERY_IMAGES[6], span: "col-span-2 row-span-1" },
 ];
 
-// ── MemoryCard renderer (used for both original & duplicate sets) ──
-
-const MemoryCardItem = ({ card, desktop = false }: { card: typeof MEMORY_CARDS[0]; desktop?: boolean }) => (
+const BentoTile = ({ src, span }: { src: string; span: string }) => (
   <div
     className={cn(
-      "group swiper-slide-card marquee-card-item shrink-0 flex flex-col relative border backdrop-blur-xl transition-all duration-500 overflow-visible ml-0",
-      "w-[180px] rounded-t-[60px] rounded-b-[16px]",
-      desktop && "lg:w-[17%] lg:max-w-[245px] xl:max-w-[265px] lg:shrink lg:rounded-t-[80px] lg:rounded-b-[24px]",
-      card.border, card.bg, card.shadow, card.zIndex,
-      "hover:z-[50] active:z-[50] hover:-translate-y-8 active:-translate-y-6",
-      card.hoverBorder,
-      "hover:shadow-[0_24px_60px_-8px_rgba(0,0,0,0.6),inset_0_1px_0_rgba(255,255,255,0.15)]"
+      "bento-item group relative overflow-hidden rounded-xl md:rounded-2xl",
+      "border-2 border-white/25 bg-black/20 shadow-[0_0_12px_rgba(0,0,0,0.5)]",
+      "transition-transform duration-500 ease-out hover:z-10 hover:scale-[1.03]",
+      span
     )}
-    style={{
-      boxShadow: `inset 0 1px 0 rgba(255,255,255,0.12), inset 0 -1px 0 rgba(0,0,0,0.25), 0 0 22px ${card.glow}`,
-      WebkitBoxReflect: "below 10px linear-gradient(transparent 68%, rgba(255,255,255,0.07))"
-    } as React.CSSProperties}
   >
-    <div className="absolute inset-0 noise-texture opacity-[0.015] pointer-events-none mix-blend-overlay rounded-t-[60px] rounded-b-[16px]" />
-    <div className="relative w-full aspect-[3/4] rounded-t-[60px] rounded-b-[12px] overflow-hidden border-b border-[#FDD026]/20">
-      <Image src={card.img} alt={card.title} fill loading="lazy" className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
-      <div className="absolute inset-0 bg-gradient-to-t from-[#0b1650] via-transparent to-transparent" />
-    </div>
-    <div className="relative bg-white/[0.04] backdrop-blur-sm border-t border-[#FDD026]/18 p-4 rounded-b-[16px] flex flex-col gap-1 pb-8">
-      <span className="text-[9px] font-extrabold uppercase tracking-widest" style={{ color: card.accent }}>{card.num}</span>
-      <h4 className="text-xs md:text-sm font-bold text-white font-sans leading-tight">{card.title}</h4>
-      <button className={`absolute -bottom-5 left-1/2 -translate-x-1/2 w-10 h-10 rounded-full flex items-center justify-center bg-gradient-to-b from-[#1e3a8a] to-[#0b1650] backdrop-blur-sm border ${card.buttonBorder} ${card.buttonShadow} text-white hover:scale-110 hover:brightness-110 active:scale-95 transition-all duration-300`}>
-        <svg className="w-4 h-4" style={{ color: card.accent }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5"><path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-      </button>
-    </div>
+    <Image
+      src={src}
+      alt=""
+      aria-hidden="true"
+      fill
+      loading="lazy"
+      sizes="(max-width: 768px) 50vw, 25vw"
+      className="object-cover grayscale contrast-125 brightness-[0.65] transition-[filter,transform] duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0 group-hover:brightness-90"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
   </div>
 );
 
@@ -408,8 +321,8 @@ const InfestWebsite = () => {
       }
     });
 
-    // 2. Hero Background Video — Parallax
-    gsap.to(".hero-video-bg", {
+    // 2. Hero Background Image — Parallax
+    gsap.to(".hero-bg", {
       yPercent: 30,
       scale: 1.08,
       ease: "none",
@@ -440,103 +353,84 @@ const InfestWebsite = () => {
         scrollTrigger: {
           trigger: ".second-section",
           start: "top top",
-          end: "+=3000",
-          scrub: 0.5,
+          end: "+=3400",
+          scrub: 1,
           pin: true,
           pinSpacing: true,
         }
       });
 
+      // Logo + tagline enter
       sectionTl.fromTo(".history-intro",
         { scale: 2.2, opacity: 0, y: 50 },
-        { scale: 1, opacity: 1, y: 0, duration: 1.0, ease: "power2.out" }
+        { scale: 1, opacity: 1, y: 0, duration: 1.4, ease: "power2.out" }
       );
 
+      // Logo + tagline exit (fade out, no more shrink-and-park — enter/exit only)
       sectionTl.to(".marquee-tagline",
-        { opacity: 0, y: -30, duration: 0.8, ease: "power2.in" },
-        "+=0.4"
+        { opacity: 0, y: -30, duration: 1.0, ease: "power2.in" },
+        "+=0.8"
       );
       sectionTl.to(".marquee-logo",
-        { scale: 0.45, y: "-22vh", duration: 1.0, ease: "power2.inOut" },
+        { opacity: 0, scale: 0.8, y: -40, duration: 1.0, ease: "power2.in" },
         "<"
       );
 
       sectionTl.fromTo(".history-cards-container",
         { scale: 0.95, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.8, ease: "power2.out" },
-        ">-0.4"
+        { scale: 1, opacity: 1, duration: 1.0, ease: "power2.out" },
+        "+=0.2"
       );
 
-      sectionTl.fromTo(".marquee-card-item:nth-child(5)",
-        { opacity: 0, y: 80, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power3.out" }
+      sectionTl.fromTo(".memories-heading",
+        { opacity: 0, y: 24, scale: 0.92 },
+        { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power2.out" },
+        "<0.15"
       );
 
-      sectionTl.fromTo(".marquee-card-item:nth-child(4)",
-        { opacity: 0, y: 80, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power3.out" },
-        "+=0.4"
+      sectionTl.fromTo(".bento-item",
+        { opacity: 0, y: 60, scale: 0.92 },
+        { opacity: 1, y: 0, scale: 1, duration: 1.2, stagger: 0.3, ease: "power3.out" },
+        "-=0.4"
       );
 
-      sectionTl.fromTo(".marquee-card-item:nth-child(3)",
-        { opacity: 0, y: 80, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power3.out" },
-        "+=0.4"
-      );
-
-      sectionTl.fromTo(".marquee-card-item:nth-child(2)",
-        { opacity: 0, y: 80, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power3.out" },
-        "+=0.4"
-      );
-
-      sectionTl.fromTo(".marquee-card-item:nth-child(1)",
-        { opacity: 0, y: 80, scale: 0.9 },
-        { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power3.out" },
-        "+=0.4"
-      );
+      // Hold on the finished grid for a beat before the pin releases,
+      // so the next section doesn't snap in immediately after the cards land.
+      sectionTl.to({}, { duration: 1.2 });
     });
 
     mm.add("(max-width: 1023px)", () => {
       const sectionTl = gsap.timeline({
         scrollTrigger: {
           trigger: ".second-section",
-          start: "top 75%",
-          end: "bottom 25%",
-          scrub: 0.5,
+          start: "top 85%",
+          end: "bottom 15%",
+          scrub: 0.8,
         }
       });
 
       sectionTl.fromTo(".history-intro",
         { scale: 1.3, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.6, ease: "power2.out" }
+        { scale: 1, opacity: 1, duration: 0.7, ease: "power2.out" }
       );
 
-      sectionTl.fromTo(".marquee-card-item",
-        { opacity: 0, y: 60, scale: 0.95 },
-        { opacity: 1, y: 0, scale: 1, stagger: 0.3, duration: 1.2, ease: "power3.out" },
-        ">-0.2"
+      sectionTl.to(".history-intro",
+        { opacity: 0, y: -20, scale: 0.92, duration: 0.6, ease: "power2.in" },
+        "+=0.25"
+      );
+
+      sectionTl.fromTo(".memories-heading",
+        { opacity: 0, y: 16, scale: 0.94 },
+        { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power2.out" },
+        "<0.1"
+      );
+
+      sectionTl.fromTo(".bento-item",
+        { opacity: 0, y: 40, scale: 0.95 },
+        { opacity: 1, y: 0, scale: 1, stagger: 0.12, duration: 0.9, ease: "power3.out" },
+        "-=0.1"
       );
     });
-
-    // 6. Timeline Mascot — Reveal with blur + float (one-shot, not scrub — filter OK)
-    const mascotFloat = gsap.to(".timeline-mascot", {
-      y: -10, duration: 2.0, repeat: -1, yoyo: true, ease: "sine.inOut", paused: true,
-    });
-
-    gsap.fromTo(".timeline-mascot",
-      { opacity: 0, y: 80, scale: 0.4, filter: "blur(8px)" },
-      {
-        opacity: 1, y: 0, scale: 1, filter: "blur(0px)",
-        duration: 1.0, ease: "back.out(1.7)",
-        scrollTrigger: {
-          trigger: "#timeline",
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-        onComplete: () => mascotFloat.play(),
-      }
-    );
 
     // 7. Competition Section — one-shot reveals (filter OK)
     gsap.fromTo("#competition .section-heading",
@@ -652,19 +546,18 @@ const InfestWebsite = () => {
         id="hero"
         className="w-full min-h-screen flex flex-col justify-center items-center relative py-14 md:py-20 px-3 md:px-8 lg:px-20 overflow-hidden z-10"
       >
-        {/* Background Video */}
-        <div className="hero-video-bg absolute inset-0 w-full h-full -z-20 pointer-events-none select-none overflow-hidden bg-black">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            className="w-full h-full object-cover opacity-75"
-          >
-            <source src="/assets/vidio/background_vidio.webm" type="video/webm" />
-          </video>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1e40af]/32 via-[#1e3a8a]/58 to-[#0f172a]/96 -z-10" />
+        {/* Background Image */}
+        <div className="hero-bg absolute inset-0 w-full h-full -z-20 pointer-events-none select-none overflow-hidden bg-black">
+          <Image
+            src="/assets/images/background-hero.webp"
+            alt=""
+            aria-hidden="true"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover opacity-75"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#1e40af]/32 via-[#1e3a8a]/58 to-[#0f172a]/96" />
         </div>
 
         {/* Vignette Overlay */}
@@ -752,31 +645,6 @@ const InfestWebsite = () => {
       <section
         className="second-section py-8 md:py-20 relative overflow-x-clip overflow-y-visible z-10 lg:min-h-screen lg:flex lg:items-center lg:justify-center"
       >
-        {/* Decorative Doll Graphic */}
-        <div className="hidden md:block absolute right-0 top-0 w-[240px] sm:w-[320px] md:w-[420px] lg:w-[500px] h-[240px] sm:h-[320px] md:h-[420px] lg:h-[500px] pointer-events-none z-[99] opacity-100 select-none"
-             style={{ transform: "translateY(-84.6%)" }}>
-          <Image
-            src="/assets/images/boneka.webp"
-            alt="Doll Decoration"
-            fill
-            className="object-contain object-right-bottom"
-            priority
-          />
-        </div>
-
-        {/* Decorative Flower Graphic (background element, left side) */}
-        <div className="hidden md:block absolute left-0 top-0 w-[240px] sm:w-[320px] md:w-[420px] lg:w-[500px] h-[240px] sm:h-[320px] md:h-[420px] lg:h-[500px] pointer-events-none z-0 opacity-100 select-none"
-             style={{ transform: "translateY(-100%)" }}>
-          <div className="relative w-full h-full" style={{ animation: "hero-fade-in 1s ease-out both" }}>
-            <img
-              src="/assets/svg/bunga.webp"
-              alt=""
-              aria-hidden="true"
-              className="w-full h-full object-contain object-left-bottom"
-            />
-          </div>
-        </div>
-
         {/* Background Layer */}
         <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
           <div className="absolute top-[5%] left-[12%] w-[520px] h-[520px] bg-[#3b82f6]/18 rounded-full blur-[110px]" />
@@ -868,24 +736,28 @@ const InfestWebsite = () => {
             </div>
           </div>
 
-          {/* 5 Memory Cards Container */}
-          <div className="history-cards-container w-full lg:absolute lg:inset-0 lg:flex lg:flex-row lg:items-center lg:justify-center lg:gap-4 xl:gap-5 lg:px-4 py-16 md:py-8 relative z-10 overflow-x-auto scrollbar-none overflow-y-visible px-12 gap-0">
+          {/* Bento Grid — fills the viewport under the logo; spans tile exactly at
+              2x6 (mobile) and 4x3 (desktop), so rows are fixed, not auto. */}
+          <div className="history-cards-container w-full h-screen relative z-10 p-2 md:p-3 lg:absolute lg:inset-0 lg:h-auto">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,150,190,0.1),transparent_70%)] pointer-events-none z-0" />
 
-            <div className="mobile-marquee-track flex flex-row items-center gap-5 lg:gap-4 xl:gap-5 w-max lg:w-full lg:justify-center overflow-y-visible">
+            <div className="memories-heading absolute inset-0 z-20 flex items-center justify-center pointer-events-none select-none">
+              <h3
+                className="flex items-baseline text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]"
+                style={{ WebkitTextStroke: "1px #FDD026", textStroke: "1px #FDD026" } as React.CSSProperties}
+              >
+                <span className="font-imperial-script text-9xl md:text-[11rem] lg:text-[13rem] leading-none translate-y-[0.12em]">I</span>
+                <span className="font-serif lowercase text-5xl md:text-7xl lg:text-8xl tracking-wide">n</span>
+                <span className="w-3 md:w-6" />
+                <span className="font-imperial-script text-9xl md:text-[11rem] lg:text-[13rem] leading-none translate-y-[0.12em]">M</span>
+                <span className="font-serif lowercase text-5xl md:text-7xl lg:text-8xl tracking-wide">emories</span>
+              </h3>
+            </div>
 
-              {/* Original set (desktop + mobile visible) */}
-              {MEMORY_CARDS.map((card) => (
-                <MemoryCardItem key={`${card.id}-original`} card={card} desktop />
+            <div className="relative z-10 grid h-full w-full grid-cols-2 grid-rows-6 gap-2 md:grid-cols-4 md:grid-rows-3 md:gap-3">
+              {BENTO_TILES.map((tile) => (
+                <BentoTile key={tile.src} src={tile.src} span={tile.span} />
               ))}
-
-              {/* Duplicate set — mobile marquee seamless loop only */}
-              <div className="flex lg:hidden flex-row items-center gap-5 overflow-y-visible">
-                {MEMORY_CARDS.map((card) => (
-                  <MemoryCardItem key={`${card.id}-duplicate`} card={card} />
-                ))}
-              </div>
-
             </div>
           </div>
         </div>
@@ -895,39 +767,7 @@ const InfestWebsite = () => {
       <div className="w-full relative">
 
         {/* Timeline Section */}
-        <section
-          id="timeline"
-          className="w-full relative overflow-visible pt-16 pb-12 z-10"
-        >
-          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-            <div className="absolute top-[25%] left-[8%] w-[400px] h-[400px] bg-[#2563eb]/14 rounded-full blur-[105px]" />
-            <div className="absolute bottom-[15%] right-[12%] w-[450px] h-[450px] bg-[#3b82f6]/10 rounded-full blur-[115px]" />
-
-            <svg className="absolute inset-0 w-full h-full opacity-[0.06]" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern id="grid-pattern-b" width="60" height="60" patternUnits="userSpaceOnUse">
-                  <path d="M 60 0 L 0 0 0 60" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="0.8" />
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#grid-pattern-b)" />
-            </svg>
-
-            <div
-              className="absolute top-[20%] right-[25%] w-[600px] h-[400px] rounded-full pointer-events-none mix-blend-screen blur-[130px]"
-              style={{
-                background: "radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 50%, transparent 100%)",
-                animation: "nebula-pulse 14s infinite ease-in-out"
-              }}
-            />
-
-            <TwinklingStar top="15%" left="20%" delay={0.4} size={2} />
-            <TwinklingStar top="65%" left="8%" delay={1.9} size={3} />
-            <TwinklingStar top="45%" left="88%" delay={0.9} size={2.5} />
-            <TwinklingStar top="85%" left="72%" delay={2.3} size={2} />
-
-            <div className="absolute inset-0 noise-texture opacity-[0.03] mix-blend-overlay" />
-          </div>
-
+        <section id="timeline" className="w-full relative z-10">
           <Timeline data={timelineData} />
         </section>
 

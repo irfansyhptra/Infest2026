@@ -7,7 +7,6 @@ import { Header } from "@/components/header";
 import FooterDekstop from "@/components/footer/footerDekstop";
 import FooterMobile from "@/components/footer/footerMobile";
 import NextTopLoader from "nextjs-toploader";
-import LenisProvider from "@/libs/providers/LenisProvider";
 
 const BASE_DESCRIPTION =
   "InFest XII 2026 adalah acara teknologi terbesar di Aceh, menghadirkan kompetisi UI/UX, Hackathon, dan Data Science berskala nasional, seminar industri, serta pameran inovasi digital mahasiswa Universitas Syiah Kuala.";
@@ -66,7 +65,6 @@ export default function RootLayout({
       <body
         className={`${montserrat.className} ${imperialScript.variable} w-full min-h-screen textured-bg`}
       >
-        <LenisProvider>
           <NextTopLoader
             color="#FDD026"
             initialPosition={0.2}
@@ -87,7 +85,6 @@ export default function RootLayout({
           <div className="flex w-full">
             <FooterDekstop />
           </div>
-        </LenisProvider>
       </body>
     </html>
   );

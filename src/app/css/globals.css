@@ -110,11 +110,6 @@
 
 /* ── Keyframes previously in dangerouslySetInnerHTML blocks ── */
 
-@keyframes mobile-marquee-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
 @keyframes nebula-pulse {
   0%, 100% { opacity: 0.25; transform: scale(1); }
   50% { opacity: 0.45; transform: scale(1.15); }
@@ -156,18 +151,6 @@
   0% { transform: translate(0, 0) rotate(0deg); }
   50% { transform: translate(30px, -40px) rotate(180deg); }
   100% { transform: translate(0, 0) rotate(360deg); }
-}
-
-@media (max-width: 1023px) {
-  .mobile-marquee-track {
-    display: flex;
-    width: max-content;
-    animation: mobile-marquee-scroll 25s infinite linear;
-  }
-  .mobile-marquee-track:hover,
-  .mobile-marquee-track:active {
-    animation-play-state: paused;
-  }
 }
 
 @keyframes bg-spin {
@@ -858,28 +841,6 @@
   100% {
     transform: translate3d(0, 0, 0);
   }
-}
-
-/* Lenis smooth scrolling helper styles */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-.lenis.lenis-scrolling iframe {
-  pointer-events: none;
 }
 
 /* ============================

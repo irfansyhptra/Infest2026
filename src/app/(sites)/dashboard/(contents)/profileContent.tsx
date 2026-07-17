@@ -322,11 +322,7 @@ const ProfileContent = () => {
   };
 
   const handleSave = async () => {
-    if ((window as any).lenis) {
-      (window as any).lenis.scrollTo(0);
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
     if (!validateForm()) {
       setSaveMessage({
         type: "error",
@@ -411,11 +407,7 @@ const ProfileContent = () => {
       });
     } finally {
       setIsSaving(false);
-      if ((window as any).lenis) {
-        (window as any).lenis.scrollTo(0);
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
