@@ -81,13 +81,6 @@
   }
 }
 
-/* ── Page-level entrance animation ── */
-
-@keyframes hero-fade-in {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0);    }
-}
-
 /* ── Decorative element animations (CSS-only, no JS overhead) ── */
 
 @keyframes star-twinkle {
@@ -802,57 +795,10 @@
   filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 30px rgba(82, 142, 255, 0.25));
 }
 
-/* Golden glow for mascot logo */
-.logo-glow-gold {
-  filter: drop-shadow(0 0 20px rgba(253, 208, 38, 0.75)) drop-shadow(0 0 40px rgba(253, 208, 38, 0.45));
-}
-
-/* ============================
-   DIAGONAL BACKGROUND MARQUEE
-   ============================ */
-
-.animate-marquee-left {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation: marquee-scroll-left 50s linear infinite;
-}
-
-.animate-marquee-right {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation: marquee-scroll-right 50s linear infinite;
-}
-
-@keyframes marquee-scroll-left {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(-50%, 0, 0);
-  }
-}
-
-@keyframes marquee-scroll-right {
-  0% {
-    transform: translate3d(-50%, 0, 0);
-  }
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
 /* ============================
    GPU ACCELERATION HINTS
    Ensures 60fps on scroll-driven animations
    ============================ */
-
-.hero-content,
-.hero-video-bg,
-.hero-marquees {
-  will-change: transform, opacity;
-}
 
 .section-curve path {
   will-change: d;
@@ -882,6 +828,16 @@
 .marquee-divider,
 .marquee-slider {
   will-change: transform, opacity, filter;
+}
+
+@keyframes marquee-scroll-left {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes marquee-scroll-right {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
 }
 
 /* 3D Perspective Marquees on the Left and Right of Gallery Section */

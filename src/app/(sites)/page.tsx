@@ -229,8 +229,8 @@ const BentoTile = ({ src, span }: { src: string; span: string }) => (
   <div
     className={cn(
       "bento-item group relative overflow-hidden rounded-xl md:rounded-2xl",
-      "border-2 border-white/25 bg-black/20 shadow-[0_0_12px_rgba(0,0,0,0.5)]",
-      "transition-transform duration-500 ease-out hover:z-10 hover:scale-[1.03]",
+      "border-2 border-[#FDD026]/60 bg-black/20 shadow-[0_0_12px_rgba(0,0,0,0.5),0_0_16px_rgba(253,208,38,0.35)]",
+      "transition-[transform,box-shadow,border-color] duration-500 ease-out hover:z-10 hover:scale-[1.03] hover:border-[#FDD026] hover:shadow-[0_0_12px_rgba(0,0,0,0.5),0_0_28px_rgba(253,208,38,0.65)]",
       span
     )}
   >
@@ -307,47 +307,7 @@ const InfestWebsite = () => {
   useGSAP(() => {
     const mm = gsap.matchMedia();
 
-    // 1. Hero Content — Scale & Opacity on Scroll (no filter:blur during scrub = faster)
-    gsap.to(".hero-content", {
-      y: -80,
-      scale: 0.92,
-      opacity: 0,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "bottom 60%",
-        scrub: 0.8,
-      }
-    });
-
-    // 2. Hero Background Image — Parallax
-    gsap.to(".hero-bg", {
-      yPercent: 30,
-      scale: 1.08,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "bottom top",
-        scrub: 0.6,
-      }
-    });
-
-    // 3. Hero Marquee Ribbons — Parallax + Fade
-    gsap.to(".hero-marquees", {
-      yPercent: -25,
-      opacity: 0,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "bottom 60%",
-        scrub: 0.6,
-      }
-    });
-
-    // 4. Second Section — Pinned sequential reveal (blur removed from scrub for perf)
+    // Hero / Second Section — Pinned sequential reveal (blur removed from scrub for perf)
     mm.add("(min-width: 1024px)", () => {
       const sectionTl = gsap.timeline({
         scrollTrigger: {
@@ -360,13 +320,7 @@ const InfestWebsite = () => {
         }
       });
 
-      // Logo + tagline enter
-      sectionTl.fromTo(".history-intro",
-        { scale: 2.2, opacity: 0, y: 50 },
-        { scale: 1, opacity: 1, y: 0, duration: 1.4, ease: "power2.out" }
-      );
-
-      // Logo + tagline exit (fade out, no more shrink-and-park — enter/exit only)
+      // Logo + tagline are visible at rest — hold briefly, then fade out on scroll
       sectionTl.to(".marquee-tagline",
         { opacity: 0, y: -30, duration: 1.0, ease: "power2.in" },
         "+=0.8"
@@ -409,11 +363,7 @@ const InfestWebsite = () => {
         }
       });
 
-      sectionTl.fromTo(".history-intro",
-        { scale: 1.3, opacity: 0 },
-        { scale: 1, opacity: 1, duration: 0.7, ease: "power2.out" }
-      );
-
+      // Logo + tagline are visible at rest — hold briefly, then fade out on scroll
       sectionTl.to(".history-intro",
         { opacity: 0, y: -20, scale: 0.92, duration: 0.6, ease: "power2.in" },
         "+=0.25"
@@ -541,108 +491,12 @@ const InfestWebsite = () => {
         <FloatingCloud top="97%" left="34%"  speed={5}   delay={1.3} opacity={0.24} size="md" flip />
       </div>
 
-      {/* Hero Section */}
-      <section
-        id="hero"
-        className="w-full min-h-screen flex flex-col justify-center items-center relative py-14 md:py-20 px-3 md:px-8 lg:px-20 overflow-hidden z-10"
-      >
-        {/* Background Image */}
-        <div className="hero-bg absolute inset-0 w-full h-full -z-20 pointer-events-none select-none overflow-hidden bg-black">
-          <Image
-            src="/assets/images/background-hero.webp"
-            alt=""
-            aria-hidden="true"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover opacity-75"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1e40af]/32 via-[#1e3a8a]/58 to-[#0f172a]/96" />
-        </div>
-
-        {/* Vignette Overlay */}
-        <div
-          className="absolute inset-0 -z-10 pointer-events-none select-none opacity-8"
-          style={{
-            backgroundImage: `radial-gradient(ellipse 120% 100% at 50% 50%, transparent 38%, rgba(15, 23, 42, 0.58) 100%)`,
-            backgroundRepeat: "no-repeat",
-            backgroundSize: "100% 100%"
-          }}
-        />
-
-        {/* Decorative Diagonal Marquees */}
-        <div className="hero-marquees absolute inset-0 pointer-events-none select-none overflow-hidden z-0 opacity-10">
-          <div
-            className="absolute left-[-10%] bottom-[25%] w-[200%]"
-            style={{ transform: "rotate(-45deg)", transformOrigin: "bottom left" }}
-          >
-            <div className="animate-marquee-left flex gap-4 text-[40px] md:text-[68px] lg:text-[96px] font-black font-clash-display tracking-widest text-white uppercase select-none">
-              <span>INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII •</span>
-              <span>INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII •</span>
-            </div>
-          </div>
-
-          <div
-            className="absolute right-[-10%] top-[25%] w-[200%]"
-            style={{ transform: "rotate(-45deg)", transformOrigin: "top right" }}
-          >
-            <div className="animate-marquee-right flex gap-4 text-[40px] md:text-[68px] lg:text-[96px] font-black font-clash-display tracking-widest text-white uppercase select-none">
-              <span>INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII •</span>
-              <span>INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII • INFEST XII •</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="hero-content w-full z-[99] -mt-16 md:mt-2 lg:-mt-12 px-2 md:px-8 lg:px-16 flex flex-col items-center justify-center text-center will-change-transform">
-          <div
-            className="flex flex-col gap-4 md:gap-6 items-center text-center w-full px-2 md:px-12 lg:px-24"
-            style={{ animation: "hero-fade-in 1s ease-out both" }}
-          >
-            <h1 className="tracking-tighter leading-none font-astralaga mb-4 flex flex-col items-center select-none w-full font-normal">
-              <span className="flex flex-col sm:flex-row items-center justify-center sm:flex-nowrap sm:whitespace-nowrap gap-y-0.5 sm:gap-y-0 sm:gap-x-2 md:gap-x-4 text-6xl sm:text-6xl md:text-[7.5vw] lg:text-[8.5vw]">
-                <span className="flex items-center">
-                  <span className="font-imperial-script text-white text-7xl sm:text-7xl md:text-[9vw] lg:text-[10.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-2">I</span>
-                  <span className="text-white font-normal tracking-tighter">nformatics</span>
-                </span>
-                <span className="flex items-center">
-                  <span className="font-imperial-script text-white text-7xl sm:text-7xl md:text-[9vw] lg:text-[10.5vw] leading-none select-none font-normal translate-y-[0.08em] mr-1.5">F</span>
-                  <span className="text-white font-normal tracking-tighter">estival</span>
-                </span>
-              </span>
-              <span className="text-5xl md:text-7xl lg:text-8xl mt-1 md:-mt-4 font-serif font-bold drop-shadow-[0_0_15px_rgba(253,208,38,0.7)] select-all inline-flex items-center justify-center gap-x-[1px] md:gap-x-[2px]">
-                {["X", "I", "I", " ", "2", "0", "2", "6"].map((char, index) => (
-                  char === " " ? (
-                    <span key={index} className="w-1.5 md:w-2.5" />
-                  ) : (
-                    <span
-                      key={index}
-                      className="inline-block"
-                      style={{
-                        backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent"
-                      }}
-                    >
-                      {char}
-                    </span>
-                  )
-                ))}
-              </span>
-            </h1>
-
-            <p className="text-sm md:text-xl lg:text-2xl leading-relaxed mx-auto text-center font-medium drop-shadow-md text-pretty font-serif italic mt-3 md:mt-10 px-2 md:px-16 lg:px-32" style={{ color: "#F5F0E1" }}>
-              Infest (Informatics Festival) XI 2025 is the biggest tech event in Aceh, bringing together students, professionals, and digital creators in one vibrant arena. Carrying the theme <span className="font-bold not-italic" style={{ backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>&quot;Synthera: Creating a Harmonized, Intelligent, and Innovative Digital Ecosystem&quot;</span>, INFEST is more than a competition, it&apos;s a movement to shape the future through innovation, collaboration, and real-world impact.
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* Non-Hero Sections — shared background */}
       <div style={{ background: "radial-gradient(ellipse at 50% 18%, #2563eb 0%, #1d4ed8 28%, #1e3a8a 58%, #020a1c 100%)" }}>
 
-      {/* 3D Marquee Section */}
+      {/* Hero Section — 3D Marquee */}
       <section
+        id="hero"
         className="second-section py-8 md:py-20 relative overflow-x-clip overflow-y-visible z-10 lg:min-h-screen lg:flex lg:items-center lg:justify-center"
       >
         {/* Background Layer */}
@@ -713,26 +567,58 @@ const InfestWebsite = () => {
 
         <div className="relative w-full z-10 flex flex-col items-center justify-center min-h-[420px] md:min-h-[600px] lg:min-h-[750px] px-3 lg:px-6 overflow-hidden">
 
-          {/* Intro Block */}
-          <div className="history-intro w-full flex flex-col items-center justify-center text-center gap-6 z-20 relative max-w-4xl mx-auto lg:absolute lg:inset-0">
-            <div className="marquee-logo relative hover:scale-105 transition-all duration-500 ease-out flex items-center justify-center">
-              <div className="absolute w-[80%] h-[80%] bg-gradient-to-r from-[#FDD026] to-[#FFE885] rounded-full blur-[45px] opacity-60 animate-pulse z-0" style={{ animationDuration: "3.5s" }} />
-              <div className="absolute w-[50%] h-[50%] bg-[#FDD026] rounded-full blur-[20px] opacity-50 z-0" />
+          {/* Intro Block — logo left, hero text right, whole group anchored right */}
+          <div className="history-intro w-full flex flex-col lg:flex-row items-center justify-center lg:justify-end text-center lg:text-left gap-8 lg:gap-16 xl:gap-20 z-20 relative px-4 sm:px-8 md:px-14 lg:px-20 xl:px-28 lg:absolute lg:inset-0">
+            <div className="marquee-logo shrink-0 relative hover:scale-105 transition-all duration-500 ease-out flex items-center justify-center">
               <Image
                 src="/assets/images/logo_hero.PNG?v=2"
                 alt="INFEST Logo Large"
                 width={440}
                 height={440}
-                className="object-contain w-44 h-44 md:w-80 md:h-80 lg:w-[360px] lg:h-[360px] xl:w-[420px] xl:h-[420px] logo-glow-gold relative z-10"
+                className="object-contain w-48 h-48 md:w-80 md:h-80 lg:w-[360px] lg:h-[360px] xl:w-[440px] xl:h-[440px] relative z-10"
                 priority
               />
             </div>
 
-            <div className="marquee-tagline flex flex-col gap-2 max-w-sm md:max-w-md lg:max-w-lg">
-              <h2 className="font-clash-display text-xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-wide leading-tight text-balance">
-                Empowering the Digital Generation
-              </h2>
-              <div className="marquee-divider w-24 h-[3px] bg-gradient-to-r from-[#2596BE] to-[#FDD026] rounded-full mt-2 mx-auto shadow-sm" />
+            <div className="marquee-tagline flex flex-col gap-4 md:gap-6 items-center lg:items-start">
+              <h1 className="tracking-tighter leading-none font-astralaga flex flex-col items-center lg:items-start select-none w-full font-normal">
+                <span className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start sm:flex-nowrap sm:whitespace-nowrap gap-y-0.5 sm:gap-y-0 sm:gap-x-2 md:gap-x-4 text-6xl sm:text-6xl md:text-7xl lg:text-[6.2vw] xl:text-8xl">
+                  <span className="flex items-center">
+                    <span className="font-imperial-script text-white text-7xl sm:text-7xl md:text-8xl lg:text-[7.8vw] xl:text-9xl leading-none select-none font-normal translate-y-[0.08em] mr-2">I</span>
+                    <span className="text-white font-normal tracking-tighter">nformatics</span>
+                  </span>
+                  <span className="flex items-center">
+                    <span className="font-imperial-script text-white text-7xl sm:text-7xl md:text-8xl lg:text-[7.8vw] xl:text-9xl leading-none select-none font-normal translate-y-[0.08em] mr-1.5">F</span>
+                    <span className="text-white font-normal tracking-tighter">estival</span>
+                  </span>
+                </span>
+                <span className="text-5xl md:text-7xl lg:text-8xl mt-1 font-serif font-bold drop-shadow-[0_0_15px_rgba(253,208,38,0.7)] select-all inline-flex items-center justify-center lg:justify-start gap-x-[1px] md:gap-x-[2px]">
+                  {["X", "I", "I", " ", "2", "0", "2", "6"].map((char, index) => (
+                    char === " " ? (
+                      <span key={index} className="w-1 md:w-2" />
+                    ) : (
+                      <span
+                        key={index}
+                        className="inline-block"
+                        style={{
+                          backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)",
+                          WebkitBackgroundClip: "text",
+                          backgroundClip: "text",
+                          color: "transparent"
+                        }}
+                      >
+                        {char}
+                      </span>
+                    )
+                  ))}
+                </span>
+              </h1>
+
+              <p className="text-base md:text-xl lg:text-2xl leading-relaxed text-center lg:text-left font-medium drop-shadow-md text-pretty font-serif italic" style={{ color: "#F5F0E1" }}>
+                Infest (Informatics Festival) XI 2025 is the biggest tech event in Aceh, bringing together students, professionals, and digital creators in one vibrant arena. Carrying the theme <span className="font-bold not-italic" style={{ backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>&quot;Synthera: Creating a Harmonized, Intelligent, and Innovative Digital Ecosystem&quot;</span>, INFEST is more than a competition, it&apos;s a movement to shape the future through innovation, collaboration, and real-world impact.
+              </p>
+
+              <div className="marquee-divider w-24 h-[3px] bg-gradient-to-r from-[#2596BE] to-[#FDD026] rounded-full mx-auto lg:mx-0 shadow-sm" />
             </div>
           </div>
 
@@ -763,13 +649,8 @@ const InfestWebsite = () => {
         </div>
       </section>
 
-      {/* Combined Timeline & Competitions Section */}
+      {/* Combined Competitions & Timeline Section */}
       <div className="w-full relative">
-
-        {/* Timeline Section */}
-        <section id="timeline" className="w-full relative z-10">
-          <Timeline data={timelineData} />
-        </section>
 
         {/* Competitions Section */}
         <section
@@ -966,6 +847,11 @@ const InfestWebsite = () => {
               </div>
             </div>
           </div>
+        </section>
+
+        {/* Timeline Section */}
+        <section id="timeline" className="w-full relative z-10">
+          <Timeline data={timelineData} />
         </section>
 
         {/* Seminar Section */}
