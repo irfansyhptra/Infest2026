@@ -69,8 +69,8 @@ export const Navbar = () => {
 
   const navMenuItems = [
     { id: "home", name: "Home", icon: <HomeIcon />, destinationSection: "home" },
-    { id: "timeline", name: "Timeline", icon: <TimelineIcon />, destinationSection: "timeline" },
     { id: "competition", name: "Competition", icon: <CompetitionIcon />, destinationSection: "competition" },
+    { id: "timeline", name: "Timeline", icon: <TimelineIcon />, destinationSection: "timeline" },
     { id: "seminar", name: "Seminar", icon: <SeminarIcon />, destinationSection: "seminar" },
   ];
 

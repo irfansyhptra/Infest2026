@@ -830,45 +830,6 @@
   will-change: transform, opacity, filter;
 }
 
-@keyframes marquee-scroll-left {
-  0% { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
-}
-
-@keyframes marquee-scroll-right {
-  0% { transform: translate3d(-50%, 0, 0); }
-  100% { transform: translate3d(0, 0, 0); }
-}
-
-/* 3D Perspective Marquees on the Left and Right of Gallery Section */
-.animate-marquee-3d-left {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation: marquee-scroll-right 30s linear infinite;
-}
-
-.animate-marquee-3d-left-slow {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation: marquee-scroll-right 45s linear infinite;
-}
-
-.animate-marquee-3d-right {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation: marquee-scroll-left 30s linear infinite;
-}
-
-.animate-marquee-3d-right-slow {
-  display: flex;
-  width: max-content;
-  will-change: transform;
-  animation: marquee-scroll-left 45s linear infinite;
-}
-
 .transform-3d {
   transform-style: preserve-3d;
 }

@@ -305,6 +305,10 @@ const InfestWebsite = () => {
   }, []);
 
   useGSAP(() => {
+    // Prevents mobile momentum scroll from outrunning ScrollTrigger's RAF updates,
+    // which is what caused the pinned hero to feel "stuck" during fast scrolling.
+    ScrollTrigger.normalizeScroll(true);
+
     const mm = gsap.matchMedia();
 
     // Hero / Second Section — Pinned sequential reveal (blur removed from scrub for perf)
@@ -314,18 +318,25 @@ const InfestWebsite = () => {
           trigger: ".second-section",
           start: "top top",
           end: "+=3400",
-          scrub: 1,
+          scrub: 0.5,
           pin: true,
           pinSpacing: true,
+          anticipatePin: 1,
+          fastScrollEnd: true,
         }
       });
 
-      // Logo + tagline are visible at rest — hold briefly, then fade out on scroll
-      sectionTl.to(".marquee-tagline",
+      // Logo + tagline are visible at rest — hold briefly, then fade out on scroll.
+      // fromTo (not to) because AOS sets these to opacity:0 via stylesheet before
+      // GSAP's layout effect runs; a bare .to() would capture that 0 as its start
+      // value and freeze them invisible forever.
+      sectionTl.fromTo(".marquee-tagline",
+        { opacity: 1, y: 0 },
         { opacity: 0, y: -30, duration: 1.0, ease: "power2.in" },
         "+=0.8"
       );
-      sectionTl.to(".marquee-logo",
+      sectionTl.fromTo(".marquee-logo",
+        { opacity: 1, scale: 1, y: 0 },
         { opacity: 0, scale: 0.8, y: -40, duration: 1.0, ease: "power2.in" },
         "<"
       );
@@ -519,57 +530,15 @@ const InfestWebsite = () => {
           <div className="absolute inset-0 noise-texture opacity-[0.025] mix-blend-overlay" />
         </div>
 
-        {/* Left 3D Perspective Marquee */}
-        <div className="hidden md:flex absolute left-0 top-0 bottom-0 w-[38vw] max-w-[580px] overflow-hidden pointer-events-none z-0 items-center select-none"
-             style={{
-               perspective: "1000px",
-               perspectiveOrigin: "center center",
-               maskImage: "linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)",
-               WebkitMaskImage: "linear-gradient(to right, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)"
-             }}>
-          <div className="flex flex-col gap-12 w-[2800px] shrink-0 transform-3d items-start"
-               style={{ transform: "rotateY(65deg)", transformOrigin: "left center" }}>
-            <div className="animate-marquee-3d-left flex text-[64px] md:text-[88px] lg:text-[110px] xl:text-[128px] font-black font-clash-display tracking-widest text-white/28 uppercase whitespace-nowrap"
-                 style={{ textShadow: "0 0 22px rgba(147,197,253,0.52), 0 0 45px rgba(96,165,250,0.28)" }}>
-              <span>INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • </span>
-              <span>INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • INFEST XII • SYNERGIZING THE FUTURE • DESIGNING DIGITOPIA • </span>
-            </div>
-            <div className="animate-marquee-3d-left-slow flex text-[44px] md:text-[60px] lg:text-[76px] xl:text-[88px] font-black font-clash-display tracking-widest text-white/16 uppercase whitespace-nowrap"
-                 style={{ textShadow: "0 0 14px rgba(147,197,253,0.30), 0 0 30px rgba(96,165,250,0.15)" }}>
-              <span>CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • </span>
-              <span>CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • CREATIVE TECH • INNOVATION • COLLABORATION • ACEH TECH EVENT • </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Right 3D Perspective Marquee */}
-        <div className="hidden md:flex absolute right-0 top-0 bottom-0 w-[38vw] max-w-[580px] overflow-hidden pointer-events-none z-0 items-center select-none"
-             style={{
-               perspective: "1000px",
-               perspectiveOrigin: "center center",
-               maskImage: "linear-gradient(to left, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)",
-               WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%)"
-             }}>
-          <div className="flex flex-col gap-12 w-[2800px] shrink-0 transform-3d ml-auto items-start"
-               style={{ transform: "rotateY(-65deg)", transformOrigin: "right center" }}>
-            <div className="animate-marquee-3d-right flex text-[64px] md:text-[88px] lg:text-[110px] xl:text-[128px] font-black font-clash-display tracking-widest text-white/28 uppercase whitespace-nowrap"
-                 style={{ textShadow: "0 0 22px rgba(147,197,253,0.52), 0 0 45px rgba(96,165,250,0.28)" }}>
-              <span>JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • </span>
-              <span>JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • JOIN THE REVOLUTION • SHAPING TOMORROW • DIGITAL EVOLUTION • </span>
-            </div>
-            <div className="animate-marquee-3d-right-slow flex text-[44px] md:text-[60px] lg:text-[76px] xl:text-[88px] font-black font-clash-display tracking-widest text-white/16 uppercase whitespace-nowrap"
-                 style={{ textShadow: "0 0 14px rgba(147,197,253,0.30), 0 0 30px rgba(96,165,250,0.15)" }}>
-              <span>DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • </span>
-              <span>DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • DEVELOPMENT • COMPETITIONS • SEMINARS • HACKATHON • UI/UX DESIGN • </span>
-            </div>
-          </div>
-        </div>
-
         <div className="relative w-full z-10 flex flex-col items-center justify-center min-h-[420px] md:min-h-[600px] lg:min-h-[750px] px-3 lg:px-6 overflow-hidden">
 
           {/* Intro Block — logo left, hero text right, whole group anchored right */}
           <div className="history-intro w-full flex flex-col lg:flex-row items-center justify-center lg:justify-end text-center lg:text-left gap-8 lg:gap-16 xl:gap-20 z-20 relative px-4 sm:px-8 md:px-14 lg:px-20 xl:px-28 lg:absolute lg:inset-0">
-            <div className="marquee-logo shrink-0 relative hover:scale-105 transition-all duration-500 ease-out flex items-center justify-center">
+            <div
+              className="marquee-logo shrink-0 relative hover:scale-105 transition-all duration-500 ease-out flex items-center justify-center"
+              data-aos="zoom-in"
+              data-aos-duration="900"
+            >
               <Image
                 src="/assets/images/logo_hero.PNG?v=2"
                 alt="INFEST Logo Large"
@@ -580,7 +549,12 @@ const InfestWebsite = () => {
               />
             </div>
 
-            <div className="marquee-tagline flex flex-col gap-4 md:gap-6 items-center lg:items-start">
+            <div
+              className="marquee-tagline flex flex-col gap-4 md:gap-6 items-center lg:items-start"
+              data-aos="fade-up"
+              data-aos-duration="900"
+              data-aos-delay="250"
+            >
               <h1 className="tracking-tighter leading-none font-astralaga flex flex-col items-center lg:items-start select-none w-full font-normal">
                 <span className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start sm:flex-nowrap sm:whitespace-nowrap gap-y-0.5 sm:gap-y-0 sm:gap-x-2 md:gap-x-4 text-6xl sm:text-6xl md:text-7xl lg:text-[6.2vw] xl:text-8xl">
                   <span className="flex items-center">
@@ -857,7 +831,7 @@ const InfestWebsite = () => {
         {/* Seminar Section */}
         <section
           id="seminar"
-          className="w-full py-16 md:py-28 px-3 md:px-6 lg:px-8 relative overflow-hidden flex flex-col items-center justify-center min-h-[80vh] md:min-h-screen"
+          className="w-full py-16 md:py-28 px-3 md:px-6 lg:px-8 relative overflow-hidden flex flex-col items-center justify-center min-h-[80vh] md:min-h-screen [content-visibility:auto] [contain-intrinsic-size:1px_900px]"
         >
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
             <div className="absolute top-[18%] left-[18%] w-[420px] h-[420px] bg-[#3b82f6]/14 rounded-full blur-[115px]" />
