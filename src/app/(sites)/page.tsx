@@ -454,12 +454,21 @@ const InfestWebsite = () => {
       });
 
       mm.add("(max-width: 1023px)", () => {
-        const sectionTl = gsap.timeline({
+        // Mobile: use toggle-based triggers instead of scrub to prevent
+        // the intro from partially fading on page load (scrub evaluates
+        // non-zero progress when the section is already in view at scroll=0).
+
+        // Fade out the intro (logo + title + description) when scrolling past
+        gsap.to(".history-intro", {
+          opacity: 0,
+          y: -20,
+          scale: 0.92,
+          duration: 0.6,
+          ease: "power2.in",
           scrollTrigger: {
             trigger: ".second-section",
-            start: "top 85%",
-            end: "bottom 15%",
-            scrub: 0.8,
+            start: "20% top",
+            toggleActions: "play none none reverse",
             onEnter: promoteHeroLayer,
             onEnterBack: promoteHeroLayer,
             onLeave: releaseHeroLayer,
@@ -467,32 +476,53 @@ const InfestWebsite = () => {
           }
         });
 
-        // Logo + tagline are visible at rest — hold briefly, then crossfade into
-        // the bento grid on scroll. .history-cards-container starts at opacity-0
-        // in the JSX (to avoid a FOUC flash before the loader/entrance timeline
-        // runs) — on mobile nothing else ever reveals it, so without this tween
-        // it stays invisible forever, leaving a dead blank scroll gap.
-        sectionTl.to(".history-intro",
-          { opacity: 0, y: -20, scale: 0.92, duration: 0.6, ease: "power2.in" },
-          "+=0.25"
-        );
-
-        sectionTl.fromTo(".history-cards-container",
+        // Reveal the bento grid
+        gsap.fromTo(".history-cards-container",
           { opacity: 0 },
-          { opacity: 1, duration: 0.6, ease: "power2.out" },
-          "<"
+          {
+            opacity: 1,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".second-section",
+              start: "20% top",
+              toggleActions: "play none none reverse",
+            }
+          }
         );
 
-        sectionTl.fromTo(".memories-heading",
+        // Reveal the "In Memories" heading
+        gsap.fromTo(".memories-heading",
           { opacity: 0, y: 16, scale: 0.94 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power2.out" },
-          "<0.1"
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".second-section",
+              start: "20% top",
+              toggleActions: "play none none reverse",
+            }
+          }
         );
 
-        sectionTl.fromTo(".bento-item",
+        // Reveal bento items with stagger
+        gsap.fromTo(".bento-item",
           { opacity: 0, y: 30 },
-          { opacity: 1, y: 0, stagger: 0.08, duration: 0.7, ease: "power2.out" },
-          "-=0.1"
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.08,
+            duration: 0.7,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: ".second-section",
+              start: "25% top",
+              toggleActions: "play none none reverse",
+            }
+          }
         );
       });
 
@@ -705,7 +735,7 @@ const InfestWebsite = () => {
                 </span>
               </h1>
 
-              <p className="text-base md:text-xl lg:text-2xl leading-relaxed text-center lg:text-left font-medium drop-shadow-md text-pretty font-serif italic mt-3 md:mt-4" style={{ color: "#F5F0E1" }}>
+              <p className="text-base md:text-xl lg:text-2xl leading-relaxed text-center lg:text-left font-medium text-pretty font-serif italic mt-3 md:mt-4" style={{ color: "rgba(255,255,255,0.95)", textShadow: "0 1px 8px rgba(0,0,0,0.4)" }}>
                 Infest (Informatics Festival) XII 2026 is the biggest tech event in Aceh, bringing together students, professionals, and digital creators in one vibrant arena. Carrying the theme <span className="font-bold not-italic" style={{ backgroundImage: "radial-gradient(ellipse at 50% 45%, #FFFFFF 0%, #FEFCE8 20%, #FEF08A 48%, #FDD026 80%, #EAB308 100%)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" }}>&quot;Synthera: Creating a Harmonized, Intelligent, and Innovative Digital Ecosystem&quot;</span>, INFEST is more than a competition, it&apos;s a movement to shape the future through innovation, collaboration, and real-world impact.
               </p>
 
