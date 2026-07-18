@@ -30,7 +30,7 @@ export const competitionData = [
       "Analyze complex data sets, build predictive models, and extract valuable insights to solve real-world problems.",
     keywords: ["Team-based", "Data Analysis", "Machine Learning", "Statistics"],
     guidebookLink: "https://drive.google.com/file/d/1EN3sD44N0WKzOHpxRNW86kYGjObiXx7P/view?usp=drive_link",
-    prizepool: "IDR 5.000.000",
+    prizepool: "IDR 4.000.000",
     teamMin: 2,
     teamMax: 3,
     featured: false,

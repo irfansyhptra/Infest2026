@@ -254,7 +254,7 @@ const BentoTile = ({ src, span }: { src: string; span: string }) => (
       fill
       loading="lazy"
       sizes="(max-width: 768px) 50vw, 25vw"
-      className="object-cover grayscale contrast-125 brightness-[0.65] transition-[filter,transform] duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0 group-hover:brightness-90"
+      className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
     />
     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
   </div>

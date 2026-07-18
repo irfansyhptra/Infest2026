@@ -4,14 +4,14 @@ import { supabase } from "@/libs/services/supabaseClient";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import { 
-  User, 
-  Trophy, 
-  Users, 
-  LogOut, 
-  Menu, 
+import {
+  User,
+  Trophy,
+  Users,
+  LogOut,
+  Menu,
   X,
-  ChevronRight 
+  ChevronRight
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -48,9 +48,9 @@ export const Sidebar = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+
   const currentMenu = searchParams.get("menu") || "profil";
-  
+
   const handleLogout = async () => {
     const toastId = toast.loading("Memproses logout...");
     try {
@@ -83,7 +83,7 @@ export const Sidebar = () => {
 
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-30"
           onClick={() => setIsMobileMenuOpen(false)}
         />
@@ -95,8 +95,8 @@ export const Sidebar = () => {
         bg-neutral_01/5 backdrop-blur-xl border-neutral_01/10
         transition-all duration-300 ease-in-out
         lg:left-0 lg:translate-x-0 lg:border-r lg:shadow-none lg:z-40
-        ${isMobileMenuOpen 
-          ? 'right-0 translate-x-0 border-l shadow-2xl' 
+        ${isMobileMenuOpen
+          ? 'right-0 translate-x-0 border-l shadow-2xl'
           : 'right-0 translate-x-full lg:translate-x-0 lg:shadow-none'
         }
       `}>
@@ -113,7 +113,7 @@ export const Sidebar = () => {
               />
               <div>
                 <h2 className="text-lg sm:text-xl font-bold text-neutral_01">Dashboard</h2>
-                <p className="text-xs sm:text-sm text-neutral_01/60">Infest 2025</p>
+                <p className="text-xs sm:text-sm text-neutral_01/60">Infest 2026</p>
               </div>
             </Link>
           </div>
@@ -124,7 +124,7 @@ export const Sidebar = () => {
               {menuItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentMenu === item.query;
-                
+
                 return (
                   <button
                     key={item.id}
@@ -132,8 +132,8 @@ export const Sidebar = () => {
                     className={`
                       w-full flex items-center gap-3 px-3 py-3 sm:px-4 sm:py-3 rounded-xl text-left
                       transition-all duration-300 group relative overflow-hidden touch-target
-                      ${isActive 
-                        ? 'bg-gradient-to-r from-neutral_02/20 to-primary-yellow/20 text-neutral_01 border border-neutral_02/30' 
+                      ${isActive
+                        ? 'bg-gradient-to-r from-neutral_02/20 to-primary-yellow/20 text-neutral_01 border border-neutral_02/30'
                         : 'text-neutral_01/70 hover:text-neutral_01 hover:bg-neutral_01/5'
                       }
                     `}
@@ -142,14 +142,14 @@ export const Sidebar = () => {
                     {isActive && (
                       <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-neutral_02 to-primary-yellow rounded-r-full" />
                     )}
-                    
+
                     <Icon className={`w-5 h-5 transition-colors flex-shrink-0 ${isActive ? 'text-neutral_02' : ''}`} />
                     <span className="font-medium flex-1 text-sm sm:text-base">{item.label}</span>
-                    
+
                     {isActive && (
                       <ChevronRight className="w-4 h-4 text-neutral_02 flex-shrink-0" />
                     )}
-                    
+
                     {/* Hover effect */}
                     <div className="absolute inset-0 bg-gradient-to-r from-neutral_02/5 to-primary-yellow/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
                   </button>

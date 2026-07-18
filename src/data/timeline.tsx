@@ -104,6 +104,14 @@ export const timelineData: TimelineNode[] = [
     accent: "#2596BE",
   },
   {
+    start: "2026-10-24",
+    date: "24 Oktober 2026",
+    title: "Pembukaan Acara INFEST & Hackathon",
+    description: "Pembukaan Acara Infest dan Pembukaan Acara Hackathon.",
+    Icon: RocketLaunchIcon,
+    accent: "#FDD026",
+  },
+  {
     start: "2026-10-25",
     date: "25 Oktober 2026",
     title: "Puncak Acara & Penutupan",

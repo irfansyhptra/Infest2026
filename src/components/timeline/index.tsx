@@ -107,8 +107,16 @@ const Label = ({ node, align }: { node: TimelineNode; align: "left" | "center" }
 
 const DESKTOP_VB = { w: 1200, h: 680 };
 
+// 3 fixed rows, sized as evenly as possible for any node count (was hardcoded
+// to [5,4,4] for exactly 13 nodes — that broke as soon as the data grew).
+const getRowSizes = (n: number): number[] => {
+  const base = Math.floor(n / 3);
+  const rem = n % 3;
+  return [base + (rem > 0 ? 1 : 0), base + (rem > 1 ? 1 : 0), base];
+};
+
 const computePoints = (data: TimelineNode[], width: number, leftMargin: number, rightMargin: number): Point[] => {
-  const rowSizes = [5, 4, 4];
+  const rowSizes = getRowSizes(data.length);
   const rowYs = [170, 380, 590];
   const pts: Point[] = [];
 
@@ -129,38 +137,37 @@ const computePoints = (data: TimelineNode[], width: number, leftMargin: number, 
   return pts;
 };
 
-const serpentinePath = (pts: Point[], width: number, leftMargin: number, rightMargin: number): string => {
+const serpentinePath = (pts: Point[], rowSizes: number[]): string => {
   if (pts.length === 0) return "";
   let d = `M ${pts[0].x},${pts[0].y}`;
-  const rowSizes = [5, 4, 4];
   const bulge = 75; // turnaround radius fits 100px margins perfectly without clipping
+  const r0 = rowSizes[0];
+  const r1 = r0 + rowSizes[1];
 
-  // Row 0: index 0 to 4
-  for (let i = 1; i < rowSizes[0]; i++) {
+  // Row 0
+  for (let i = 1; i < r0; i++) {
     d += ` L ${pts[i].x},${pts[i].y}`;
   }
-  // Turnaround 1: Node 4 to Node 5
-  if (pts.length > 5) {
-    const p4 = pts[4];
-    const p5 = pts[5];
-    d += ` C ${p4.x + bulge},${p4.y} ${p5.x + bulge},${p5.y} ${p5.x},${p5.y}`;
+  // Turnaround 1: last node of row 0 to first node of row 1
+  if (pts.length > r0) {
+    const pStart = pts[r0 - 1];
+    const pEnd = pts[r0];
+    d += ` C ${pStart.x + bulge},${pStart.y} ${pEnd.x + bulge},${pEnd.y} ${pEnd.x},${pEnd.y}`;
   }
 
-  // Row 1: index 5 to 8
-  const row1End = Math.min(pts.length - 1, 8);
-  for (let i = 6; i <= row1End; i++) {
+  // Row 1
+  for (let i = r0 + 1; i < Math.min(pts.length, r1); i++) {
     d += ` L ${pts[i].x},${pts[i].y}`;
   }
-  // Turnaround 2: Node 8 to Node 9
-  if (pts.length > 9) {
-    const p8 = pts[8];
-    const p9 = pts[9];
-    d += ` C ${p8.x - bulge},${p8.y} ${p9.x - bulge},${p9.y} ${p9.x},${p9.y}`;
+  // Turnaround 2: last node of row 1 to first node of row 2
+  if (pts.length > r1) {
+    const pStart = pts[r1 - 1];
+    const pEnd = pts[r1];
+    d += ` C ${pStart.x - bulge},${pStart.y} ${pEnd.x - bulge},${pEnd.y} ${pEnd.x},${pEnd.y}`;
   }
 
-  // Row 2: index 9 to 12
-  const row2End = Math.min(pts.length - 1, 12);
-  for (let i = 10; i <= row2End; i++) {
+  // Row 2
+  for (let i = r1 + 1; i < pts.length; i++) {
     d += ` L ${pts[i].x},${pts[i].y}`;
   }
 
@@ -170,17 +177,20 @@ const serpentinePath = (pts: Point[], width: number, leftMargin: number, rightMa
 const DesktopTimeline = ({ data }: { data: TimelineNode[] }) => {
   const leftMargin = 100; // Left turnaround margin
   const rightMargin = 100; // Right turnaround margin
+  const rowSizes = getRowSizes(data.length);
   const pathPts = computePoints(data, DESKTOP_VB.w, leftMargin, rightMargin);
-  const path = serpentinePath(pathPts, DESKTOP_VB.w, leftMargin, rightMargin);
+  const path = serpentinePath(pathPts, rowSizes);
 
-  // Position points: Shift the 6th mark (index 5) left and the 10th mark (index 9) right along the road path
+  // Position points: shift the first mark of row 1 left and the first mark of row 2 right along the road path
+  const row1Start = rowSizes[0];
+  const row2Start = rowSizes[0] + rowSizes[1];
   const nodePts = pathPts.map((pt, i) => {
-    if (i === 5) {
+    if (i === row1Start) {
       const xFraction = 0.90;
       const x = leftMargin + xFraction * (DESKTOP_VB.w - leftMargin - rightMargin);
       return { ...pt, x };
     }
-    if (i === 9) {
+    if (i === row2Start) {
       const xFraction = 0.10;
       const x = leftMargin + xFraction * (DESKTOP_VB.w - leftMargin - rightMargin);
       return { ...pt, x };
