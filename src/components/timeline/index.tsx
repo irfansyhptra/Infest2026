@@ -99,7 +99,7 @@ const Label = ({ node, align }: { node: TimelineNode; align: "left" | "center" }
     <h3 className="font-clash-display mt-1 text-sm font-bold leading-tight text-white md:text-base">
       {node.title}
     </h3>
-    <p className="mt-1 text-[11px] leading-snug text-white/60 md:text-xs">{node.description}</p>
+    <p className="mt-1 whitespace-pre-line text-[11px] leading-snug text-white/60 md:text-xs">{node.description}</p>
   </div>
 );
 

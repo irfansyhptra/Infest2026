@@ -42,10 +42,11 @@ export async function POST(request: NextRequest) {
     const base64 = buffer.toString('base64');
     const dataURI = `data:${file.type};base64,${base64}`;
 
-    // Upload to Cloudinary as raw resource (for PDFs)
+    // Upload to Cloudinary as an image resource so pg_1/f_jpg/w_* preview
+    // transforms work later — "raw" only ever serves the file as-is.
     const result = await cloudinary.uploader.upload(dataURI, {
       folder,
-      resource_type: 'raw',
+      resource_type: 'image',
       use_filename: true,
       unique_filename: true,
       format: 'pdf',

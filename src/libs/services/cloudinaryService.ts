@@ -96,7 +96,10 @@ export const cloudinaryService = {
       if (!validation.isValid) {
         return { success: false, error: validation.error || 'PDF validation failed' };
       }
-      const uploaded = await uploadToCloudinary(file, folder, "raw");
+      // resource_type "image": Cloudinary treats PDFs uploaded this way as a
+      // paged image asset, which is what enables pg_1/f_jpg/w_* preview
+      // transforms later. "raw" only ever serves the file byte-for-byte.
+      const uploaded = await uploadToCloudinary(file, folder, "image");
       if (!uploaded.success) return { success: false, error: uploaded.error };
       return { success: true, data: uploaded.data };
     } catch (error: any) {
@@ -140,6 +143,17 @@ export const cloudinaryService = {
     const transformStr = transformations.length > 0 ? `${transformations.join(',')}` : '';
     
     return `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${transformStr}/${publicId}`;
+  },
+
+  /**
+   * Turn a Cloudinary PDF delivery URL into a JPG thumbnail of one page.
+   * Works for both /image/upload/ URLs (new uploads) and older /raw/upload/
+   * ones — Cloudinary renders the page as long as delivery goes through
+   * the "image" resource type, regardless of what the URL said before.
+   */
+  getPdfPreviewUrl(pdfUrl: string, options: { page?: number; width?: number } = {}): string {
+    const { page = 1, width = 600 } = options;
+    return pdfUrl.replace(/\/(image|raw)\/upload\//, `/image/upload/pg_${page},f_jpg,w_${width}/`);
   },
 
   /**
