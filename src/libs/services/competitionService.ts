@@ -53,7 +53,7 @@ export interface CompetitionRegistration {
   id: string;
   competition_id: string;
   team_id: string;
-  status: "pending" | "approved" | "rejected" | "cancelled";
+  status: "pending" | "approved" | "rejected" | "withdrawn";
   registration_date: string;
   approved_at?: string;
   payment_proof_url?: string;
@@ -456,11 +456,11 @@ export const competitionService = {
         };
       }
 
-      // Update status to cancelled
+      // Update status to withdrawn
       const { error } = await supabase
         .from("competition_registrations")
         .update({
-          status: "cancelled",
+          status: "withdrawn",
           updated_at: new Date().toISOString(),
         })
         .eq("id", registrationId)
@@ -736,7 +736,7 @@ export const competitionService = {
           .length,
         rejected_registrations: data.filter((r) => r.status === "rejected")
           .length,
-        cancelled_registrations: data.filter((r) => r.status === "cancelled")
+        withdrawn_registrations: data.filter((r) => r.status === "withdrawn")
           .length,
       };
 

@@ -143,7 +143,7 @@ const CompetitionContent = () => {
 
   // Check if user has any registration (for disabling other competitions)
   const hasAnyRegistration = () => {
-    // Only treat pending/approved as blocking; rejected/cancelled should not block
+    // Only treat pending/approved as blocking; rejected/withdrawn should not block
     return (
       !!userRegistration &&
       (userRegistration.status === "pending" ||
@@ -157,7 +157,7 @@ const CompetitionContent = () => {
     if (
       userRegistration.competition_id === competitionId &&
       userRegistration.team_id === userTeam.id &&
-      userRegistration.status !== "cancelled"
+      userRegistration.status !== "withdrawn"
     ) {
       return userRegistration.status;
     }
@@ -220,7 +220,7 @@ const CompetitionContent = () => {
           color: "bg-red-500/20 text-red-400 border-red-400/30",
           text: "Ditolak",
         };
-      case "cancelled":
+      case "withdrawn":
         return {
           color: "bg-gray-500/20 text-gray-400 border-gray-400/30",
           text: "Dibatalkan",
@@ -452,7 +452,7 @@ const CompetitionContent = () => {
               ? ""
               : userRegistration.status === "rejected"
               ? "Pendaftaran Ditolak"
-              : userRegistration.status === "cancelled"
+              : userRegistration.status === "withdrawn"
               ? "Pendaftaran Dibatalkan"
               : "Pendaftaran Proses Verifikasi"}
           </h2>
@@ -744,9 +744,9 @@ const CompetitionContent = () => {
                 </div>
             )}
 
-            {/* If rejected or cancelled: allow registering another competition */}
+            {/* If rejected or withdrawn: allow registering another competition */}
             {(userRegistration.status === "rejected" ||
-              userRegistration.status === "cancelled") && (
+              userRegistration.status === "withdrawn") && (
               <div className="mt-6 border-t border-neutral_01/10 pt-5">
                 <div className="bg-blue-500/10 border border-blue-400/20 rounded-lg p-4 flex items-start gap-3">
                   <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />

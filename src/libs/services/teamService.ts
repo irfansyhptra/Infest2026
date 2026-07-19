@@ -493,7 +493,7 @@ export const teamService = {
         `
         )
         .eq("team_id", teamId)
-        .neq("status", "cancelled")
+        .neq("status", "withdrawn")
         .limit(1);
 
       if (error) {
