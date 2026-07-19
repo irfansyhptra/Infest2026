@@ -34,7 +34,14 @@ import Image from "next/image";
 import CompetitionsCalendar from "@/components/calendar/competitionsCalendar";
 import Link from "next/link";
 import OriginalityUpload from "@/components/uploadFile/OriginalityUpload";
+import NotebookUpload from "@/components/uploadFile/NotebookUpload";
 import CountdownTimer from "@/components/countdownTimer";
+
+// Data Science mengumpulkan notebook (.ipynb), bukan proposal/orisinalitas PDF.
+const DATA_SCIENCE_DATASET_URL =
+  "https://drive.google.com/drive/folders/1UAG7sjn36rA3y2u6vrU_qbtEBMOsOmLR?usp=sharing";
+const isDataScienceCompetition = (name?: string) =>
+  (name || "").toLowerCase().includes("data science");
 
 const CompetitionContent = () => {
   const [competitions, setCompetitions] = useState<Competition[]>([]);
@@ -581,13 +588,74 @@ const CompetitionContent = () => {
                   <>
                     {/* Show countdown only if competition has started */}
                     {userRegistration.competition?.qualification_end && (
-                      <CountdownTimer 
+                      <CountdownTimer
                         targetDate={userRegistration.competition.qualification_end}
-                        label="Batas akhir pengumpulan proposal & orisinalitas karya"
+                        label={
+                          isDataScienceCompetition(userRegistration.competition?.name)
+                            ? "Batas akhir pengumpulan notebook"
+                            : "Batas akhir pengumpulan proposal & orisinalitas karya"
+                        }
                         competitionStarted={true}
                       />
                     )}
-                    
+
+                    {isDataScienceCompetition(userRegistration.competition?.name) ? (
+                    /* Notebook Upload Section (Data Science) */
+                    <div>
+                      <div className="mb-3 flex w-full items-center justify-between gap-2">
+                        <div className="flex gap-2 items-center">
+                          <FileText className="w-4 h-4 text-neutral_02" />
+                          <p className="text-sm font-semibold text-neutral_01">
+                            Pengumpulan Karya
+                          </p>
+                        </div>
+                        <div className="mt-4 flex justify-end gap-2">
+                          <button
+                            onClick={() => window.open(DATA_SCIENCE_DATASET_URL, "_blank")}
+                            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-neutral_01/15 border border-neutral_01/10 text-neutral_01 text-sm font-medium rounded-lg hover:bg-neutral_01/10 transition-colors"
+                          >
+                            <Eye className="w-4 h-4" />
+                            Dataset
+                          </button>
+                          {userRegistration.competition?.guidebook_url && (
+                            <button
+                              onClick={() =>
+                                window.open(
+                                  userRegistration.competition!.guidebook_url!,
+                                  "_blank"
+                                )
+                              }
+                              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-neutral_01/15 border border-neutral_01/10 text-neutral_01 text-sm font-medium rounded-lg hover:bg-neutral_01/10 transition-colors"
+                            >
+                              <Eye className="w-4 h-4" />
+                              Guidebook
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <NotebookUpload
+                        registrationId={userRegistration.id}
+                        existingUrl={userRegistration.proposal_url}
+                        qualificationEnd={userRegistration.competition?.qualification_end}
+                        onUploaded={(url) => {
+                          setProposalMessage({
+                            type: "success",
+                            text: userRegistration.proposal_url
+                              ? "Notebook berhasil diperbarui."
+                              : "Notebook berhasil disimpan.",
+                          });
+                          setUserRegistration((prev) =>
+                            prev ? { ...prev, proposal_url: url } : null
+                          );
+                        }}
+                        onError={(msg) =>
+                          setProposalMessage({ type: "error", text: msg })
+                        }
+                      />
+                    </div>
+                    ) : (
+                    <>
                     {/* Proposal Upload Section */}
                     <div>
                       <div className="mb-3 flex w-full items-center justify-between gap-2">
@@ -693,6 +761,8 @@ const CompetitionContent = () => {
                         }
                       />
                     </div>
+                    </>
+                    )}
                   </>
                 ) : (
                   /* Competition not started yet */

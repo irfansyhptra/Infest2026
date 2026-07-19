@@ -109,6 +109,25 @@ export const cloudinaryService = {
   },
 
   /**
+   * Upload Jupyter notebook (.ipynb) to Cloudinary as a raw file — no image
+   * transform needed for a notebook, just storage + a stable download URL.
+   */
+  async uploadNotebook(file: File, folder: string = 'notebooks'): Promise<CloudinaryUploadResponse> {
+    try {
+      const validation = this.validateNotebook(file);
+      if (!validation.isValid) {
+        return { success: false, error: validation.error || 'Notebook validation failed' };
+      }
+      const uploaded = await uploadToCloudinary(file, folder, "raw");
+      if (!uploaded.success) return { success: false, error: uploaded.error };
+      return { success: true, data: uploaded.data };
+    } catch (error: any) {
+      console.error('Error uploading notebook:', error);
+      return { success: false, error: error.message || 'Failed to upload notebook' };
+    }
+  },
+
+  /**
    * Delete file from Cloudinary
    */
   async deleteFile(publicId: string): Promise<{ success: boolean; error?: string }> {
@@ -192,6 +211,21 @@ export const cloudinaryService = {
     }
     if (file.size > maxSize) {
       return { isValid: false, error: 'Ukuran file terlalu besar. Maksimal 10MB.' };
+    }
+    return { isValid: true };
+  },
+
+  /**
+   * Validate a Jupyter notebook before upload. Checked by extension, not
+   * MIME type — browsers don't reliably report a type for .ipynb.
+   */
+  validateNotebook(file: File): { isValid: boolean; error?: string } {
+    const maxSize = 25 * 1024 * 1024; // 25MB — notebooks can carry embedded plot/image output
+    if (!file.name.toLowerCase().endsWith('.ipynb')) {
+      return { isValid: false, error: 'Format file tidak didukung. Hanya .ipynb (Jupyter Notebook).' };
+    }
+    if (file.size > maxSize) {
+      return { isValid: false, error: 'Ukuran file terlalu besar. Maksimal 25MB.' };
     }
     return { isValid: true };
   },
