@@ -103,134 +103,81 @@ const Label = ({ node, align }: { node: TimelineNode; align: "left" | "center" }
   </div>
 );
 
-// ── Desktop: horizontal serpentine (S-curve) winding road, nodes alternating above / below ──
+// ── Desktop: single horizontal line, labels alternate above / below ──
 
-const DESKTOP_VB = { w: 1200, h: 680 };
+// ── Desktop: single horizontal line, labels alternate above / below ──
 
-// 3 fixed rows, sized as evenly as possible for any node count (was hardcoded
-// to [5,4,4] for exactly 13 nodes — that broke as soon as the data grew).
-const getRowSizes = (n: number): number[] => {
-  const base = Math.floor(n / 3);
-  const rem = n % 3;
-  return [base + (rem > 0 ? 1 : 0), base + (rem > 1 ? 1 : 0), base];
-};
-
-const computePoints = (data: TimelineNode[], width: number, leftMargin: number, rightMargin: number): Point[] => {
-  const rowSizes = getRowSizes(data.length);
-  const rowYs = [170, 380, 590];
-  const pts: Point[] = [];
-
-  let currentIndex = 0;
-  rowSizes.forEach((size, rowIndex) => {
-    const isLeftToRight = rowIndex % 2 === 0;
-    const y = rowYs[rowIndex];
-    for (let i = 0; i < size; i++) {
-      if (currentIndex >= data.length) break;
-      const t = size > 1 ? i / (size - 1) : 0.5;
-      const xFraction = isLeftToRight ? t : 1 - t;
-      const x = leftMargin + xFraction * (width - leftMargin - rightMargin);
-      pts.push({ x, y });
-      currentIndex++;
-    }
-  });
-
-  return pts;
-};
-
-const serpentinePath = (pts: Point[], rowSizes: number[]): string => {
-  if (pts.length === 0) return "";
-  let d = `M ${pts[0].x},${pts[0].y}`;
-  const bulge = 75; // turnaround radius fits 100px margins perfectly without clipping
-  const r0 = rowSizes[0];
-  const r1 = r0 + rowSizes[1];
-
-  // Row 0
-  for (let i = 1; i < r0; i++) {
-    d += ` L ${pts[i].x},${pts[i].y}`;
-  }
-  // Turnaround 1: last node of row 0 to first node of row 1
-  if (pts.length > r0) {
-    const pStart = pts[r0 - 1];
-    const pEnd = pts[r0];
-    d += ` C ${pStart.x + bulge},${pStart.y} ${pEnd.x + bulge},${pEnd.y} ${pEnd.x},${pEnd.y}`;
-  }
-
-  // Row 1
-  for (let i = r0 + 1; i < Math.min(pts.length, r1); i++) {
-    d += ` L ${pts[i].x},${pts[i].y}`;
-  }
-  // Turnaround 2: last node of row 1 to first node of row 2
-  if (pts.length > r1) {
-    const pStart = pts[r1 - 1];
-    const pEnd = pts[r1];
-    d += ` C ${pStart.x - bulge},${pStart.y} ${pEnd.x - bulge},${pEnd.y} ${pEnd.x},${pEnd.y}`;
-  }
-
-  // Row 2
-  for (let i = r1 + 1; i < pts.length; i++) {
-    d += ` L ${pts[i].x},${pts[i].y}`;
-  }
-
-  return d;
-};
+// ── Desktop: single horizontal line, labels alternate above / below ──
 
 const DesktopTimeline = ({ data }: { data: TimelineNode[] }) => {
-  const leftMargin = 100; // Left turnaround margin
-  const rightMargin = 100; // Right turnaround margin
-  const rowSizes = getRowSizes(data.length);
-  const pathPts = computePoints(data, DESKTOP_VB.w, leftMargin, rightMargin);
-  const path = serpentinePath(pathPts, rowSizes);
-
-  // Position points: shift the first mark of row 1 left and the first mark of row 2 right along the road path
-  const row1Start = rowSizes[0];
-  const row2Start = rowSizes[0] + rowSizes[1];
-  const nodePts = pathPts.map((pt, i) => {
-    if (i === row1Start) {
-      const xFraction = 0.90;
-      const x = leftMargin + xFraction * (DESKTOP_VB.w - leftMargin - rightMargin);
-      return { ...pt, x };
-    }
-    if (i === row2Start) {
-      const xFraction = 0.10;
-      const x = leftMargin + xFraction * (DESKTOP_VB.w - leftMargin - rightMargin);
-      return { ...pt, x };
-    }
-    return pt;
-  });
+  const n = data.length;
+  const vbW = 1000;
+  const pad = 80; // menambah padding samping (sebelumnya 30) untuk menggeser node lebih ke tengah
 
   return (
-    <div className="relative hidden h-[740px] w-full md:block select-none">
-      <div className="absolute left-0 top-1/2 h-[680px] -translate-y-1/2 w-full">
-        <Road d={path} viewBox={`0 0 ${DESKTOP_VB.w} ${DESKTOP_VB.h}`} gradientId="timeline-road-desktop" />
-
-        {data.map((node, i) => {
-          return (
-            <div
-              key={node.title}
-              className="group absolute h-0 w-0"
-              style={{ left: `${(nodePts[i].x / DESKTOP_VB.w) * 100}%`, top: `${(nodePts[i].y / DESKTOP_VB.h) * 100}%` }}
-            >
-              <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2">
-                <Pin node={node} />
-              </div>
-              <div
-                className="absolute left-0 w-44 -translate-x-1/2 lg:w-52 bottom-[36px]"
-              >
-                <Label node={node} align="center" />
-              </div>
-            </div>
-          );
-        })}
+    <div className="relative hidden w-full md:block select-none" style={{ height: "420px" }}>
+      {/* Container Jalur Tebal Horizontal */}
+      <div 
+        className="absolute h-[22px] rounded-full opacity-90 shadow-[0_0_12px_rgba(37,150,190,0.3)]"
+        style={{ 
+          left: `${(pad / vbW) * 100}%`,
+          right: `${(pad / vbW) * 100}%`,
+          top: "50%", 
+          transform: "translateY(-50%)",
+          background: "linear-gradient(to right, #FDD026 0%, #2596BE 50%, #3B82F6 100%)",
+        }}
+      >
+        {/* Garis Putus-putus Putih di Tengah */}
+        <div 
+          className="absolute inset-x-0 h-[1.5px] opacity-60"
+          style={{ 
+            top: "50%", 
+            transform: "translateY(-50%)",
+            backgroundImage: "linear-gradient(to right, white 45%, transparent 45%)",
+            backgroundSize: "16px 100%",
+          }}
+        />
       </div>
+
+      {/* Nodes + labels */}
+      {data.map((node, i) => {
+        const leftPct = n > 1
+          ? ((pad + (i / (n - 1)) * (vbW - pad * 2)) / vbW) * 100
+          : 50;
+        const labelAbove = i % 2 === 0;
+
+        return (
+          <div
+            key={node.title}
+            className="group absolute h-0 w-0"
+            style={{ left: `${leftPct}%`, top: "50%" }}
+          >
+            {/* Pin */}
+            <div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2">
+              <Pin node={node} />
+            </div>
+            {/* Label */}
+            <div
+              className={`absolute w-40 lg:w-48 -translate-x-1/2 ${
+                labelAbove ? "bottom-[36px]" : "top-[36px]"
+              }`}
+              style={{ left: 0 }}
+            >
+              <Label node={node} align="center" />
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
 
+
 // ── Mobile: vertical winding path, pins snake at left, text in a fixed column ──
 
-const MOBILE_ROW = 100; // viewBox units per node
+const MOBILE_ROW = 70; // viewBox units per node
 const MOBILE_VB_W = 100;
-const MOBILE_ROW_PX = 152; // must clear a 3–4 line label, or rows collide
+const MOBILE_ROW_PX = 120; // taller rows for vertical breathing room
 
 const MobileTimeline = ({ data }: { data: TimelineNode[] }) => {
   const t = computeTimeFractions(data);
@@ -273,7 +220,7 @@ const MobileTimeline = ({ data }: { data: TimelineNode[] }) => {
 };
 
 export const Timeline = ({ data }: { data: TimelineNode[] }) => (
-  <section className="w-full px-4 pt-6 pb-10 sm:px-8 md:px-16 md:pt-10 md:pb-16 lg:px-24 xl:px-32">
+  <section className="w-full px-2 pt-6 pb-10 sm:px-4 md:px-6 md:pt-10 md:pb-16 lg:px-8">
     <div className="mb-8 text-center md:mb-12">
       <h2 className="flex items-baseline justify-center select-none text-balance">
         <span className="font-imperial-script translate-y-[0.05em] text-5xl font-normal leading-none text-white md:text-8xl">
