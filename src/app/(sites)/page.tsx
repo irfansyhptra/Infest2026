@@ -26,10 +26,8 @@ gsap.ticker.lagSmoothing(0);
 // re-measuring every trigger mid-scroll.
 ScrollTrigger.config({ ignoreMobileResize: true });
 
-const Timeline = dynamic(
-  () => import("@/components/timeline").then((mod) => ({ default: mod.Timeline })),
-  { ssr: false }
-);
+import { Timeline } from "@/components/timeline";
+
 
 // ── Pure-CSS decorative components (no Framer Motion overhead) ──
 
@@ -453,79 +451,6 @@ const InfestWebsite = () => {
         sectionTl.to({}, { duration: 0.2 });
       });
 
-      mm.add("(max-width: 1023px)", () => {
-        // Mobile: use toggle-based triggers instead of scrub to prevent
-        // the intro from partially fading on page load (scrub evaluates
-        // non-zero progress when the section is already in view at scroll=0).
-
-        // Fade out the intro (logo + title + description) when scrolling past
-        gsap.to(".history-intro", {
-          opacity: 0,
-          y: -20,
-          scale: 0.92,
-          duration: 0.6,
-          ease: "power2.in",
-          scrollTrigger: {
-            trigger: ".second-section",
-            start: "20% top",
-            toggleActions: "play none none reverse",
-            onEnter: promoteHeroLayer,
-            onEnterBack: promoteHeroLayer,
-            onLeave: releaseHeroLayer,
-            onLeaveBack: releaseHeroLayer,
-          }
-        });
-
-        // Reveal the bento grid
-        gsap.fromTo(".history-cards-container",
-          { opacity: 0 },
-          {
-            opacity: 1,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: ".second-section",
-              start: "20% top",
-              toggleActions: "play none none reverse",
-            }
-          }
-        );
-
-        // Reveal the "In Memories" heading
-        gsap.fromTo(".memories-heading",
-          { opacity: 0, y: 16, scale: 0.94 },
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.6,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: ".second-section",
-              start: "20% top",
-              toggleActions: "play none none reverse",
-            }
-          }
-        );
-
-        // Reveal bento items with stagger
-        gsap.fromTo(".bento-item",
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.08,
-            duration: 0.7,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: ".second-section",
-              start: "25% top",
-              toggleActions: "play none none reverse",
-            }
-          }
-        );
-      });
-
       ScrollTrigger.refresh();
     }
 
@@ -535,35 +460,35 @@ const InfestWebsite = () => {
       toggleActions: "play none none reverse",
     };
 
-    gsap.fromTo("#competition .section-heading",
-      { opacity: 0, y: 30 },
-      {
-        opacity: 1, y: 0,
-        duration: 0.7, ease: "power3.out", overwrite: "auto",
-        scrollTrigger: {
-          trigger: "#competition",
-          start: "top 95%",
-          end: "bottom top",
-          ...belowHeroScrollOpts,
-        }
-      }
-    );
-
-    gsap.fromTo("#competition .prize-pool-card",
-      { opacity: 0, y: 40, scale: 0.96 },
-      {
-        opacity: 1, y: 0, scale: 1,
-        duration: 0.7, ease: "power3.out", overwrite: "auto",
-        scrollTrigger: {
-          trigger: "#competition .prize-pool-card",
-          start: "top 95%",
-          end: "bottom top",
-          ...belowHeroScrollOpts,
-        }
-      }
-    );
-
     mm.add("(min-width: 1024px)", () => {
+      gsap.fromTo("#competition .section-heading",
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.7, ease: "power3.out", overwrite: "auto",
+          scrollTrigger: {
+            trigger: "#competition",
+            start: "top 95%",
+            end: "bottom top",
+            ...belowHeroScrollOpts,
+          }
+        }
+      );
+
+      gsap.fromTo("#competition .prize-pool-card",
+        { opacity: 0, y: 40, scale: 0.96 },
+        {
+          opacity: 1, y: 0, scale: 1,
+          duration: 0.7, ease: "power3.out", overwrite: "auto",
+          scrollTrigger: {
+            trigger: "#competition .prize-pool-card",
+            start: "top 95%",
+            end: "bottom top",
+            ...belowHeroScrollOpts,
+          }
+        }
+      );
+
       gsap.fromTo("#competition .comp-card",
         { opacity: 0, y: 40 },
         {
@@ -571,22 +496,6 @@ const InfestWebsite = () => {
           duration: 0.6, ease: "power3.out", stagger: 0.12, overwrite: "auto",
           scrollTrigger: {
             trigger: "#competition .comp-cards-desktop",
-            start: "top 95%",
-            end: "bottom top",
-            ...belowHeroScrollOpts,
-          }
-        }
-      );
-    });
-
-    mm.add("(max-width: 1023px)", () => {
-      gsap.fromTo("#competition .comp-card-mobile",
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.6, ease: "power3.out", stagger: 0.12, overwrite: "auto",
-          scrollTrigger: {
-            trigger: "#competition .comp-cards-mobile",
             start: "top 95%",
             end: "bottom top",
             ...belowHeroScrollOpts,
@@ -766,7 +675,7 @@ const InfestWebsite = () => {
 
           {/* Bento Grid — fills the viewport under the logo; spans tile exactly at
               2x6 (mobile) and 4x3 (desktop), so rows are fixed, not auto. */}
-          <div className="history-cards-container opacity-0 transform-gpu w-full h-[75vh] md:h-screen lg:h-auto relative z-10 p-2 md:p-3 lg:absolute lg:inset-0">
+          <div className="history-cards-container lg:opacity-0 transform-gpu w-full h-[75vh] md:h-screen lg:h-auto relative z-10 p-2 md:p-3 lg:absolute lg:inset-0">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(37,150,190,0.1),transparent_70%)] pointer-events-none z-0" />
 
             <div className="memories-heading transform-gpu absolute inset-0 z-20 flex items-center justify-center pointer-events-none select-none">

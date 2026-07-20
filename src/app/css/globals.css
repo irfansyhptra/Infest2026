@@ -220,6 +220,13 @@ body.is-scrolling {
 .reveal-delay-300 {
   transition-delay: 0.3s;
 }
+@media (max-width: 1023px) {
+  .reveal-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .reveal-up {
     opacity: 1;

@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "tsx src/libs/scripts/seed.ts",
+    "seed:admins": "tsx src/libs/scripts/seed-admins.ts",
     "seed:competitions": "tsx src/libs/scripts/seed.ts competitions",
     "seed:seminars": "tsx src/libs/scripts/seed.ts seminars",
     "seed:reset": "tsx src/libs/scripts/seed.ts reset",
