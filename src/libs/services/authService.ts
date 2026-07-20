@@ -417,16 +417,18 @@ export const authService = {
         return { profile: null, error: "User ID tidak valid" };
       }
 
-      // Pastikan updated_at selalu diupdate
+      // Upsert, bukan update: sebagian user (signUp yang gagal bikin profil,
+      // OAuth lama) belum punya baris di user_profiles, dan UPDATE 0 baris
+      // bikin .single() melempar PGRST116 "multiple (or no) rows returned".
       const updateData = {
         ...updates,
+        id: userId,
         updated_at: new Date().toISOString(),
       };
 
       const { data, error } = await supabase
         .from('user_profiles')
-        .update(updateData)
-        .eq('id', userId)
+        .upsert(updateData, { onConflict: 'id' })
         .select()
         .single();
 
