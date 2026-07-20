@@ -13,10 +13,15 @@ export interface Competition {
   registration_fee: number;
   early_bird: number;
   early_bird_end?: string; // batas akhir early bird
-  // Bank account info for payments (per-competition)
+  middle_bird_amount?: number; // tier harga di antara early bird dan reguler
+  middle_bird_end?: string; // batas akhir middle bird
+  // Bank account info for payments (per-competition) — up to 2 accounts
   bank_account_number?: string;
   bank_account_receiver_name?: string;
   bank_account_name?: string;
+  bank_account_number_2?: string;
+  bank_account_receiver_name_2?: string;
+  bank_account_name_2?: string;
 
   // Timeline
   registration_start: string;

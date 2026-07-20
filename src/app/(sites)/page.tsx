@@ -753,11 +753,11 @@ const InfestWebsite = () => {
                 className="flex items-baseline text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]"
                 style={{ WebkitTextStroke: "1px #FDD026", textStroke: "1px #FDD026" } as React.CSSProperties}
               >
-                <span className="font-imperial-script text-9xl md:text-[11rem] lg:text-[13rem] leading-none translate-y-[0.12em]">I</span>
-                <span className="font-serif lowercase text-5xl md:text-7xl lg:text-8xl tracking-wide">n</span>
-                <span className="w-3 md:w-6" />
-                <span className="font-imperial-script text-9xl md:text-[11rem] lg:text-[13rem] leading-none translate-y-[0.12em]">M</span>
-                <span className="font-serif lowercase text-5xl md:text-7xl lg:text-8xl tracking-wide">emories</span>
+                <span className="font-imperial-script text-6xl sm:text-8xl md:text-[11rem] lg:text-[13rem] leading-none translate-y-[0.12em]">I</span>
+                <span className="font-serif lowercase text-3xl sm:text-4xl md:text-7xl lg:text-8xl tracking-wide">n</span>
+                <span className="w-2 md:w-6" />
+                <span className="font-imperial-script text-6xl sm:text-8xl md:text-[11rem] lg:text-[13rem] leading-none translate-y-[0.12em]">M</span>
+                <span className="font-serif lowercase text-3xl sm:text-4xl md:text-7xl lg:text-8xl tracking-wide">emories</span>
               </h3>
             </div>
 

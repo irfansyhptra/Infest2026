@@ -21,7 +21,11 @@ const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const MIN_VISIBLE_MS = 600; // floor: don't flash for an instant cached load
 const CREEP_CEILING = 92;
 const CREEP_MS = 1400;
-const HARD_MAX_MS = 6000; // safety net if `load` never fires for some reason
+// Safety net if `load` never fires for some reason. Mobile networks/devices are
+// typically slower to finish loading & painting everything behind the loader, so
+// a short cap there was revealing the page before it was actually ready — the
+// exact "berat" jank the loader exists to hide. Longer cap on narrow viewports.
+const HARD_MAX_MS = typeof window !== "undefined" && window.innerWidth < 768 ? 9000 : 6000;
 
 export const LandingLoader = ({ onComplete }: { onComplete: () => void }) => {
   const [progress, setProgress] = useState(0);

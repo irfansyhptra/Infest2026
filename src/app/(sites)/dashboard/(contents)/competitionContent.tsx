@@ -180,6 +180,27 @@ const CompetitionContent = () => {
     }).format(amount);
   };
 
+  // Currently active price tier — early bird / middle bird / reguler, picked by today's date
+  // against each tier's end date, so the fee shown always matches the period actually open.
+  const getActiveFee = (competition: Competition) => {
+    const now = new Date();
+    if (
+      competition.early_bird &&
+      competition.early_bird_end &&
+      now <= new Date(competition.early_bird_end)
+    ) {
+      return { label: "Early Bird", amount: competition.early_bird };
+    }
+    if (
+      competition.middle_bird_amount &&
+      competition.middle_bird_end &&
+      now <= new Date(competition.middle_bird_end)
+    ) {
+      return { label: "Middle Bird", amount: competition.middle_bird_amount };
+    }
+    return { label: "Reguler", amount: competition.registration_fee };
+  };
+
   // Format date
   const formatDate = (dateString?: string) => {
     if (!dateString) return "";
@@ -925,13 +946,10 @@ const CompetitionContent = () => {
                           <DollarSign className="w-4 h-4 text-neutral_02 flex-shrink-0" />
                           <div className="space-y-1 flex-1">
                             <p className="text-xs font-medium text-neutral_01/80 tracking-wide">
-                              Biaya Pendaftaran{" "}
-                              {competition.early_bird ? "(Early bird)" : ""}
+                              Biaya Pendaftaran ({getActiveFee(competition).label})
                             </p>
                             <p className="text-sm text-neutral_01/90 font-medium">
-                              {competition.early_bird
-                                ? formatCurrency(competition.early_bird)
-                                : formatCurrency(competition.registration_fee)}
+                              {formatCurrency(getActiveFee(competition).amount)}
                             </p>
                           </div>
                         </div>
@@ -1193,16 +1211,10 @@ const CompetitionContent = () => {
                         <DollarSign className="w-5 h-5 text-neutral_02 flex-shrink-0 mt-0.5" />
                         <div className="flex-1">
                           <p className="text-neutral_01 font-medium mb-1">
-                            Biaya Pendaftaran{" "}
-                            {selectedCompetition.early_bird
-                              ? "(Early bird)"
-                              : ""}
+                            Biaya Pendaftaran ({getActiveFee(selectedCompetition).label})
                           </p>
                           <p className="text-neutral_01/60 text-sm">
-                            {formatCurrency(
-                              selectedCompetition.early_bird ||
-                                selectedCompetition.registration_fee
-                            )}
+                            {formatCurrency(getActiveFee(selectedCompetition).amount)}
                           </p>
                         </div>
                       </div>
@@ -1297,30 +1309,58 @@ const CompetitionContent = () => {
                     <p className="text-sm font-semibold text-amber-400 mb-2">
                       Rekening Tujuan Pembayaran
                     </p>
-                    <div className="text-sm text-amber-100/90 space-y-1">
+                    <div className="text-sm text-amber-100/90 space-y-3">
                       {selectedCompetition.bank_account_name && (
-                        <p>
-                          Bank:{" "}
-                          <span className="font-medium">
-                            {selectedCompetition.bank_account_name}
-                          </span>
-                        </p>
+                        <div className="space-y-1">
+                          <p>
+                            Bank:{" "}
+                            <span className="font-medium">
+                              {selectedCompetition.bank_account_name}
+                            </span>
+                          </p>
+                          {selectedCompetition.bank_account_receiver_name && (
+                            <p>
+                              Nama Penerima:{" "}
+                              <span className="font-medium">
+                                {selectedCompetition.bank_account_receiver_name}
+                              </span>
+                            </p>
+                          )}
+                          {selectedCompetition.bank_account_number && (
+                            <p>
+                              No. Rekening:{" "}
+                              <span className="font-medium tracking-wider">
+                                {selectedCompetition.bank_account_number}
+                              </span>
+                            </p>
+                          )}
+                        </div>
                       )}
-                      {selectedCompetition.bank_account_receiver_name && (
-                        <p>
-                          Nama Penerima:{" "}
-                          <span className="font-medium">
-                            {selectedCompetition.bank_account_receiver_name}
-                          </span>
-                        </p>
-                      )}
-                      {selectedCompetition.bank_account_number && (
-                        <p>
-                          No. Rekening:{" "}
-                          <span className="font-medium tracking-wider">
-                            {selectedCompetition.bank_account_number}
-                          </span>
-                        </p>
+                      {selectedCompetition.bank_account_name_2 && (
+                        <div className="space-y-1 border-t border-amber-400/20 pt-3">
+                          <p>
+                            Bank:{" "}
+                            <span className="font-medium">
+                              {selectedCompetition.bank_account_name_2}
+                            </span>
+                          </p>
+                          {selectedCompetition.bank_account_receiver_name_2 && (
+                            <p>
+                              Nama Penerima:{" "}
+                              <span className="font-medium">
+                                {selectedCompetition.bank_account_receiver_name_2}
+                              </span>
+                            </p>
+                          )}
+                          {selectedCompetition.bank_account_number_2 && (
+                            <p>
+                              No. Rekening:{" "}
+                              <span className="font-medium tracking-wider">
+                                {selectedCompetition.bank_account_number_2}
+                              </span>
+                            </p>
+                          )}
+                        </div>
                       )}
                     </div>
                   </div>
