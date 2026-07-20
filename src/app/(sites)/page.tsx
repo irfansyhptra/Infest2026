@@ -362,6 +362,26 @@ const InfestWebsite = () => {
   useGSAP(() => {
     if (!isLoaderFinished) return;
 
+    const isDesktop = typeof window !== "undefined" && window.innerWidth >= 1024;
+
+    if (!isDesktop) {
+      // Mobile: Play hero entrance only. Completely disable all ScrollTriggers, ScrollTrigger observers, and listeners.
+      window.dispatchEvent(new Event("infest:hero-ready"));
+      
+      const heroEntrance = gsap.timeline();
+      heroEntrance
+        .fromTo(".marquee-logo",
+          { opacity: 0, scale: 0.85, y: -24 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "power3.out" }
+        )
+        .fromTo(".marquee-tagline",
+          { opacity: 0, y: 28 },
+          { opacity: 1, y: 0, duration: 0.7, ease: "power3.out" },
+          "-=0.35"
+        );
+      return;
+    }
+
     const mm = gsap.matchMedia();
 
     // Master timeline — Fase 2: hero entrance. Background (pure CSS on <body>,

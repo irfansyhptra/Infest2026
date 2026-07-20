@@ -15,17 +15,14 @@ const LANDING_GRADIENT =
 const RING_RADIUS = 54;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
-// Progress reflects the page's real readiness (window `load` + custom fonts),
-// not a fabricated fixed-duration timer — it creeps toward 92% on its own so
-// it never looks stalled, then only the actual ready signal closes it to 100.
-const MIN_VISIBLE_MS = 600; // floor: don't flash for an instant cached load
+const MIN_VISIBLE_MS = 2200; // Floor: 2.2 seconds to guarantee full layout rendering and painting behind the loader
 const CREEP_CEILING = 92;
-const CREEP_MS = 1400;
+const CREEP_MS = 2600; // Creep slower to give more time for pre-rendering
 // Safety net if `load` never fires for some reason. Mobile networks/devices are
 // typically slower to finish loading & painting everything behind the loader, so
 // a short cap there was revealing the page before it was actually ready — the
 // exact "berat" jank the loader exists to hide. Longer cap on narrow viewports.
-const HARD_MAX_MS = typeof window !== "undefined" && window.innerWidth < 768 ? 9000 : 6000;
+const HARD_MAX_MS = typeof window !== "undefined" && window.innerWidth < 768 ? 10000 : 7000;
 
 export const LandingLoader = ({ onComplete }: { onComplete: () => void }) => {
   const [progress, setProgress] = useState(0);
