@@ -68,21 +68,16 @@ const RAW_SCHEDULE: Record<string, ScheduleEvent[]> = {
  * Diturunkan, bukan ditulis manual, supaya tanggalnya tidak bisa lepas dari
  * acaranya waktu jadwal digeser.
  *
- * Rentangnya dipotong sehari supaya di tanggal terakhir cuma penanda yang
- * muncul — kalau tidak, hari itu kebagian dua label sekaligus. Acara sehari
- * (tanpa `end`) tidak ditandai, memotongnya akan menghabiskan rentang.
+ * Rentangnya sendiri tidak ikut ditandai — cuma dua ujungnya, hari pertama dan
+ * hari terakhir. Hari-hari di tengah tidak perlu penanda aktif; yang dicari
+ * peserta di kalender adalah kapan mulai dan kapan tutup. Acara sehari (tanpa
+ * `end`) tetap satu penanda apa adanya.
  */
-const dayBefore = (date: string) => {
-  const d = new Date(`${date}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() - 1);
-  return d.toISOString().slice(0, 10);
-};
-
 const withDeadlineMarkers = (events: ScheduleEvent[]): ScheduleEvent[] =>
   events.flatMap((e) =>
     e.end && e.end !== e.start
       ? [
-          { ...e, end: dayBefore(e.end) },
+          { title: e.title, start: e.start },
           { title: `Hari Terakhir ${e.title}`, start: e.end },
         ]
       : [e]
