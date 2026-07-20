@@ -14,7 +14,8 @@
     "seed:seminars": "tsx src/libs/scripts/seed.ts seminars",
     "seed:reset": "tsx src/libs/scripts/seed.ts reset",
     "images:webp": "node scripts/convert-to-webp.mjs",
-    "favicon:generate": "node scripts/generate-favicon.mjs"
+    "favicon:generate": "node scripts/generate-favicon.mjs",
+    "check:calendar": "tsx src/libs/scripts/check-calendar.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

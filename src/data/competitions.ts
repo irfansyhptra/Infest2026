@@ -5,7 +5,7 @@ export const competitionData = [
     description:
       "Design exceptional user experiences and interfaces for digital products. Showcase your creativity and design thinking skills!",
     keywords: ["Team-based", "Design Thinking", "Prototyping"],
-    guidebookLink: "https://drive.google.com/file/d/1jZ8CXldqvdyKj2bVI3f_JIhy9GOte0F-/view?usp=sharing",
+    guidebookLink: "https://drive.google.com/file/d/14Xo5OIGHbSMvgfu2GHnVTJpEs4r9ZfSM/view?usp=drivesdk",
     prizepool: "IDR 2.500.000",
     teamMin: 1,
     teamMax: 3,
@@ -17,7 +17,7 @@ export const competitionData = [
     description:
       "20+ hour intensive coding marathon where innovation meets implementation. Build solutions that matter.",
     keywords: ["Team-based", "Innovation"],
-    guidebookLink: "https://drive.google.com/file/d/16twYbn72EEQeL7PYdAUpF772xkWpSEqC/view",
+    guidebookLink: "https://drive.google.com/file/d/1xOk1Wf1PsVOuC0aldLm-gXiN62IAxGrV/view?usp=drivesdk",
     prizepool: "IDR 15.000.000",
     teamMin: 2,
     teamMax: 3,

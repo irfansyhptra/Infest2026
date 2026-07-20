@@ -36,6 +36,7 @@ import Link from "next/link";
 import OriginalityUpload from "@/components/uploadFile/OriginalityUpload";
 import NotebookUpload from "@/components/uploadFile/NotebookUpload";
 import CountdownTimer from "@/components/countdownTimer";
+import { COMPETITION_SCHEDULE } from "@/data/competitionSchedule";
 
 // Data Science mengumpulkan notebook (.ipynb), bukan proposal/orisinalitas PDF.
 const DATA_SCIENCE_DATASET_URL =
@@ -369,91 +370,22 @@ const CompetitionContent = () => {
     );
   }
 
-  // Calendar events derived from DB competitions
+  // Kalender memakai rangkaian acara lengkap dari competitionSchedule (technical
+  // meeting, penilaian, pengumuman finalis, ...). Versi lama merakitnya dari
+  // kolom tanggal di tabel competitions, yang cuma memuat sebagian kecil acara.
+  //
+  // title = nama lomba, description = nama acaranya. Itu sebabnya beberapa lomba
+  // yang jatuh di tanggal sama (mis. Pengumuman Juara 25 Oktober) tetap muncul
+  // terpisah dengan keterangannya masing-masing, bukan tertimpa jadi satu.
   const derivedCalendarEvents = competitions.flatMap((c) => {
-    const ev: Array<{
-      id: string;
-      title: string;
-      start: string;
-      end: string;
-      description?: string;
-    }> = [];
-    if (c.early_bird_end) {
-      ev.push({
-        id: `${c.id}-early-bird-end`,
-        title: `${c.name}`,
-        start: c.early_bird_end,
-        end: c.early_bird_end,
-        description: `Akhir Early Bird`,
-      });
-    }
-    if (c.registration_start) {
-      ev.push({
-        id: `${c.id}-reg-start`,
-        title: `${c.name}`,
-        start: c.registration_start,
-        end: c.registration_start,
-        description: `Pendaftaran Dibuka`,
-      });
-    }
-    if (c.registration_end) {
-      ev.push({
-        id: `${c.id}-reg-end`,
-        title: `${c.name}`,
-        start: c.registration_end,
-        end: c.registration_end,
-        description: `Pendaftaran Ditutup`,
-      });
-    }
-    if (c.qualification_end) {
-      ev.push({
-        id: `${c.id}-qual-end`,
-        title: `${c.name}`,
-        start: c.qualification_end,
-        end: c.qualification_end,
-        description: `Deadline Proposal`,
-      });
-    }
-    if (c.competition_start) {
-      ev.push({
-        id: `${c.id}-comp-start`,
-        title: c.name,
-        start: c.competition_start,
-        end: c.competition_start,
-        description:
-          c.name === "Hackathon" || c.name === "UI/UX Design Competition"
-            ? `Pengumpulan proposal penyisihan`
-            : `Hari pertama kompetisi`,
-      });
-    }
-    if (c.competition_end && c.competition_end !== c.competition_start) {
-      ev.push({
-        id: `${c.id}-comp-end`,
-        title: `${c.name}`,
-        start: c.competition_end,
-        end: c.competition_end,
-        description: `Kompetisi Selesai`,
-      });
-    }
-    if (c.final_date) {
-      ev.push({
-        id: `${c.id}-final`,
-        title: `${c.name}`,
-        start: c.final_date,
-        end: c.final_date,
-        description: `Babak Final`,
-      });
-    }
-    if (c.final_announcement) {
-      ev.push({
-        id: `${c.id}-final-announcement`,
-        title: `${c.name}`,
-        start: c.final_announcement,
-        end: c.final_announcement,
-        description: `Pengumuman Final`,
-      });
-    }
-    return ev;
+    const schedule = COMPETITION_SCHEDULE[c.slug] ?? [];
+    return schedule.map((event, i) => ({
+      id: `${c.id}-schedule-${i}`,
+      title: c.name,
+      start: event.start,
+      end: event.end ?? event.start,
+      description: event.title,
+    }));
   });
 
   return (
