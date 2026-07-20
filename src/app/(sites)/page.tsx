@@ -33,11 +33,9 @@ const Timeline = dynamic(
 
 // ── Pure-CSS decorative components (no Framer Motion overhead) ──
 
-// content-visibility:auto pauses each dot's animation while it's off-screen —
-// these 25 instances otherwise animate continuously for the whole scroll session.
 const TwinklingStar = ({ top, left, delay, size = 2 }: { top: string; left: string; delay: number; size?: number }) => (
   <div
-    className="absolute rounded-full bg-white star-twinkle [content-visibility:auto] [contain-intrinsic-size:6px_6px]"
+    className="absolute rounded-full bg-white star-twinkle"
     style={{
       top,
       left,
@@ -53,10 +51,10 @@ const FloatingCloud = ({ top, left, speed = 8, delay = 0, opacity = 0.35, size =
   const sizeClass = { sm: "w-28 md:w-40", md: "w-40 md:w-60", lg: "w-56 md:w-80", xl: "w-72 md:w-[28rem]" }[size];
   return (
     <div
-      className="absolute pointer-events-none z-0 [content-visibility:auto] [contain-intrinsic-size:300px_200px]"
+      className="absolute pointer-events-none z-0"
       style={{ top, left, opacity, animation: `cloud-drift ${speed}s ease-in-out ${delay}s infinite` }}
     >
-      <img src="/assets/svg/awan.webp" alt="" aria-hidden="true" className={`${sizeClass} h-auto`} style={{ transform: flip ? "scaleX(-1)" : undefined }} loading="lazy" />
+      <img src="/assets/svg/awan.webp" alt="" aria-hidden="true" className={`${sizeClass} h-auto`} style={{ transform: flip ? "scaleX(-1)" : undefined }} />
     </div>
   );
 };
@@ -92,14 +90,14 @@ const CompetitionCard = ({
     : "flex-1 py-2.5 bg-gradient-to-b from-[#60A5FA] via-[#3B82F6] to-[#2563EB] text-white shadow-[0_4px_20px_rgba(59,130,246,0.42),inset_0_1px_0_rgba(255,255,255,0.32)] hover:brightness-110 hover:shadow-[0_6px_28px_rgba(59,130,246,0.62),inset_0_1px_0_rgba(255,255,255,0.42)] rounded-full text-xs font-extrabold text-center transition-all duration-300 uppercase tracking-widest";
 
   const secondaryBtnStyle = isFeatured
-    ? "px-4 py-2.5 border border-[#FDD026]/50 hover:bg-[#FDD026]/10 text-[#FDD026] hover:border-[#FDD026]/75 hover:shadow-[0_4px_16px_rgba(253,208,38,0.22)] rounded-full text-xs font-bold text-center transition-all duration-300 backdrop-blur-sm"
-    : "px-4 py-2.5 border border-[#60A5FA]/40 hover:bg-[#3B82F6]/10 text-[#93C5FD] hover:border-[#60A5FA]/65 hover:shadow-[0_4px_16px_rgba(59,130,246,0.22)] rounded-full text-xs font-bold text-center transition-all duration-300 backdrop-blur-sm";
+    ? "px-4 py-2.5 border border-[#FDD026]/50 hover:bg-[#FDD026]/10 text-[#FDD026] hover:border-[#FDD026]/75 hover:shadow-[0_4px_16px_rgba(253,208,38,0.22)] rounded-full text-xs font-bold text-center transition-all duration-300 md:backdrop-blur-sm"
+    : "px-4 py-2.5 border border-[#60A5FA]/40 hover:bg-[#3B82F6]/10 text-[#93C5FD] hover:border-[#60A5FA]/65 hover:shadow-[0_4px_16px_rgba(59,130,246,0.22)] rounded-full text-xs font-bold text-center transition-all duration-300 md:backdrop-blur-sm";
 
   return (
     <div className={cn("w-full flex flex-col transition-all duration-500 h-full min-h-[280px] sm:min-h-[340px] md:min-h-[420px]")}>
       <div
         className={cn(
-          "relative flex flex-col justify-between rounded-[24px] backdrop-blur-md border p-6 md:p-8 h-full transition-all duration-500 overflow-hidden group",
+          "relative flex flex-col justify-between rounded-[24px] md:backdrop-blur-md border p-6 md:p-8 h-full transition-all duration-500 overflow-hidden group",
           isFeatured
             ? "bg-gradient-to-b from-[#1e3a8a]/50 to-[#0d1a5c]/68 border-[#FDD026]/42 shadow-[0_20px_60px_-10px_rgba(0,0,0,0.45),0_0_0_1px_rgba(253,208,38,0.12),inset_0_1px_0_rgba(255,255,255,0.12)] hover:border-[#FDD026]/65 hover:shadow-[0_28px_80px_-10px_rgba(253,208,38,0.22),0_0_0_1px_rgba(253,208,38,0.28),inset_0_1px_0_rgba(255,255,255,0.18)]"
             : "bg-gradient-to-b from-[#1a3670]/40 to-[#0d1a5c]/58 border-[#FDD026]/22 opacity-95 shadow-[0_16px_50px_-10px_rgba(0,0,0,0.38),0_0_0_1px_rgba(253,208,38,0.08),inset_0_1px_0_rgba(255,255,255,0.08)] hover:border-[#FDD026]/48 hover:shadow-[0_22px_65px_-10px_rgba(253,208,38,0.18),0_0_0_1px_rgba(253,208,38,0.20),inset_0_1px_0_rgba(255,255,255,0.12)] hover:opacity-100"
@@ -134,12 +132,12 @@ const CompetitionCard = ({
         <div className="flex flex-col gap-4 relative z-10">
           <div className="flex items-center gap-4">
             <div className={cn(
-              "flex items-center justify-center rounded-xl w-14 h-14 backdrop-blur-md border shrink-0",
+              "flex items-center justify-center rounded-xl w-14 h-14 md:backdrop-blur-md border shrink-0",
               isFeatured
                 ? "bg-[#FDD026]/15 border-[#FDD026]/30 shadow-[inset_0_1px_6px_rgba(253,208,38,0.2)]"
                 : "bg-[#2596BE]/15 border-[#2596BE]/30 shadow-[inset_0_1px_6px_rgba(37,150,190,0.2)]"
             )}>
-              <img src={comp.iconUrl} alt={comp.name} className="w-8 h-8 object-contain" loading="lazy" />
+              <img src={comp.iconUrl} alt={comp.name} className="w-8 h-8 object-contain" />
             </div>
             <div>
               <h4 className="text-xl md:text-2xl font-bold font-clash-display text-white tracking-wide">{comp.name}</h4>
@@ -252,7 +250,9 @@ const BentoTile = ({ src, span }: { src: string; span: string }) => (
       alt=""
       aria-hidden="true"
       fill
-      loading="lazy"
+      // eager, not lazy: the LandingLoader gates the page on `window.load`, so
+      // these decode behind the loader instead of popping in blank mid-scroll.
+      loading="eager"
       sizes="(max-width: 768px) 50vw, 25vw"
       className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
     />
@@ -599,7 +599,22 @@ const InfestWebsite = () => {
     // the CSS cascade paints fallback metrics — recompute trigger positions once
     // they've actually loaded, and again on any layout-affecting resize.
     document.fonts?.ready?.then(() => ScrollTrigger.refresh());
-    const resizeObserver = new ResizeObserver(() => ScrollTrigger.refresh());
+
+    // Width-only guard. ScrollTrigger.refresh() re-measures every trigger (a
+    // forced synchronous layout of the whole page). On mobile the address bar
+    // shows/hides during scroll, which changes the container's *height* — the
+    // unguarded observer fired refresh() on every one of those, mid-scroll,
+    // which is what made fast scrolling stutter and mis-render. That's the same
+    // case ScrollTrigger.config({ignoreMobileResize:true}) covers for its own
+    // listener; this observer was bypassing it. Only a width change (rotation /
+    // real layout change) actually invalidates the measurements.
+    let lastWidth = containerRef.current!.offsetWidth;
+    const resizeObserver = new ResizeObserver(() => {
+      const width = containerRef.current?.offsetWidth ?? lastWidth;
+      if (width === lastWidth) return;
+      lastWidth = width;
+      ScrollTrigger.refresh();
+    });
     resizeObserver.observe(containerRef.current!);
 
     return () => resizeObserver.disconnect();
@@ -643,18 +658,24 @@ const InfestWebsite = () => {
       {/* Floating clouds — full page height (scrolls with sections), above background, below content */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
         <FloatingCloud top="3%"  left="2%"   speed={4.5} delay={0}   opacity={0.38} size="lg" />
-        <FloatingCloud top="7%"  left="58%"  speed={5.5} delay={1.4} opacity={0.24} size="md" flip />
         <FloatingCloud top="12%" left="84%"  speed={5}   delay={0.6} opacity={0.30} size="sm" />
-        <FloatingCloud top="19%" left="30%"  speed={6}   delay={2.1} opacity={0.20} size="xl" flip />
         <FloatingCloud top="27%" left="70%"  speed={4.8} delay={0.9} opacity={0.32} size="md" />
-        <FloatingCloud top="35%" left="6%"   speed={5.8} delay={1.7} opacity={0.26} size="lg" flip />
         <FloatingCloud top="43%" left="48%"  speed={5.2} delay={0.3} opacity={0.18} size="sm" />
-        <FloatingCloud top="51%" left="80%"  speed={4.5} delay={2.4} opacity={0.34} size="md" flip />
         <FloatingCloud top="59%" left="22%"  speed={6}   delay={1.1} opacity={0.22} size="xl" />
-        <FloatingCloud top="67%" left="62%"  speed={5}   delay={0.7} opacity={0.28} size="lg" flip />
         <FloatingCloud top="75%" left="4%"   speed={5.5} delay={1.9} opacity={0.30} size="sm" />
-        <FloatingCloud top="83%" left="44%"  speed={4.8} delay={0.4} opacity={0.20} size="md" flip />
         <FloatingCloud top="91%" left="78%"  speed={5.2} delay={2.2} opacity={0.32} size="lg" />
+      </div>
+
+      {/* Second cloud layer — desktop only. Each cloud is a large always-animating
+          image layer; 14 of them is real VRAM/compositor pressure on a phone, and
+          they're purely decorative, so mobile keeps the 7 above and drops these. */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-0 hidden md:block">
+        <FloatingCloud top="7%"  left="58%"  speed={5.5} delay={1.4} opacity={0.24} size="md" flip />
+        <FloatingCloud top="19%" left="30%"  speed={6}   delay={2.1} opacity={0.20} size="xl" flip />
+        <FloatingCloud top="35%" left="6%"   speed={5.8} delay={1.7} opacity={0.26} size="lg" flip />
+        <FloatingCloud top="51%" left="80%"  speed={4.5} delay={2.4} opacity={0.34} size="md" flip />
+        <FloatingCloud top="67%" left="62%"  speed={5}   delay={0.7} opacity={0.28} size="lg" flip />
+        <FloatingCloud top="83%" left="44%"  speed={4.8} delay={0.4} opacity={0.20} size="md" flip />
         <FloatingCloud top="97%" left="34%"  speed={5}   delay={1.3} opacity={0.24} size="md" flip />
       </div>
 
@@ -778,10 +799,7 @@ const InfestWebsite = () => {
           id="competition"
           className="w-full pt-6 md:pt-10 pb-6 md:pb-12 px-3 md:px-6 lg:px-8 relative overflow-visible z-10"
         >
-          {/* content-visibility:auto is safe here (not on the section itself) — this
-              layer is absolute inset-0 and contributes zero height to #competition,
-              which GSAP's ScrollTrigger uses as a pin/reveal trigger. */}
-          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden [content-visibility:auto]">
+          <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
             <div className="absolute top-[8%] right-[8%] w-[500px] h-[500px] bg-[#3b82f6]/16 rounded-full blur-[120px]" />
             <div className="absolute bottom-[8%] left-[8%] w-[460px] h-[460px] bg-[#2563eb]/13 rounded-full blur-[105px]" />
 
@@ -831,7 +849,7 @@ const InfestWebsite = () => {
             {/* Prize Pool Card */}
             <div className="prize-pool-card w-full text-center">
               <div
-                className="border border-[#FDD026]/28 p-4 md:p-6 rounded-[20px] md:rounded-[28px] backdrop-blur-xl shadow-[0_20px_60px_-12px_rgba(0,0,0,0.4),0_0_0_1px_rgba(253,208,38,0.10),inset_0_1px_0_rgba(255,255,255,0.12)] hover:border-[#FDD026]/46 hover:shadow-[0_28px_80px_-12px_rgba(253,208,38,0.18),0_0_0_1px_rgba(253,208,38,0.22),inset_0_1px_0_rgba(255,255,255,0.18)] transition-all duration-500 relative overflow-hidden group"
+                className="border border-[#FDD026]/28 p-4 md:p-6 rounded-[20px] md:rounded-[28px] md:backdrop-blur-xl shadow-[0_20px_60px_-12px_rgba(0,0,0,0.4),0_0_0_1px_rgba(253,208,38,0.10),inset_0_1px_0_rgba(255,255,255,0.12)] hover:border-[#FDD026]/46 hover:shadow-[0_28px_80px_-12px_rgba(253,208,38,0.18),0_0_0_1px_rgba(253,208,38,0.22),inset_0_1px_0_rgba(255,255,255,0.18)] transition-all duration-500 relative overflow-hidden group"
                 style={{
                   background: "linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04)), rgba(30,58,138,0.14)",
                   WebkitBackdropFilter: "blur(40px)"
@@ -949,7 +967,7 @@ const InfestWebsite = () => {
         {/* Seminar Section */}
         <section
           id="seminar"
-          className="w-full py-10 md:py-16 px-3 md:px-6 lg:px-8 relative overflow-hidden flex flex-col items-center justify-center min-h-[80vh] md:min-h-screen [content-visibility:auto] [contain-intrinsic-size:1px_900px]"
+          className="w-full py-10 md:py-16 px-3 md:px-6 lg:px-8 relative overflow-hidden flex flex-col items-center justify-center min-h-[80vh] md:min-h-screen"
         >
           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
             <div className="absolute top-[18%] left-[18%] w-[420px] h-[420px] bg-[#3b82f6]/14 rounded-full blur-[115px]" />
@@ -997,7 +1015,7 @@ const InfestWebsite = () => {
               <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-52 h-1.5 bg-[#60A5FA]/35 blur-[12px] rounded-full pointer-events-none" />
 
               <div
-                className="relative w-48 h-48 md:w-72 md:h-72 rounded-[22px] md:rounded-[28px] overflow-hidden border border-[#FDD026]/32 bg-[#0f172a]/55 backdrop-blur-xl transition-all duration-500 flex items-center justify-center p-2.5 md:p-3"
+                className="relative w-48 h-48 md:w-72 md:h-72 rounded-[22px] md:rounded-[28px] overflow-hidden border border-[#FDD026]/32 bg-[#0f172a]/55 md:backdrop-blur-xl transition-all duration-500 flex items-center justify-center p-2.5 md:p-3"
                 style={{ boxShadow: "0 28px 60px rgba(0,0,0,0.62), 0 0 0 1px rgba(253,208,38,0.12), inset 0 1px 0 rgba(255,255,255,0.12), 0 0 35px rgba(253,208,38,0.10)" }}
               >
                 <div className="relative w-full h-full rounded-[20px] overflow-hidden bg-black/40">
@@ -1005,7 +1023,7 @@ const InfestWebsite = () => {
                     src="/assets/images/mysteryguest.png"
                     alt="Mystery Speaker"
                     fill
-                    loading="lazy"
+                    loading="eager"
                     className="object-cover object-center transition-all duration-700 ease-out grayscale brightness-[0.2] contrast-[1.2] group-hover:scale-105 group-hover:brightness-[0.4]"
                   />
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_38%,#0f172a_95%)] z-10" />
@@ -1035,7 +1053,7 @@ const InfestWebsite = () => {
             {/* Text Section */}
             <div
               ref={seminarTextRef}
-              className="reveal-up reveal-delay-300 max-w-2xl text-center p-4 md:p-8 rounded-xl md:rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.03] border border-[#FDD026]/22 backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.45),0_0_0_1px_rgba(253,208,38,0.08),inset_0_1px_0_rgba(255,255,255,0.12)] z-10 flex flex-col items-center gap-3 md:gap-4"
+              className="reveal-up reveal-delay-300 max-w-2xl text-center p-4 md:p-8 rounded-xl md:rounded-2xl bg-gradient-to-b from-white/[0.07] to-white/[0.03] border border-[#FDD026]/22 md:backdrop-blur-xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.45),0_0_0_1px_rgba(253,208,38,0.08),inset_0_1px_0_rgba(255,255,255,0.12)] z-10 flex flex-col items-center gap-3 md:gap-4"
             >
               <h2 className="text-balance select-none flex flex-col items-center gap-1.5 leading-none">
                 <span className="flex items-baseline justify-center">

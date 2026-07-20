@@ -84,7 +84,7 @@ const Road = ({ d, viewBox, gradientId }: { d: string; viewBox: string; gradient
 
 const Pin = ({ node }: { node: TimelineNode }) => (
   <div
-    className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/25 shadow-[0_6px_20px_rgba(0,0,0,0.45)] backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 md:h-14 md:w-14"
+    className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/25 shadow-[0_6px_20px_rgba(0,0,0,0.45)] md:backdrop-blur-sm transition-transform duration-300 group-hover:scale-110 md:h-14 md:w-14"
     style={{ backgroundColor: node.accent }}
   >
     <node.Icon className="h-5 w-5 text-[#0b1650] md:h-6 md:w-6" />

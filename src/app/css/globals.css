@@ -829,34 +829,37 @@ body.is-scrolling {
    Ensures 60fps on scroll-driven animations
    ============================ */
 
-.section-curve path {
-  will-change: d;
-}
-
-/* Ensure GSAP fromTo elements don't flash before animation */
-#competition .section-heading,
-#competition .prize-pool-card,
-#competition .comp-card,
-#competition .comp-card-mobile,
-#seminar .section-heading,
-#seminar .seminar-info-card,
-#seminar .speaker-card,
-#seminar .nvidia-banner,
-#seminar .seminar-cta,
-#gallery .section-heading,
-#gallery .arcade-container,
-#sponsors .sponsors-grid-box,
-#sponsors .sponsors-headline,
-.second-section-left {
-  will-change: transform, opacity, filter;
-}
-
-/* Scroll-driven storytelling targets */
-.marquee-logo,
-.marquee-tagline,
-.marquee-divider,
-.marquee-slider {
-  will-change: transform, opacity, filter;
+/* Desktop only. A permanent `will-change` promotes each of these to its own
+   compositor layer and pins it in VRAM for the whole session. That's affordable
+   on a desktop GPU, but on a phone ~18 permanently-promoted layers (several of
+   them viewport-sized) is enough memory pressure that the compositor starts
+   evicting and re-rasterizing them mid-scroll — which is what showed up as
+   elements rendering blank / glitching during fast scrolling.
+   Mobile doesn't need them either: its reveals are cheap toggle-based tweens,
+   not the scrubbed pin sequence, and page.tsx already applies will-change
+   dynamically (promoteHeroLayer/releaseHeroLayer) around the pinned sequence
+   that genuinely benefits. */
+@media (min-width: 1024px) {
+  #competition .section-heading,
+  #competition .prize-pool-card,
+  #competition .comp-card,
+  #competition .comp-card-mobile,
+  #seminar .section-heading,
+  #seminar .seminar-info-card,
+  #seminar .speaker-card,
+  #seminar .nvidia-banner,
+  #seminar .seminar-cta,
+  #gallery .section-heading,
+  #gallery .arcade-container,
+  #sponsors .sponsors-grid-box,
+  #sponsors .sponsors-headline,
+  .second-section-left,
+  .marquee-logo,
+  .marquee-tagline,
+  .marquee-divider,
+  .marquee-slider {
+    will-change: transform, opacity, filter;
+  }
 }
 
 .transform-3d {
