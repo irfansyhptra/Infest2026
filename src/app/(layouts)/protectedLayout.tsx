@@ -29,7 +29,7 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
           return;
         }
 
-        setUser(null);
+        setUser(session.user);
       } catch (error) {
         console.error("Session check failed:", error);
       } finally {
@@ -42,14 +42,11 @@ const ProtectedLayout = ({ children }: { children: React.ReactNode }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {      
-
-      if (event === "SIGNED_IN" && session) {
-        // User berhasil login, redirect ke dashboard
-        router.replace("/dashboard");
-      } else if (event === "SIGNED_OUT") {
+      if (!session) {
         setUser(null);
+        router.replace("/auth/login");
       } else {
-        setUser(session?.user || null);
+        setUser(session.user);
       }
       setLoading(false);
     });

@@ -43,6 +43,7 @@ const TeamContent = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showKickModal, setShowKickModal] = useState(false);
+  const [isKicking, setIsKicking] = useState(false);
   const [showLeaveModal, setShowLeaveModal] = useState(false);
   const [showProfileWarning, setShowProfileWarning] = useState(false);
   const [teamCompetitionStatus, setTeamCompetitionStatus] = useState<{
@@ -80,7 +81,6 @@ const TeamContent = () => {
   const [previewTeam, setPreviewTeam] = useState<TeamWithMembers | null>(null);
   const [createNameError, setCreateNameError] = useState<string | null>(null);
 
-  console.log("MESSAGE: ", message);
 
   // Load data saat component mount
   useEffect(() => {
@@ -335,8 +335,9 @@ const TeamContent = () => {
   };
 
   const confirmKickMember = async () => {
-    if (!user || !memberToKick) return;
+    if (!user || !memberToKick || isKicking) return;
 
+    setIsKicking(true);
     try {
       const result = await teamService.kickMember(user.id, memberToKick.id);
       if (result.error) {
@@ -346,8 +347,6 @@ const TeamContent = () => {
           type: "success",
           text: `${memberToKick.name} berhasil dikeluarkan dari tim.`,
         });
-        setShowKickModal(false);
-        setMemberToKick(null);
         await loadData(); // Reload team data
       }
     } catch (error) {
@@ -355,8 +354,12 @@ const TeamContent = () => {
       setMessage({
         type: "error",
         text: "Terjadi kesalahan saat mengeluarkan anggota.",
-        position: "insideCard",
       });
+    } finally {
+      // Modal selalu ditutup: banner pesan ada di belakang overlay-nya.
+      setIsKicking(false);
+      setShowKickModal(false);
+      setMemberToKick(null);
     }
   };
 
@@ -450,7 +453,9 @@ const TeamContent = () => {
       </div>
 
       {/* Message */}
-      {message && message.position === "outsideCard" && (
+      {/* Default ke banner ini: banyak setMessage tidak mengisi position,
+          dan sebelumnya pesan itu tidak dirender di mana pun. */}
+      {message && message.position !== "insideCard" && (
         <div
           className={`flex items-start gap-3 p-4 rounded-xl border mb-6 ${
             message.type === "success"
@@ -931,9 +936,14 @@ const TeamContent = () => {
               </button>
               <button
                 onClick={confirmKickMember}
-                className="flex-1 px-4 py-2.5 sm:py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white transition-colors flex items-center justify-center gap-2"
+                disabled={isKicking}
+                className="flex-1 px-4 py-2.5 sm:py-3 bg-red-600 hover:bg-red-700 rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
-                <UserMinus className="w-4 h-4" />
+                {isKicking ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <UserMinus className="w-4 h-4" />
+                )}
                 Keluarkan
               </button>
             </div>

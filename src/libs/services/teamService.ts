@@ -394,56 +394,14 @@ export const teamService = {
     memberId: string
   ): Promise<TeamServiceResponse<boolean>> {
     try {
-      // Verifikasi bahwa user adalah leader
-      const { data: leaderProfile, error: leaderError } = await supabase
-        .from("user_profiles")
-        .select("team_id, is_team_leader")
-        .eq("id", leaderId)
-        .single();
-
-      if (leaderError || !leaderProfile.is_team_leader) {
-        return {
-          error: "Anda tidak memiliki izin untuk mengeluarkan anggota.",
-        };
-      }
-
-      // Blokir jika tim memiliki registrasi approved
-      const approvedCheckKick = await this.hasApprovedCompetitionRegistration(
-        leaderProfile.team_id
-      );
-      if (approvedCheckKick.data?.hasApproved) {
-        return {
-          error: `Tim sudah terdaftar untuk kompetisi ${approvedCheckKick.data.competitionName}. Anggota tim tidak dapat dikeluarkan.`,
-        };
-      }
-
-      // Verifikasi bahwa member ada di tim yang sama
-      const { data: memberProfile, error: memberError } = await supabase
-        .from("user_profiles")
-        .select("team_id, is_team_leader")
-        .eq("id", memberId)
-        .single();
-
-      if (memberError || memberProfile.team_id !== leaderProfile.team_id) {
-        return { error: "Anggota tidak ditemukan dalam tim Anda." };
-      }
-
-      if (memberProfile.is_team_leader) {
-        return { error: "Tidak dapat mengeluarkan leader tim." };
-      }
-
-      // Keluarkan anggota dari tim
       const { error: kickError } = await supabase
-        .from("user_profiles")
-        .update({
-          team_id: null,
-          is_team_leader: false,
-        })
-        .eq("id", memberId);
+        .rpc("kick_member", {
+          p_member_id: memberId,
+        });
 
       if (kickError) {
         console.error("Error kicking member:", kickError);
-        return { error: "Gagal mengeluarkan anggota. Silakan coba lagi." };
+        return { error: kickError.message || "Gagal mengeluarkan anggota. Silakan coba lagi." };
       }
 
       return { data: true };

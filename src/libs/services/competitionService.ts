@@ -139,9 +139,10 @@ export function validateTeamSize(
   const name = compName.toLowerCase();
   const slug = (compSlug || "").toLowerCase();
 
-  // List of competitions that require min 2 and max 3 members
-  const TEAM_BASED_2_TO_3_COMPETITIONS = [
-    "hackathon",
+  // Kompetisi yang mewajibkan tim berisi minimal 2 orang. Sisanya — UI/UX dan
+  // Hackathon — boleh didaftarkan sendirian. Batas atas 3 orang berlaku sama
+  // untuk semua, jadi tidak perlu didaftar per kompetisi.
+  const MIN_TWO_MEMBER_COMPETITIONS = [
     "ctf",
     "capture the flag",
     "web development",
@@ -150,37 +151,29 @@ export function validateTeamSize(
     "data sains",
   ];
 
-  const isTeam2To3 = TEAM_BASED_2_TO_3_COMPETITIONS.some(
+  let minMembers = MIN_TWO_MEMBER_COMPETITIONS.some(
     (item) => name.includes(item) || slug.includes(item.replace(/\s+/g, "-"))
-  );
+  )
+    ? 2
+    : 1;
 
-  if (isTeam2To3) {
-    if (memberCount < 2) {
-      return {
-        isValid: false,
-        error: `Kompetisi ${compName} memerlukan minimal 2 anggota tim. Jumlah anggota tim Anda saat ini: ${memberCount}. Silakan tambahkan anggota di menu Tim terlebih dahulu.`,
-      };
-    }
-    if (memberCount > 3) {
-      return {
-        isValid: false,
-        error: `Kompetisi ${compName} maksimal 3 anggota tim. Jumlah anggota tim Anda saat ini: ${memberCount}.`,
-      };
-    }
-  } else {
-    // Default: UI/UX or other competitions (min 1, max 3)
-    if (memberCount < 1) {
-      return {
-        isValid: false,
-        error: "Jumlah anggota tim minimal 1 orang.",
-      };
-    }
-    if (memberCount > 3) {
-      return {
-        isValid: false,
-        error: "Jumlah anggota tim maksimal 3 orang.",
-      };
-    }
+  // Hackathon diperbolehkan daftar dengan 1 orang, walaupun namanya mengandung
+  // kata kunci dari kategori lain (seperti "web development")
+  if (name.includes("hackathon") || slug.includes("hackathon")) {
+    minMembers = 1;
+  }
+
+  if (memberCount < minMembers) {
+    return {
+      isValid: false,
+      error: `Kompetisi ${compName} memerlukan minimal ${minMembers} anggota tim. Jumlah anggota tim Anda saat ini: ${memberCount}. Silakan tambahkan anggota di menu Tim terlebih dahulu.`,
+    };
+  }
+  if (memberCount > 3) {
+    return {
+      isValid: false,
+      error: `Kompetisi ${compName} maksimal 3 anggota tim. Jumlah anggota tim Anda saat ini: ${memberCount}.`,
+    };
   }
 
   return { isValid: true };

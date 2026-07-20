@@ -42,14 +42,11 @@ const GuestLayout = ({ children }: { children: React.ReactNode }) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (event, session) => {
-
-      if (event === "SIGNED_IN" && session) {
-        // User berhasil login, redirect ke dashboard
+      if (session) {
+        // User berhasil login atau session aktif ditemukan, redirect ke dashboard
         router.replace("/dashboard");
-      } else if (event === "SIGNED_OUT") {
-        setUser(null);
       } else {
-        setUser(session?.user || null);
+        setUser(null);
       }
       setLoading(false);
     });
