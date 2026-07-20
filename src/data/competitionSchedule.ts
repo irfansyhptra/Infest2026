@@ -23,7 +23,7 @@ export type ScheduleEvent = {
 };
 
 /** Dikunci per slug kompetisi supaya cocok dengan baris di tabel competitions. */
-export const COMPETITION_SCHEDULE: Record<string, ScheduleEvent[]> = {
+const RAW_SCHEDULE: Record<string, ScheduleEvent[]> = {
   datascience: [
     { title: "Pendaftaran Early Bird", start: "2026-07-20", end: "2026-08-10" },
     { title: "Pendaftaran Reguler", start: "2026-08-11", end: "2026-09-12" },
@@ -59,3 +59,26 @@ export const COMPETITION_SCHEDULE: Record<string, ScheduleEvent[]> = {
     { title: "Pengumuman Juara", start: "2026-10-25" },
   ],
 };
+
+/**
+ * Tiap periode pendaftaran dapat penanda satu hari di tanggal terakhirnya
+ * ("Hari Terakhir Pendaftaran Early Bird", dst). Sebagai rentang saja batas
+ * akhirnya gampang kelewat di kalender — ujung rentang tidak menonjol.
+ *
+ * Diturunkan, bukan ditulis manual, supaya tanggalnya tidak bisa lepas dari
+ * periodenya waktu jadwal digeser.
+ */
+const withDeadlineMarkers = (events: ScheduleEvent[]): ScheduleEvent[] =>
+  events.flatMap((e) =>
+    e.end && e.end !== e.start && e.title.startsWith("Pendaftaran")
+      ? [e, { title: `Hari Terakhir ${e.title}`, start: e.end }]
+      : [e]
+  );
+
+export const COMPETITION_SCHEDULE: Record<string, ScheduleEvent[]> =
+  Object.fromEntries(
+    Object.entries(RAW_SCHEDULE).map(([slug, events]) => [
+      slug,
+      withDeadlineMarkers(events),
+    ])
+  );
