@@ -197,7 +197,7 @@ export const SponsorsSection: React.FC<{ className?: string }> = ({
           </h2>
           <p className="flex md:hidden lg:flex text-[0.66rem] md:text-base text-end w-[75%] md:w-1/2 ml-auto">
             We are proud to partner with leading organizations in the tech
-            industry to bring you the best experience at Infest XI.
+            industry to bring you the best experience at INFEST XII 2026.
           </p>
         </div>
       </div>

@@ -106,7 +106,7 @@ export const Sidebar = () => {
             <Link href="/" className="flex items-center gap-3 mb-2">
               <Image
                 src={'/assets/images/logo_hero.PNG?v=2'}
-                alt="Infest 2025 Logo"
+                alt="Infest 2026 Logo"
                 width={100}
                 height={100}
                 className="w-10 h-10 sm:w-11 sm:h-11 object-contain filter drop-shadow-[0_0_10px_rgba(242,233,197,0.8)]"

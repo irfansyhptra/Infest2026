@@ -1,5 +1,5 @@
 ---
-name: Informatics Festival XI 2025
+name: Informatics Festival XII 2026
 description: Vibrant, high-energy tech festival brand system
 colors:
   primary: "#001540"
@@ -46,13 +46,13 @@ components:
     padding: "12px 24px"
 ---
 
-# Design System: Informatics Festival XI 2025
+# Design System: Informatics Festival XII 2026
 
 ## 1. Overview
 
 **Creative North Star: "The Electric Tech Arena"**
 
-The Informatics Festival XI 2025 (InFest) brand system is built as a high-contrast, energetic tech arena. It draws inspiration from night-time digital venues, e-sports, and hackathons. It intentionally rejects the muted, warm-neutral "beige SaaS" monoculture of standard AI-generated layouts, choosing instead saturated deep navy blues, bright cyan accents, and hot solar gold highlights. 
+The Informatics Festival XII 2026 (InFest) brand system is built as a high-contrast, energetic tech arena. It draws inspiration from night-time digital venues, e-sports, and hackathons. It intentionally rejects the muted, warm-neutral "beige SaaS" monoculture of standard AI-generated layouts, choosing instead saturated deep navy blues, bright cyan accents, and hot solar gold highlights. 
 
 Design elements are crisp and high-contrast, conveying academic prestige through clean organization while maintaining youthful, tech-focused excitement. Spacing is dense but legible, and layout structures utilize a modular grid that is responsive and readable.
 
