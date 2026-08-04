@@ -6,7 +6,7 @@ export const socialAccounts = [
   {
     id: "whatsApp",
     iconComponent: (<WhatsApp />),
-    url: "https://api.whatsapp.com/send?phone=6282283055874",
+    url: "https://api.whatsapp.com/send?phone=6287881743293",
   },
   {
     id: "tiktok",
