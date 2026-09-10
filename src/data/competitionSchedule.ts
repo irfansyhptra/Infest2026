@@ -56,7 +56,7 @@ const RAW_SCHEDULE: Record<string, ScheduleEvent[]> = {
     { title: "Pengumuman Finalis", start: "2026-10-11" },
     { title: "Technical Meeting Finalis", start: "2026-10-15" },
     { title: "Final Round", start: "2026-10-17" },
-    { title: "Pengumuman Juara", start: "2026-10-25" },
+    { title: "Pengumuman Juara", start: "2026-10-20" },
   ],
 };
 

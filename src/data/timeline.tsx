@@ -51,7 +51,7 @@ export const timelineData: TimelineNode[] = [
     start: "2026-10-20",
     date: "20 Oktober 2026",
     title: "National Seminar & Awards Ceremony",
-    description: "Pengumuman Juara Hackathon & Data Science (20 Okt), Seminar Nasional, dan closing ceremony INFEST XII.",
+    description: "Pengumuman juara seluruh kategori lomba (20 Okt), Seminar Nasional, dan closing ceremony INFEST XII.",
     Icon: WorkspacePremiumIcon,
     accent: "#3B82F6",
   },
