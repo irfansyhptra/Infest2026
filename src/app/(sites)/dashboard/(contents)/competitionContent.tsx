@@ -183,19 +183,30 @@ const CompetitionContent = () => {
 
   // Currently active price tier — early bird / middle bird / reguler, picked by today's date
   // against each tier's end date, so the fee shown always matches the period actually open.
+  //
+  // IMPORTANT: Date-only strings like "2026-07-30" are parsed by `new Date()` as
+  // UTC midnight (00:00:00Z), which in WIB (UTC+7) becomes 07:00 AM local time.
+  // This caused the tier to expire too early on the last day. We normalise end
+  // dates to 23:59:59.999 **local time** so the entire calendar day is included.
+  const endOfDayLocal = (dateStr: string): Date => {
+    // Split "YYYY-MM-DD" and build a Date in *local* time zone at end-of-day.
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return new Date(y, m - 1, d, 23, 59, 59, 999);
+  };
+
   const getActiveFee = (competition: Competition) => {
     const now = new Date();
     if (
       competition.early_bird &&
       competition.early_bird_end &&
-      now <= new Date(competition.early_bird_end)
+      now <= endOfDayLocal(competition.early_bird_end)
     ) {
       return { label: "Early Bird", amount: competition.early_bird };
     }
     if (
       competition.middle_bird_amount &&
       competition.middle_bird_end &&
-      now <= new Date(competition.middle_bird_end)
+      now <= endOfDayLocal(competition.middle_bird_end)
     ) {
       return { label: "Middle Bird", amount: competition.middle_bird_amount };
     }
@@ -227,7 +238,7 @@ const CompetitionContent = () => {
   // Check if registration is still open
   const isRegistrationOpen = (competition: Competition) => {
     const now = new Date();
-    const regEnd = new Date(competition.registration_end);
+    const regEnd = endOfDayLocal(competition.registration_end);
     return now <= regEnd;
   };
 

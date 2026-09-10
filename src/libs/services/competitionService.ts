@@ -179,6 +179,17 @@ export function validateTeamSize(
   return { isValid: true };
 }
 
+/**
+ * Parse a date-only string ("YYYY-MM-DD") into end-of-day in the local time zone.
+ *
+ * `new Date("2026-07-30")` is parsed as UTC midnight, which in WIB (UTC+7) is
+ * already 07:00 AM — causing date comparisons to fail after that hour.
+ * This helper builds the Date using the *local* constructor at 23:59:59.999.
+ */
+function endOfDayLocal(dateStr: string): Date {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  return new Date(y, m - 1, d, 23, 59, 59, 999);
+}
 
 export const competitionService = {
   /**
@@ -380,7 +391,7 @@ export const competitionService = {
         };
       }
 
-      const registrationEnd = new Date(competition.registration_end);
+      const registrationEnd = endOfDayLocal(competition.registration_end);
       const now = new Date();
 
       if (now > registrationEnd) {
@@ -803,7 +814,7 @@ export const competitionService = {
           registration: null,
           error: "Kompetisi tidak tersedia untuk pendaftaran",
         };
-      if (new Date() > new Date(comp.registration_end))
+      if (new Date() > endOfDayLocal(comp.registration_end))
         return {
           registration: null,
           error: "Pendaftaran kompetisi sudah ditutup",
