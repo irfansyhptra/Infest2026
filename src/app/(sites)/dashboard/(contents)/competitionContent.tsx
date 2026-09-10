@@ -188,10 +188,19 @@ const CompetitionContent = () => {
   // UTC midnight (00:00:00Z), which in WIB (UTC+7) becomes 07:00 AM local time.
   // This caused the tier to expire too early on the last day. We normalise end
   // dates to 23:59:59.999 **local time** so the entire calendar day is included.
-  const endOfDayLocal = (dateStr: string): Date => {
-    // Split "YYYY-MM-DD" and build a Date in *local* time zone at end-of-day.
-    const [y, m, d] = dateStr.split("-").map(Number);
-    return new Date(y, m - 1, d, 23, 59, 59, 999);
+  const endOfDayLocal = (dateStr?: string | null): Date => {
+    if (!dateStr) return new Date(0);
+    const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (match) {
+      const y = parseInt(match[1], 10);
+      const m = parseInt(match[2], 10);
+      const d = parseInt(match[3], 10);
+      return new Date(y, m - 1, d, 23, 59, 59, 999);
+    }
+    const parsed = new Date(dateStr);
+    if (isNaN(parsed.getTime())) return new Date(0);
+    parsed.setHours(23, 59, 59, 999);
+    return parsed;
   };
 
   const getActiveFee = (competition: Competition) => {

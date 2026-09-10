@@ -180,15 +180,21 @@ export function validateTeamSize(
 }
 
 /**
- * Parse a date-only string ("YYYY-MM-DD") into end-of-day in the local time zone.
- *
- * `new Date("2026-07-30")` is parsed as UTC midnight, which in WIB (UTC+7) is
- * already 07:00 AM — causing date comparisons to fail after that hour.
- * This helper builds the Date using the *local* constructor at 23:59:59.999.
+ * Parse a date string ("YYYY-MM-DD" or ISO "2026-09-12T00:00:00+00:00") into end-of-day in the local time zone.
  */
-function endOfDayLocal(dateStr: string): Date {
-  const [y, m, d] = dateStr.split("-").map(Number);
-  return new Date(y, m - 1, d, 23, 59, 59, 999);
+function endOfDayLocal(dateStr?: string | null): Date {
+  if (!dateStr) return new Date(0);
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (match) {
+    const y = parseInt(match[1], 10);
+    const m = parseInt(match[2], 10);
+    const d = parseInt(match[3], 10);
+    return new Date(y, m - 1, d, 23, 59, 59, 999);
+  }
+  const parsed = new Date(dateStr);
+  if (isNaN(parsed.getTime())) return new Date(0);
+  parsed.setHours(23, 59, 59, 999);
+  return parsed;
 }
 
 export const competitionService = {
