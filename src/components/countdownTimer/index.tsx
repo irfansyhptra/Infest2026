@@ -8,6 +8,7 @@ interface CountdownTimerProps {
   label: string;
   className?: string;
   competitionStarted?: boolean;
+  isDataScience?: boolean;
 }
 
 interface TimeRemaining {
@@ -23,6 +24,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
   label,
   className = "",
   competitionStarted = false,
+  isDataScience = false,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState<TimeRemaining>({
     days: 0,
@@ -239,7 +241,9 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
                   ⚠️ Waktu Hampir Habis!
                 </p>
                 <p className={`${currentStyle.text}/80 text-xs`}>
-                  Kurang dari 24 jam tersisa. Segera upload proposal dan orisinalitas Anda!
+                  {isDataScience
+                    ? "Kurang dari 24 jam tersisa. Segera upload karya notebook Anda!"
+                    : "Kurang dari 24 jam tersisa. Segera upload proposal dan orisinalitas Anda!"}
                 </p>
               </div>
             </div>
@@ -257,7 +261,9 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
                   ⏰ Pengingat Deadline
                 </p>
                 <p className={`${currentStyle.text}/80 text-xs`}>
-                  Waktu terbatas! Pastikan Anda sudah menyiapkan proposal dan orisinalitas karya.
+                  {isDataScience
+                    ? "Waktu terbatas! Pastikan Anda sudah menyiapkan karya notebook Anda."
+                    : "Waktu terbatas! Pastikan Anda sudah menyiapkan proposal dan orisinalitas karya."}
                 </p>
               </div>
             </div>
@@ -275,7 +281,9 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
                   📝 Masa Pengumpulan Berlangsung
                 </p>
                 <p className={`${currentStyle.text}/80 text-xs text-neutral_01`}>
-                  Anda sudah dapat mengumpulkan proposal dan orisinalitas karya. Gunakan waktu dengan baik!
+                  {isDataScience
+                    ? "Anda sudah dapat mengumpulkan karya notebook. Gunakan waktu dengan baik!"
+                    : "Anda sudah dapat mengumpulkan proposal dan orisinalitas karya. Gunakan waktu dengan baik!"}
                 </p>
               </div>
             </div>
@@ -293,7 +301,9 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
                   ⏳ Menunggu Kompetisi Dimulai
                 </p>
                 <p className={`${currentStyle.text}/80 text-xs`}>
-                  Pengumpulan proposal dan orisinalitas akan dibuka setelah kompetisi dimulai.
+                  {isDataScience
+                    ? "Pengumpulan karya notebook akan dibuka setelah kompetisi dimulai."
+                    : "Pengumpulan proposal dan orisinalitas akan dibuka setelah kompetisi dimulai."}
                 </p>
               </div>
             </div>

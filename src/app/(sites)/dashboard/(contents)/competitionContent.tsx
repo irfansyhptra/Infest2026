@@ -569,6 +569,9 @@ const CompetitionContent = () => {
                             : "Batas akhir pengumpulan proposal & orisinalitas karya"
                         }
                         competitionStarted={true}
+                        isDataScience={isDataScienceCompetition(
+                          userRegistration.competition?.name
+                        )}
                       />
                     )}
 
@@ -749,7 +752,9 @@ const CompetitionContent = () => {
                           Kompetisi Belum Dimulai
                         </h3>
                         <p className="text-blue-400/80 text-sm mb-4">
-                          Pengumpulan proposal dan orisinalitas karya akan dibuka pada:
+                          {isDataScienceCompetition(userRegistration.competition?.name)
+                            ? "Pengumpulan Proposal karya notebook akan dibuka pada:"
+                            : "Pengumpulan proposal dan orisinalitas karya akan dibuka pada:"}
                         </p>
                         <div className="bg-blue-500/20 rounded-lg p-3 mb-4">
                           <p className="text-blue-400 font-semibold">
@@ -758,11 +763,15 @@ const CompetitionContent = () => {
                         </div>
                         <div className="space-y-2">
                           <p className="text-blue-400/80 text-sm">
-                            📝 Gunakan waktu ini untuk menyiapkan proposal terbaik Anda
+                            {isDataScienceCompetition(userRegistration.competition?.name)
+                              ? "📝 Gunakan waktu ini untuk menyiapkan karya notebook terbaik Anda"
+                              : "📝 Gunakan waktu ini untuk menyiapkan proposal terbaik Anda"}
                           </p>
-                          <p className="text-blue-400/80 text-sm">
-                            📋 Pastikan surat orisinalitas karya sudah disiapkan
-                          </p>
+                          {!isDataScienceCompetition(userRegistration.competition?.name) && (
+                            <p className="text-blue-400/80 text-sm">
+                              📋 Pastikan surat orisinalitas karya sudah disiapkan
+                            </p>
+                          )}
                           {userRegistration.competition?.guidebook_url && (
                             <div className="mt-4">
                               <button
@@ -922,6 +931,21 @@ const CompetitionContent = () => {
                             </p>
                           </div>
                         </div>
+
+                        {/* Proposal / Qualification Deadline */}
+                        {competition.qualification_end && (
+                          <div className="flex items-center gap-3">
+                            <FileText className="w-4 h-4 text-neutral_02 flex-shrink-0" />
+                            <div className="space-y-1 flex-1">
+                              <p className="text-xs font-medium text-neutral_01/80 tracking-wide">
+                                Batas Pengumpulan Proposal / Karya
+                              </p>
+                              <p className="text-sm text-neutral_01/90 font-medium">
+                                {formatDate(competition.qualification_end)}
+                              </p>
+                            </div>
+                          </div>
+                        )}
 
                         {/* Competition Date */}
                         <div className="flex items-center gap-3">
