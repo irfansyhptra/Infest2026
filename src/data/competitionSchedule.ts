@@ -11,7 +11,7 @@
  * Kolom tanggal di database tetap dipakai dan tetap harus akurat — bukan
  * duplikat hiasan: registration_* mengisi "Periode Pendaftaran" di kartu, dan
  * qualification_end benar-benar MEMBLOKIR upload setelah lewat deadline
- * (lihat ProposalUpload/NotebookUpload). Jadwal di bawah ini tambahan untuk
+ * (lihat ProposalUpload/ArchiveUpload). Jadwal di bawah ini tambahan untuk
  * tampilan kalender, dan tanggalnya harus konsisten dengan kolom-kolom itu.
  *
  * `end` boleh dikosongkan untuk acara satu hari.

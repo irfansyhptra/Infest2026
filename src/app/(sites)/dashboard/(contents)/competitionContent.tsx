@@ -29,20 +29,89 @@ import {
   Info,
   FileText,
   MessageCircle,
+  Link2,
 } from "lucide-react";
 import Image from "next/image";
 import CompetitionsCalendar from "@/components/calendar/competitionsCalendar";
 import Link from "next/link";
 import OriginalityUpload from "@/components/uploadFile/OriginalityUpload";
-import NotebookUpload from "@/components/uploadFile/NotebookUpload";
+import ArchiveUpload from "@/components/uploadFile/ArchiveUpload";
 import CountdownTimer from "@/components/countdownTimer";
 import { COMPETITION_SCHEDULE } from "@/data/competitionSchedule";
 
-// Data Science mengumpulkan notebook (.ipynb), bukan proposal/orisinalitas PDF.
-const DATA_SCIENCE_DATASET_URL =
-  "https://drive.google.com/drive/folders/1UAG7sjn36rA3y2u6vrU_qbtEBMOsOmLR?usp=sharing";
+// Data Science mengumpulkan arsip karya (.ipynb + file pendukung), bukan
+// proposal/orisinalitas PDF. Arsip masuk ke proposal_url, link dataset dititip
+// di kolom orisinalitas_url yang tidak terpakai untuk kompetisi ini.
 const isDataScienceCompetition = (name?: string) =>
   (name || "").toLowerCase().includes("data science");
+
+const DatasetLinkForm = ({
+  registrationId,
+  existingUrl,
+  disabled,
+}: {
+  registrationId: string;
+  existingUrl?: string;
+  disabled?: boolean;
+}) => {
+  const [url, setUrl] = useState(existingUrl || "");
+  const [isSaving, setIsSaving] = useState(false);
+  const [status, setStatus] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const value = url.trim();
+    if (!/^https?:\/\/\S+$/i.test(value)) {
+      setStatus({ type: "error", text: "Masukkan link dataset yang valid (http/https)." });
+      return;
+    }
+    setIsSaving(true);
+    setStatus(null);
+    const result = await competitionService.submitOriginality(registrationId, value);
+    setIsSaving(false);
+    setStatus(
+      result.success
+        ? { type: "success", text: "Link dataset tersimpan." }
+        : { type: "error", text: result.error || "Gagal menyimpan link dataset." }
+    );
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="flex flex-wrap items-center gap-2">
+      <div className="relative">
+        <Link2 className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral_01/50" />
+        <input
+          type="url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          disabled={disabled || isSaving}
+          placeholder="Link dataset (Drive/Kaggle/dll)"
+          className="w-56 rounded-lg border border-neutral_01/10 bg-neutral_01/15 py-2 pl-9 pr-3 text-sm text-neutral_01 placeholder:text-neutral_01/40 focus:outline-none focus:ring-1 focus:ring-neutral_01/30 disabled:opacity-50 sm:w-72"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={disabled || isSaving}
+        className="inline-flex items-center justify-center gap-2 rounded-lg border border-neutral_01/10 bg-neutral_01/15 px-4 py-2 text-sm font-medium text-neutral_01 transition-colors hover:bg-neutral_01/10 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+        {isSaving ? "Menyimpan..." : "Simpan"}
+      </button>
+      {status && (
+        <span
+          className={`w-full text-xs ${
+            status.type === "success" ? "text-green-400" : "text-red-400"
+          }`}
+        >
+          {status.text}
+        </span>
+      )}
+    </form>
+  );
+};
 
 const CompetitionContent = () => {
   const [competitions, setCompetitions] = useState<Competition[]>([]);
@@ -565,7 +634,7 @@ const CompetitionContent = () => {
                         targetDate={userRegistration.competition.qualification_end}
                         label={
                           isDataScienceCompetition(userRegistration.competition?.name)
-                            ? "Batas akhir pengumpulan notebook"
+                            ? "Batas akhir pengumpulan karya"
                             : "Batas akhir pengumpulan proposal & orisinalitas karya"
                         }
                         competitionStarted={true}
@@ -576,23 +645,20 @@ const CompetitionContent = () => {
                     )}
 
                     {isDataScienceCompetition(userRegistration.competition?.name) ? (
-                    /* Notebook Upload Section (Data Science) */
+                    /* Archive Upload Section (Data Science) */
                     <div>
-                      <div className="mb-3 flex w-full items-center justify-between gap-2">
+                      <div className="mb-3 flex w-full flex-wrap items-center justify-between gap-2">
                         <div className="flex gap-2 items-center">
                           <FileText className="w-4 h-4 text-neutral_02" />
                           <p className="text-sm font-semibold text-neutral_01">
                             Pengumpulan Karya
                           </p>
                         </div>
-                        <div className="mt-4 flex justify-end gap-2">
-                          <button
-                            onClick={() => window.open(DATA_SCIENCE_DATASET_URL, "_blank")}
-                            className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-neutral_01/15 border border-neutral_01/10 text-neutral_01 text-sm font-medium rounded-lg hover:bg-neutral_01/10 transition-colors"
-                          >
-                            <Eye className="w-4 h-4" />
-                            Dataset
-                          </button>
+                        <div className="mt-4 flex flex-wrap justify-end gap-2">
+                          <DatasetLinkForm
+                            registrationId={userRegistration.id}
+                            existingUrl={userRegistration.orisinalitas_url}
+                          />
                           {userRegistration.competition?.guidebook_url && (
                             <button
                               onClick={() =>
@@ -610,7 +676,7 @@ const CompetitionContent = () => {
                         </div>
                       </div>
 
-                      <NotebookUpload
+                      <ArchiveUpload
                         registrationId={userRegistration.id}
                         existingUrl={userRegistration.proposal_url}
                         qualificationEnd={userRegistration.competition?.qualification_end}
@@ -618,8 +684,8 @@ const CompetitionContent = () => {
                           setProposalMessage({
                             type: "success",
                             text: userRegistration.proposal_url
-                              ? "Notebook berhasil diperbarui."
-                              : "Notebook berhasil disimpan.",
+                              ? "Arsip karya berhasil diperbarui."
+                              : "Arsip karya berhasil disimpan.",
                           });
                           setUserRegistration((prev) =>
                             prev ? { ...prev, proposal_url: url } : null
@@ -753,7 +819,7 @@ const CompetitionContent = () => {
                         </h3>
                         <p className="text-blue-400/80 text-sm mb-4">
                           {isDataScienceCompetition(userRegistration.competition?.name)
-                            ? "Pengumpulan Proposal karya notebook akan dibuka pada:"
+                            ? "Pengumpulan Proposal arsip karya akan dibuka pada:"
                             : "Pengumpulan proposal dan orisinalitas karya akan dibuka pada:"}
                         </p>
                         <div className="bg-blue-500/20 rounded-lg p-3 mb-4">
@@ -764,7 +830,7 @@ const CompetitionContent = () => {
                         <div className="space-y-2">
                           <p className="text-blue-400/80 text-sm">
                             {isDataScienceCompetition(userRegistration.competition?.name)
-                              ? "📝 Gunakan waktu ini untuk menyiapkan karya notebook terbaik Anda"
+                              ? "📝 Gunakan waktu ini untuk menyiapkan arsip karya terbaik Anda"
                               : "📝 Gunakan waktu ini untuk menyiapkan proposal terbaik Anda"}
                           </p>
                           {!isDataScienceCompetition(userRegistration.competition?.name) && (

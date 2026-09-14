@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { competitionService } from "@/libs/services/competitionService";
 
-interface NotebookUploadProps {
+interface ArchiveUploadProps {
   registrationId: string;
   existingUrl?: string; // URL file yang sudah ada
   qualificationEnd?: string; // Deadline pengumpulan
@@ -20,7 +20,7 @@ interface NotebookUploadProps {
   onError?: (message: string) => void;
 }
 
-export const NotebookUpload: React.FC<NotebookUploadProps> = ({
+export const ArchiveUpload: React.FC<ArchiveUploadProps> = ({
   registrationId,
   existingUrl,
   qualificationEnd,
@@ -38,7 +38,7 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0];
     if (!f) return;
-    const validation = cloudinaryService.validateNotebook(f);
+    const validation = cloudinaryService.validateArchive(f);
     if (!validation.isValid) {
       setMessage({
         type: "error",
@@ -58,7 +58,7 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
 
   const handleUpload = async () => {
     if (!file) {
-      setMessage({ type: "error", text: "Pilih file .ipynb terlebih dahulu" });
+      setMessage({ type: "error", text: "Pilih arsip karya terlebih dahulu" });
       return;
     }
 
@@ -74,10 +74,10 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
         : "";
       setMessage({
         type: "error",
-        text: `Batas waktu pengumpulan notebook telah berakhir pada ${deadlineText}. Upload tidak dapat dilakukan.`,
+        text: `Batas waktu pengumpulan karya telah berakhir pada ${deadlineText}. Upload tidak dapat dilakukan.`,
       });
       onError?.(
-        `Batas waktu pengumpulan notebook telah berakhir pada ${deadlineText}`
+        `Batas waktu pengumpulan karya telah berakhir pada ${deadlineText}`
       );
       return;
     }
@@ -85,23 +85,23 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
     setIsUploading(true);
     setMessage(null);
     try {
-      const folder = `notebooks/${registrationId}`;
-      const result = await cloudinaryService.uploadNotebook(file, folder);
+      const folder = `submissions/${registrationId}`;
+      const result = await cloudinaryService.uploadArchive(file, folder);
       if (!result.success || !result.data?.secure_url) {
-        const err = result.error || "Gagal mengunggah notebook";
+        const err = result.error || "Gagal mengunggah arsip";
         setMessage({ type: "error", text: err });
         onError?.(err);
         return;
       }
 
-      // Notebook URL disimpan lewat kolom proposal_url yang sudah ada
+      // URL arsip disimpan lewat kolom proposal_url yang sudah ada
       // (Data Science tidak lagi memakai alur proposal/orisinalitas PDF).
       const saveResult = await competitionService.submitProposal(
         registrationId,
         result.data.secure_url
       );
       if (!saveResult.success) {
-        const err = saveResult.error || "Gagal menyimpan notebook";
+        const err = saveResult.error || "Gagal menyimpan arsip";
         setMessage({ type: "error", text: err });
         onError?.(err);
         return;
@@ -110,7 +110,7 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
       onUploaded(result.data.secure_url);
       setMessage({
         type: "success",
-        text: "Notebook berhasil diunggah dan disimpan",
+        text: "Arsip berhasil diunggah dan disimpan",
       });
       setFile(null);
       if (inputRef.current) inputRef.current.value = "";
@@ -125,11 +125,9 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
 
   const getFileName = (url: string) => {
     try {
-      const urlParts = url.split("/");
-      const fileName = urlParts[urlParts.length - 1];
-      return fileName.split(".")[0] + ".ipynb";
+      return decodeURIComponent(url.split("/").pop() || "") || "arsip-karya";
     } catch {
-      return "notebook.ipynb";
+      return "arsip-karya";
     }
   };
 
@@ -138,10 +136,11 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
       <div className="flex items-center gap-3">
         <div>
           <p className="text-neutral_01 font-medium">
-            Upload Notebook (.ipynb)
+            Upload Arsip (.ipynb, requirements.txt, README.md, dll)
           </p>
           <p className="text-xs text-neutral_01/70">
-            Maksimal 25MB, format Jupyter Notebook (.ipynb)
+            Maksimal 25MB. Kirim satu arsip (.zip/.rar/.7z/.tar.gz) berisi
+            notebook dan file pendukung.
           </p>
         </div>
       </div>
@@ -175,7 +174,7 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
         <input
           ref={inputRef}
           type="file"
-          accept=".ipynb"
+          accept=".zip,.rar,.7z,.tar,.gz,.tgz,.ipynb"
           onChange={handleSelect}
           className="hidden"
           disabled={isDeadlinePassed()}
@@ -185,7 +184,7 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
           disabled={isDeadlinePassed()}
           className="px-4 py-2 bg-neutral_01/10 border border-neutral_01/15 rounded-lg text-sm text-neutral_01 hover:bg-neutral_01/5 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {existingUrl ? "Pilih File Baru" : "Pilih File .ipynb"}
+          {existingUrl ? "Pilih File Baru" : "Pilih Arsip"}
         </button>
         {file && (
           <span className="text-sm text-neutral_01/80 truncate max-w-[240px]">
@@ -226,4 +225,4 @@ export const NotebookUpload: React.FC<NotebookUploadProps> = ({
   );
 };
 
-export default NotebookUpload;
+export default ArchiveUpload;

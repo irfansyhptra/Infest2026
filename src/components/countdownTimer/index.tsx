@@ -242,7 +242,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
                 </p>
                 <p className={`${currentStyle.text}/80 text-xs`}>
                   {isDataScience
-                    ? "Kurang dari 24 jam tersisa. Segera upload karya notebook Anda!"
+                    ? "Kurang dari 24 jam tersisa. Segera upload arsip karya Anda!"
                     : "Kurang dari 24 jam tersisa. Segera upload proposal dan orisinalitas Anda!"}
                 </p>
               </div>
@@ -262,7 +262,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
                 </p>
                 <p className={`${currentStyle.text}/80 text-xs`}>
                   {isDataScience
-                    ? "Waktu terbatas! Pastikan Anda sudah menyiapkan karya notebook Anda."
+                    ? "Waktu terbatas! Pastikan Anda sudah menyiapkan arsip karya Anda."
                     : "Waktu terbatas! Pastikan Anda sudah menyiapkan proposal dan orisinalitas karya."}
                 </p>
               </div>
@@ -282,7 +282,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
                 </p>
                 <p className={`${currentStyle.text}/80 text-xs text-neutral_01`}>
                   {isDataScience
-                    ? "Anda sudah dapat mengumpulkan karya notebook. Gunakan waktu dengan baik!"
+                    ? "Anda sudah dapat mengumpulkan arsip karya. Gunakan waktu dengan baik!"
                     : "Anda sudah dapat mengumpulkan proposal dan orisinalitas karya. Gunakan waktu dengan baik!"}
                 </p>
               </div>
@@ -302,7 +302,7 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({
                 </p>
                 <p className={`${currentStyle.text}/80 text-xs`}>
                   {isDataScience
-                    ? "Pengumpulan karya notebook akan dibuka setelah kompetisi dimulai."
+                    ? "Pengumpulan arsip karya akan dibuka setelah kompetisi dimulai."
                     : "Pengumpulan proposal dan orisinalitas akan dibuka setelah kompetisi dimulai."}
                 </p>
               </div>
