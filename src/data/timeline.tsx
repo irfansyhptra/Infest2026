@@ -19,7 +19,7 @@ export const timelineData: TimelineNode[] = [
     start: "2026-08-20",
     date: "20 Agu – 3 Okt 2026",
     title: "Competition",
-    description: "UI/UX: 27 Sep – 3 Okt\nHackathon: 20 Agu – 26 Sep\nData Science: 14 – 26 Sep 2026",
+    description: "UI/UX: 27 Sep – 3 Okt\nHackathon: 20 Agu – 26 Sep\nData Science: 14 – 28 Sep 2026",
     Icon: RocketLaunchIcon,
     accent: "#2596BE",
   },

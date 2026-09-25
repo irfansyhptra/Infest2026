@@ -28,7 +28,7 @@ const RAW_SCHEDULE: Record<string, ScheduleEvent[]> = {
     { title: "Pendaftaran Early Bird", start: "2026-07-20", end: "2026-08-10" },
     { title: "Pendaftaran Reguler", start: "2026-08-11", end: "2026-09-12" },
     { title: "Technical Meeting Penyisihan", start: "2026-09-13" },
-    { title: "Babak Penyisihan", start: "2026-09-14", end: "2026-09-26" },
+    { title: "Babak Penyisihan", start: "2026-09-14", end: "2026-09-28" },
     { title: "Penilaian", start: "2026-09-27", end: "2026-10-07" },
     { title: "Pengumuman Finalis", start: "2026-10-08" },
     { title: "Technical Meeting Finalis", start: "2026-10-11" },
