@@ -42,7 +42,7 @@ const RAW_SCHEDULE: Record<string, ScheduleEvent[]> = {
     { title: "Pendaftaran Middle Bird", start: "2026-07-31", end: "2026-08-13" },
     { title: "Pendaftaran Reguler", start: "2026-08-14", end: "2026-09-12" },
     { title: "Mentoring & Penjelasan Study Case (Online)", start: "2026-09-14" },
-    { title: "Pengumpulan Proposal / Hasil Study Case", start: "2026-08-20", end: "2026-09-26" },
+    { title: "Pengumpulan Proposal / Hasil Study Case", start: "2026-08-20", end: "2026-09-28" },
     { title: "Pengumuman Finalis", start: "2026-10-07" },
     { title: "Technical Meeting Babak Final (Online)", start: "2026-10-14" },
     { title: "Pelaksanaan Babak Final & Presentasi (Onsite)", start: "2026-10-17", end: "2026-10-18" },
