@@ -139,7 +139,7 @@ export const ArchiveUpload: React.FC<ArchiveUploadProps> = ({
             Upload Arsip (.ipynb, requirements.txt, README.md, dll)
           </p>
           <p className="text-xs text-neutral_01/70">
-            Maksimal 25MB. Kirim satu arsip (.zip/.rar/.7z/.tar.gz) berisi
+            Maksimal 10MB. Kirim satu arsip (.zip/.rar/.7z/.tar.gz) berisi
             notebook dan file pendukung.
           </p>
         </div>

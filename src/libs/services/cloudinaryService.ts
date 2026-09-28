@@ -45,8 +45,8 @@ async function uploadToCloudinary(
     const json = ct.includes("application/json") ? (() => { try { return JSON.parse(raw); } catch { return null; } })() : null;
 
     if (!res.ok) {
-      if (res.status === 413) {
-        return { success: false, error: "File terlalu besar (413). Perkecil ukuran atau kompres, batas 10MB di aplikasi." };
+      if (res.status === 413 || json?.error?.message?.toLowerCase().includes("too large")) {
+        return { success: false, error: "Ukuran file terlalu besar. Maksimal file yang dapat diunggah adalah 10MB." };
       }
       const msg = json?.error?.message || json?.message || raw?.slice(0, 200) || `Upload gagal (${res.status})`;
       return { success: false, error: msg };
@@ -220,7 +220,7 @@ export const cloudinaryService = {
    * MIME type — browsers don't reliably report a type for .ipynb.
    */
   validateArchive(file: File): { isValid: boolean; error?: string } {
-    const maxSize = 25 * 1024 * 1024; // 25MB — arsip berisi notebook + output plot/gambar
+    const maxSize = 10 * 1024 * 1024; // 10MB — Batas maksimal raw upload dari Cloudinary API
     // .ipynb tetap diterima supaya submission lama (notebook tunggal) tidak invalid.
     const allowed = ['.zip', '.rar', '.7z', '.tar', '.tar.gz', '.tgz', '.ipynb'];
     const name = file.name.toLowerCase();
@@ -228,7 +228,7 @@ export const cloudinaryService = {
       return { isValid: false, error: 'Format file tidak didukung. Gunakan arsip .zip/.rar/.7z/.tar.gz (atau .ipynb tunggal).' };
     }
     if (file.size > maxSize) {
-      return { isValid: false, error: 'Ukuran file terlalu besar. Maksimal 25MB.' };
+      return { isValid: false, error: 'Ukuran file terlalu besar. Maksimal 10MB.' };
     }
     return { isValid: true };
   },
