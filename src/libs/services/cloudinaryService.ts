@@ -46,7 +46,7 @@ async function uploadToCloudinary(
 
     if (!res.ok) {
       if (res.status === 413 || json?.error?.message?.toLowerCase().includes("too large")) {
-        return { success: false, error: "Ukuran file terlalu besar. Maksimal file yang dapat diunggah adalah 10MB." };
+        return { success: false, error: "Ukuran file terlalu besar. Maksimal file yang dapat diunggah adalah 20MB." };
       }
       const msg = json?.error?.message || json?.message || raw?.slice(0, 200) || `Upload gagal (${res.status})`;
       return { success: false, error: msg };
@@ -118,7 +118,9 @@ export const cloudinaryService = {
       if (!validation.isValid) {
         return { success: false, error: validation.error || 'Archive validation failed' };
       }
-      const uploaded = await uploadToCloudinary(file, folder, "raw");
+      // Use "auto" instead of "raw" — Cloudinary free tier allows up to 20MB
+      // for auto/image uploads vs only 10MB for raw uploads.
+      const uploaded = await uploadToCloudinary(file, folder, "auto");
       if (!uploaded.success) return { success: false, error: uploaded.error };
       return { success: true, data: uploaded.data };
     } catch (error: any) {
@@ -220,7 +222,7 @@ export const cloudinaryService = {
    * MIME type — browsers don't reliably report a type for .ipynb.
    */
   validateArchive(file: File): { isValid: boolean; error?: string } {
-    const maxSize = 10 * 1024 * 1024; // 10MB — Batas maksimal raw upload dari Cloudinary API
+    const maxSize = 20 * 1024 * 1024; // 20MB — Batas auto upload Cloudinary free tier
     // .ipynb tetap diterima supaya submission lama (notebook tunggal) tidak invalid.
     const allowed = ['.zip', '.rar', '.7z', '.tar', '.tar.gz', '.tgz', '.ipynb'];
     const name = file.name.toLowerCase();
@@ -228,7 +230,7 @@ export const cloudinaryService = {
       return { isValid: false, error: 'Format file tidak didukung. Gunakan arsip .zip/.rar/.7z/.tar.gz (atau .ipynb tunggal).' };
     }
     if (file.size > maxSize) {
-      return { isValid: false, error: 'Ukuran file terlalu besar. Maksimal 10MB.' };
+      return { isValid: false, error: 'Ukuran file terlalu besar. Maksimal 20MB.' };
     }
     return { isValid: true };
   },
